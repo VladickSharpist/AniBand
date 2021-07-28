@@ -20,16 +20,11 @@ namespace AniBand.Auth.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDatabase(Configuration);
-
-            services.AddIdentity();
-            services.ConfigureIdentity();
+            services.ConfigureIdentity(Configuration);
             
-            services.AddRepositories();
             services.AddServices();
-            services.RegisterMapper();
-            
-            services.JwtConfiguration(Configuration);
-            
+            services.AddMapper();
+
             services.AddControllers();
         }
 

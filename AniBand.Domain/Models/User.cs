@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace AniBand.Domain.Models
 {
-    public class User:IdentityUser
+    public class User:IdentityUser<long>
     {
         public DateTime RegistrationDate { get; set; }
         

@@ -18,17 +18,17 @@ namespace AniBand.Auth.Services.Helpers
             StatusCode = HttpStatusCode.OK;
         }
 
-        public HttpResult(string error, int statusCode)
+        public HttpResult(string error, HttpStatusCode statusCode)
         {
             Errors = new List<string>();
             Errors.Add(error);
-            StatusCode = (HttpStatusCode)statusCode;
+            StatusCode = statusCode;
         }
         
-        public HttpResult(List<string> errors, int statusCode)
+        public HttpResult(List<string> errors, HttpStatusCode statusCode)
         {
             Errors = new List<string>(errors);
-            StatusCode = (HttpStatusCode)statusCode;
+            StatusCode = statusCode;
         }
 
         public void AddError(string error)

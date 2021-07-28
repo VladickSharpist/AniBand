@@ -2,9 +2,7 @@
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using AniBand.Auth.Services.Abstractions.Helpers;
 using AniBand.Auth.Services.Abstractions.Services;
-using AniBand.Auth.Services.Helpers;
 using AniBand.Auth.Services.Services;
 using AniBand.DataAccess;
 using AniBand.DataAccess.Abstractions.Repositories;
@@ -52,7 +50,7 @@ namespace AniBand.Auth.Web.Extensions
             });
         }
 
-        public static void RegisterMapper(this IServiceCollection services)
+        public static void AddMapper(this IServiceCollection services)
         {
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
         }
@@ -62,23 +60,27 @@ namespace AniBand.Auth.Web.Extensions
             var connectionString = conf.GetValue<string>("connectionString");
             services.AddDbContext<AniBandDbContext>(
                 x => x.UseSqlServer(connectionString));
+            services.AddRepositories();
         }
 
         public static void AddIdentity(this IServiceCollection services)
         {
-            services.AddIdentity<User, IdentityRole>()
-                .AddRoleManager<RoleManager<IdentityRole>>()
+            services.AddIdentity<User, IdentityRole<long>>()
+                .AddRoleManager<RoleManager<IdentityRole<long>>>()
                 .AddEntityFrameworkStores<AniBandDbContext>();
         }
 
-        public static void ConfigureIdentity(this IServiceCollection services)
+        public static void ConfigureIdentity(this IServiceCollection services,IConfiguration configuration)
         {
+            services.AddIdentity();
             services.Configure<IdentityOptions>(options =>
             {
                 options.Password.RequireDigit = false;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
             });
+            
+            services.JwtConfiguration(configuration);
         }
 
         public static void AddServices(this IServiceCollection services)
@@ -86,7 +88,7 @@ namespace AniBand.Auth.Web.Extensions
             services.AddScoped<UserManager<User>>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IAuthService, AuthService>();
-            services.AddScoped<IPermissionHelper, PermissionHelper>();
+            services.AddScoped<IUserService, UserService>();
         }
 
         public static void AddRepositories(this IServiceCollection services)

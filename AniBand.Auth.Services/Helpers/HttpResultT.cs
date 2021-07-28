@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Net;
+using AniBand.Auth.Services.Abstractions.Helpers;
 
 namespace AniBand.Auth.Services.Helpers
 {
-    public sealed class HttpResult<T> : HttpResult
+    public sealed class HttpResult<T> : HttpResult,IHttpResult<T>
     {
         public T Data { get; set; }
 
@@ -10,19 +12,20 @@ namespace AniBand.Auth.Services.Helpers
 
         public HttpResult()
         {
+            
         }
 
-        public HttpResult(T data) : base()
+        public HttpResult(T data)
         {
             Data = data;
         }
 
-        public HttpResult(T data, List<string> errors, int statusCode) : base(errors, statusCode)
+        public HttpResult(T data, List<string> errors, HttpStatusCode statusCode) : base(errors, statusCode)
         {
             Data = data;
         }
 
-        public HttpResult(T data, string error, int statusCode) : base(error, statusCode)
+        public HttpResult(T data, string error, HttpStatusCode statusCode) : base(error, statusCode)
         {
             Data = data;
         }

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace AniBand.DataAccess.Abstractions.Repositories
+﻿namespace AniBand.DataAccess.Abstractions.Repositories
 {
     public interface IBaseReadWriteRepository<TEntity>
     {
@@ -15,5 +13,6 @@ namespace AniBand.DataAccess.Abstractions.Repositories
         void Remove(long id);
         
         void RemoveAsync(long id);
+        
     }
 }

@@ -39,17 +39,25 @@ namespace AniBand.Auth.Web.Controllers
         [HttpPost]
         public async Task<IHttpResult> Register(UserRegistrationViewModel userViewModel)
         {
-            var registerModel = _mapper.Map<RegisterUserDto>(userViewModel);
-            var result = await _authService.Register(registerModel);
-            return result;
+            return await _authService.Register(
+                _mapper.Map<RegisterUserDto>(userViewModel));
         }
 
         [HttpPost]
-        public async Task<IHttpResult> Login(UserLoginViewModel userViewModel)
+        public async Task<IActionResult> Login(UserLoginViewModel userViewModel)
         {
-            var model = _mapper.Map<LoginUserDto>(userViewModel);
-            var result = await _authService.Authenticate(model,HttpContext);
-            return result;
+            var result = await _authService.Authenticate(
+                _mapper.Map<LoginUserDto>(userViewModel));
+            if (!result.IsEmpty)
+            {
+                await HttpContext.SignInAsync(result.Data.ClaimsPrincipal);
+                return new ObjectResult(new
+                {
+                    token=result.Data.RefreshToken
+                });
+            }
+
+            return Ok(result);
         }
 
         [HttpPost]
@@ -60,17 +68,15 @@ namespace AniBand.Auth.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IHttpResult> Refresh(string refreshToken)
+        public async Task<IHttpResult<RefreshDto>> Refresh(string refreshToken)
         {
-            var result = await _authService.Refresh(refreshToken);
-            return result;
+            return await _authService.Refresh(refreshToken);
         }
 
         [HttpPost]
         public async Task<IHttpResult> RevokeToken(string token)
         {
-            var result = await _authService.Revoke(token);
-            return result;
+            return await _authService.Revoke(token);
         }
     }
 }

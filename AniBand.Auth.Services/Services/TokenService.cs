@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using AniBand.Auth.Services.Abstractions.Services;
 using AniBand.Domain;
 using AniBand.Domain.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Text.Json;
@@ -19,21 +18,20 @@ namespace AniBand.Auth.Services.Services
 {
     public class TokenService : ITokenService
     {
-        private readonly UserManager<User> _userManager;
         private readonly IConfiguration _jwtSettings;
         private readonly IBaseReadWriteRepository<RefreshToken> _refreshTokenReadWriteRepository;
+        private readonly IUserService _userService;
 
         public TokenService(
             IConfiguration jwtSettings,
-            UserManager<User> userManager,
-            IBaseReadWriteRepository<RefreshToken> refreshTokenReadWriteRepository)
+            IBaseReadWriteRepository<RefreshToken> refreshTokenReadWriteRepository,
+            IUserService userService)
         {
             _jwtSettings = jwtSettings ?? throw new ArgumentNullException(
                 typeof(IConfiguration).ToString());
-            _userManager = userManager ?? throw new ArgumentNullException(
-                typeof(UserManager<User>).ToString());
             _refreshTokenReadWriteRepository = refreshTokenReadWriteRepository ?? throw new ArgumentNullException(
                 typeof(IBaseReadWriteRepository<RefreshToken>).ToString());
+            _userService = userService;
         }
 
         public SigningCredentials GetSigningCredentials()
@@ -53,13 +51,13 @@ namespace AniBand.Auth.Services.Services
                 new Claim(CustomClaimTypes.Actor, user.UserName)
             };
 
-            var roles = await _userManager.GetRolesAsync(user);
+            var roles = await _userService.GetRolesAsync(user);
             foreach (var role in roles)
             {
                 claims.Add(new Claim(CustomClaimTypes.Role, role));
             }
 
-            var permissions = (await _userManager.GetClaimsAsync(user))
+            var permissions = (await _userService.GetClaimsAsync(user))
                 .Where(c => c.Type == CustomClaimTypes.Permission)
                 .ToList();
             claims.AddRange(permissions);
@@ -108,7 +106,7 @@ namespace AniBand.Auth.Services.Services
 
         public void MoveToHistory(User user, RefreshTokenDto tokenDto)
         {
-            var historyToken = new RefreshToken()
+            var historyToken = new RefreshToken
             {
                 Token = EncodeRefreshToken(tokenDto), Owner = user
             };
@@ -117,7 +115,7 @@ namespace AniBand.Auth.Services.Services
 
         public async Task<bool> RevokeToken(string token)
         {
-            var user = _userManager.Users.SingleOrDefault(u => u.RefreshToken == token);
+            var user = _userService.Users.SingleOrDefault(u => u.RefreshToken == token);
             if (user == null)
             {
                 return false;
@@ -131,7 +129,7 @@ namespace AniBand.Auth.Services.Services
 
             refreshToken.Revoked = DateTime.UtcNow;
             user.RefreshToken = EncodeRefreshToken(refreshToken);
-            await _userManager.UpdateAsync(user);
+            await _userService.UpdateAsync(user);
 
             return true;
         }

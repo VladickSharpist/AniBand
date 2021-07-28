@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AniBand.DataAccess
 {
-    public class AniBandDbContext : IdentityDbContext<IdentityUser, IdentityRole, string>
+    public class AniBandDbContext : IdentityDbContext<IdentityUser<long>, IdentityRole<long>, long>
     {
         public AniBandDbContext(DbContextOptions options) : base(options)
         {
@@ -13,6 +13,7 @@ namespace AniBand.DataAccess
         }
 
         public DbSet<RefreshToken> RefreshTokensHistory { get; set; }
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
