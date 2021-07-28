@@ -226,5 +226,6 @@ namespace AniBand.Auth.Services.Abstractions.Services
         bool SupportsQueryableUsers { get; }
         
         IQueryable<User> Users { get; }
+        
     }
 }
