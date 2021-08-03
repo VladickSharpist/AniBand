@@ -12,8 +12,4 @@
     <ProjectReference Include="..\AniBand.Domain\AniBand.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    
-  </ItemGroup>
-
 </Project>

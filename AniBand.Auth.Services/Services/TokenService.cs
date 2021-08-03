@@ -12,26 +12,37 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Text.Json;
 using AniBand.Auth.Services.Abstractions.Models;
+using AniBand.Auth.Services.Extensions;
 using AniBand.DataAccess.Abstractions.Repositories;
+using Microsoft.AspNetCore.Identity;
 
 namespace AniBand.Auth.Services.Services
 {
     public class TokenService : ITokenService
     {
         private readonly IConfiguration _jwtSettings;
-        private readonly IBaseReadWriteRepository<RefreshToken> _refreshTokenReadWriteRepository;
-        private readonly IUserService _userService;
+        private readonly IBaseReadWriteRepository<RefreshToken> _refreshTokenRepository;
+        private readonly IBaseReadonlyRepository<UserToken> _userTokenRepository;
+        private readonly UserManager<User> _userManager;
+        private readonly IUserSetter _currentUserSetter;
 
         public TokenService(
             IConfiguration jwtSettings,
-            IBaseReadWriteRepository<RefreshToken> refreshTokenReadWriteRepository,
-            IUserService userService)
+            IBaseReadWriteRepository<RefreshToken> refreshTokenRepository,
+            UserManager<User> userManager, 
+            IBaseReadonlyRepository<UserToken> userTokenRepository,
+            IUserSetter currentUserSetter)
         {
-            _jwtSettings = jwtSettings ?? throw new ArgumentNullException(
-                typeof(IConfiguration).ToString());
-            _refreshTokenReadWriteRepository = refreshTokenReadWriteRepository ?? throw new ArgumentNullException(
-                typeof(IBaseReadWriteRepository<RefreshToken>).ToString());
-            _userService = userService;
+            _jwtSettings = jwtSettings
+                           ?? throw new NullReferenceException(nameof(jwtSettings));
+            _refreshTokenRepository = refreshTokenRepository
+                                      ?? throw new NullReferenceException(nameof(refreshTokenRepository));
+            _userManager = userManager
+                           ?? throw new NullReferenceException(nameof(userManager));
+            _userTokenRepository = userTokenRepository
+                                   ?? throw new NullReferenceException(nameof(userTokenRepository));
+            _currentUserSetter = currentUserSetter
+                                 ?? throw new NullReferenceException(nameof(currentUserSetter));
         }
 
         public SigningCredentials GetSigningCredentials()
@@ -51,13 +62,13 @@ namespace AniBand.Auth.Services.Services
                 new Claim(CustomClaimTypes.Actor, user.UserName)
             };
 
-            var roles = await _userService.GetRolesAsync(user);
+            var roles = await _userManager.GetRolesAsync(user);
             foreach (var role in roles)
             {
                 claims.Add(new Claim(CustomClaimTypes.Role, role));
             }
 
-            var permissions = (await _userService.GetClaimsAsync(user))
+            var permissions = (await _userManager.GetClaimsAsync(user))
                 .Where(c => c.Type == CustomClaimTypes.Permission)
                 .ToList();
             claims.AddRange(permissions);
@@ -108,28 +119,44 @@ namespace AniBand.Auth.Services.Services
         {
             var historyToken = new RefreshToken
             {
-                Token = EncodeRefreshToken(tokenDto), Owner = user
+                Token = EncodeRefreshToken(tokenDto), OwnerId = user.Id
             };
-            _refreshTokenReadWriteRepository.Save(historyToken);
+            
+            _refreshTokenRepository.Save(historyToken);
         }
 
-        public async Task<bool> RevokeToken(string token)
+        public async Task<bool> RevokeTokenAsync(string token)
         {
-            var user = _userService.Users.SingleOrDefault(u => u.RefreshToken == token);
-            if (user == null)
+            var userId = (await _userTokenRepository
+                .GetNoTrackingAsync(t => t.Value == token))
+                    .FirstOrDefault()?
+                    .UserId;
+            if (!userId.HasValue)
             {
                 return false;
             }
 
-            var refreshToken = DecodeRefreshToken(user.RefreshToken);
+            var user = await _userManager.GetByIdAsync(userId.Value);
+            _currentUserSetter.SetUser(user);
+            
+            var refreshToken = DecodeRefreshToken(
+                await _userManager.GetAuthenticationTokenAsync(
+                    user,
+                    "AniBand",
+                    "RefreshToken"));
             if (!refreshToken.IsActive)
             {
                 return false;
             }
 
             refreshToken.Revoked = DateTime.UtcNow;
-            user.RefreshToken = EncodeRefreshToken(refreshToken);
-            await _userService.UpdateAsync(user);
+                await _userManager.SetAuthenticationTokenAsync(
+                    user,
+                    "AniBand",
+                    "RefreshToken",
+                    EncodeRefreshToken(refreshToken));
+                
+            await _userManager.UpdateAsync(user);
 
             return true;
         }

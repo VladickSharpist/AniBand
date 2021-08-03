@@ -1,18 +1,18 @@
 ﻿using System.Threading.Tasks;
 using AniBand.Auth.Services.Abstractions.Helpers;
+using AniBand.Auth.Services.Abstractions.Helpers.Generic;
 using AniBand.Auth.Services.Abstractions.Models;
 
 namespace AniBand.Auth.Services.Abstractions.Services
 {
     public interface IAuthService
     {
-        Task<IHttpResult> Register(RegisterUserDto model);
+        Task<IHttpResult> RegisterAsync(RegisterUserDto model);
         
-        Task<IHttpResult<AuthDto>> Authenticate(LoginUserDto model);
+        Task<IHttpResult<AuthDto>> AuthenticateAsync(LoginUserDto model);
         
-        Task<IHttpResult<RefreshDto>> Refresh(string refreshToken);
+        Task<IHttpResult<RefreshDto>> RefreshAsync(string refreshToken);
         
-        Task<IHttpResult> Revoke(string token);
-        
+        Task<IHttpResult> RevokeAsync(string token);
     }
 }

@@ -4,20 +4,23 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AniBand.DataAccess.Abstractions.Repositories;
+using AniBand.Domain.Interfaces;
 using AniBand.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace AniBand.DataAccess.Repositories
 {
     public class BaseReadonlyRepository<TEntity>
-        : IBaseReadonlyRepository<TEntity> where TEntity : BaseModel
+        : IBaseReadonlyRepository<TEntity> 
+        where TEntity : class, IEntity
     {
         protected AniBandDbContext _aniBandDbContext;
         protected DbSet<TEntity> _dbSet;
 
         public BaseReadonlyRepository(AniBandDbContext aniBandDbContext)
         {
-            _aniBandDbContext = aniBandDbContext ?? throw new NullReferenceException(nameof(aniBandDbContext));
+            _aniBandDbContext = aniBandDbContext 
+                ?? throw new NullReferenceException(nameof(aniBandDbContext));
             _dbSet = aniBandDbContext.Set<TEntity>();
         }
 

@@ -2,6 +2,7 @@
 using System;
 using System.Threading.Tasks;
 using AniBand.Auth.Services.Abstractions.Helpers;
+using AniBand.Auth.Services.Abstractions.Helpers.Generic;
 using AniBand.Auth.Services.Abstractions.Models;
 using AniBand.Auth.Services.Abstractions.Services;
 using AniBand.Auth.Services.Helpers;
@@ -23,10 +24,10 @@ namespace AniBand.Auth.Web.Controllers
             IMapper mapper,
             IAuthService authService)
         {
-            _mapper = mapper ?? throw new ArgumentNullException(
-                typeof(IMapper).ToString());
-            _authService = authService ?? throw new ArgumentNullException(
-                typeof(IAuthService).ToString());;
+            _mapper = mapper
+                      ?? throw new NullReferenceException(nameof(mapper));
+            _authService = authService 
+                           ?? throw new NullReferenceException(nameof(authService));
         }
 
         [Authorize]
@@ -37,23 +38,22 @@ namespace AniBand.Auth.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IHttpResult> Register(UserRegistrationViewModel userViewModel)
-        {
-            return await _authService.Register(
-                _mapper.Map<RegisterUserDto>(userViewModel));
-        }
+        public async Task<ActionResult<IHttpResult>> Register(UserRegistrationViewModel userViewModel)
+            => Ok(await _authService.RegisterAsync(
+                _mapper.Map<RegisterUserDto>(userViewModel)));
+
 
         [HttpPost]
         public async Task<IActionResult> Login(UserLoginViewModel userViewModel)
         {
-            var result = await _authService.Authenticate(
+            var result = await _authService.AuthenticateAsync(
                 _mapper.Map<LoginUserDto>(userViewModel));
             if (!result.IsEmpty)
             {
                 await HttpContext.SignInAsync(result.Data.ClaimsPrincipal);
                 return new ObjectResult(new
                 {
-                    token=result.Data.RefreshToken
+                    token = result.Data.RefreshToken
                 });
             }
 
@@ -61,22 +61,18 @@ namespace AniBand.Auth.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IHttpResult> Logout()
+        public async Task<ActionResult<IHttpResult>> Logout()
         {
             await HttpContext.SignOutAsync();
             return new HttpResult();
         }
+        
+        [HttpPost]
+        public async Task<ActionResult<IHttpResult<RefreshDto>>> Refresh(string refreshToken)
+            => Ok(await _authService.RefreshAsync(refreshToken));
 
         [HttpPost]
-        public async Task<IHttpResult<RefreshDto>> Refresh(string refreshToken)
-        {
-            return await _authService.Refresh(refreshToken);
-        }
-
-        [HttpPost]
-        public async Task<IHttpResult> RevokeToken(string token)
-        {
-            return await _authService.Revoke(token);
-        }
+        public async Task<ActionResult<IHttpResult>> RevokeToken(string token)
+            => Ok(await _authService.RevokeAsync(token));
     }
 }

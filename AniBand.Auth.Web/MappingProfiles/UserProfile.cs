@@ -12,7 +12,6 @@ namespace AniBand.Auth.Web.MappingProfiles
             CreateMap<UserRegistrationViewModel, RegisterUserDto>();
             CreateMap<RegisterUserDto, User>();
             CreateMap<UserLoginViewModel, LoginUserDto>();
-            
         }
     }
 }

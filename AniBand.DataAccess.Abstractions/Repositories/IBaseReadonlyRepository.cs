@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using AniBand.Domain.Models;
 
 namespace AniBand.DataAccess.Abstractions.Repositories
 {
@@ -43,6 +44,5 @@ namespace AniBand.DataAccess.Abstractions.Repositories
             Expression<Func<TEntity, bool>> filter = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
             params Expression<Func<TEntity, object>>[] includes);
-        
     }
 }

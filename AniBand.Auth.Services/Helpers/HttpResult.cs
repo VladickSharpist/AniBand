@@ -11,7 +11,8 @@ namespace AniBand.Auth.Services.Helpers
 
         public List<string> Errors { get; set; }
 
-        public bool IsSuccessful => (Errors == null || !Errors.Any()) && StatusCode == HttpStatusCode.OK;
+        public bool IsSuccessful => (Errors == null || !Errors.Any()) 
+                                    && StatusCode == HttpStatusCode.OK;
 
         public HttpResult()
         {

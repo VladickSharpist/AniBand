@@ -13,6 +13,5 @@
         void Remove(long id);
         
         void RemoveAsync(long id);
-        
     }
 }

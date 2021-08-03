@@ -23,7 +23,6 @@ namespace AniBand.Auth.Services.Abstractions.Services
 
         void MoveToHistory(User user, RefreshTokenDto tokenDto);
 
-        Task<bool> RevokeToken(string token);
-        
+        Task<bool> RevokeTokenAsync(string token);
     }
 }

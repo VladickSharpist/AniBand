@@ -12,6 +12,5 @@ namespace AniBand.Auth.Services.Abstractions.Helpers
         bool IsSuccessful { get; }
         
         void AddError(string error);
-        
     }
 }

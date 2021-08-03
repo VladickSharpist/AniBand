@@ -7,6 +7,5 @@ namespace AniBand.Auth.Services.Abstractions.Models
         public string RefreshToken { get; set; }
 
         public ClaimsPrincipal ClaimsPrincipal { get; set; }
-        
     }
 }

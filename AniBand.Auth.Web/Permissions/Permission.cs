@@ -14,5 +14,4 @@
             public const string WatchVideo = "api.AniBand.User.WatchVideo";
         }
     }
-    
 }

@@ -11,6 +11,5 @@ namespace AniBand.Auth.Web.Models
         [Required]
         [DataType(DataType.Password)]
         public string Password { get; set; }
-        
     }
 }

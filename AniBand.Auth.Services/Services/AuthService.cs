@@ -4,10 +4,14 @@ using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AniBand.Auth.Services.Abstractions.Helpers;
+using AniBand.Auth.Services.Abstractions.Helpers.Generic;
 using AniBand.Auth.Services.Abstractions.Models;
 using AniBand.Auth.Services.Abstractions.Services;
+using AniBand.Auth.Services.Extensions;
 using AniBand.Auth.Services.Helpers;
+using AniBand.Auth.Services.Helpers.Generic;
 using AniBand.Domain;
+using AniBand.Domain.Enums;
 using AniBand.Domain.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -20,26 +24,33 @@ namespace AniBand.Auth.Services.Services
         private readonly IMapper _mapper;
         private readonly ITokenService _tokenService;
         private readonly RoleManager<IdentityRole<long>> _roleManager;
-        private readonly IUserService _userService;
+        private readonly UserManager<User> _userManager;
+        private readonly IUserSetter _currentUserSetter;
 
         public AuthService(
             IMapper mapper,
             ITokenService tokenService,
             RoleManager<IdentityRole<long>> roleManager,
-            IUserService userService)
+            UserManager<User> userManager, 
+            IUserSetter currentUserSetter)
         {
-            _mapper = mapper;
-            _tokenService = tokenService;
-            _roleManager = roleManager;
-            _userService = userService;
+            _mapper = mapper 
+                      ?? throw new NullReferenceException(nameof(mapper));
+            _tokenService = tokenService 
+                            ?? throw new NullReferenceException(nameof(tokenService));
+            _roleManager = roleManager
+                           ?? throw new NullReferenceException(nameof(roleManager));
+            _userManager = userManager
+                           ?? throw new NullReferenceException(nameof(userManager));
+            _currentUserSetter = currentUserSetter;
         }
 
-        public async Task<IHttpResult> Register(RegisterUserDto model)
+        public async Task<IHttpResult> RegisterAsync(RegisterUserDto model)
         {
             var user = _mapper.Map<User>(model);
-            if (_userService.Users.All(u => u.Email != model.Email))
+            if (_userManager.Users.All(u => u.Email != model.Email))
             {
-                var result = await _userService.CreateAsync(user, model.Password);
+                var result = await _userManager.CreateAsync(user, model.Password);
                 if (!result.Succeeded)
                 {
                     return new HttpResult(result.Errors
@@ -48,13 +59,13 @@ namespace AniBand.Auth.Services.Services
                         HttpStatusCode.UnprocessableEntity);
                 }
 
-                await _userService.AddToRoleAsync(user, Roles.User.ToString());
+                await _userManager.AddToRoleAsync(user, Roles.User.ToString());
                 var userRole = await _roleManager
                     .FindByNameAsync(Roles.User.ToString());
                 var userPermissions = (await _roleManager.GetClaimsAsync(userRole))
                     .Where(c => c.Type == CustomClaimTypes.Permission)
                     .ToList();
-                await _userService.AddClaimsAsync(user, userPermissions);
+                await _userManager.AddClaimsAsync(user, userPermissions);
 
                 return new HttpResult();
             }
@@ -64,9 +75,9 @@ namespace AniBand.Auth.Services.Services
                 HttpStatusCode.UnprocessableEntity);
         }
 
-        public async Task<IHttpResult<AuthDto>> Authenticate(LoginUserDto model)
+        public async Task<IHttpResult<AuthDto>> AuthenticateAsync(LoginUserDto model)
         {
-            var user = await _userService.FindByEmailAsync(model.Email);
+            var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null)
             {
                 return new HttpResult<AuthDto>(
@@ -75,13 +86,16 @@ namespace AniBand.Auth.Services.Services
                     HttpStatusCode.UnprocessableEntity);
             }
 
-            if (await _userService.CheckPasswordAsync(user, model.Password))
+            if (await _userManager.CheckPasswordAsync(user, model.Password))
             {
+                _currentUserSetter.SetUser(user);
+                
                 var refreshToken = _tokenService.GenerateRefreshToken(user);
-                await _userService.SetAuthenticationTokenAsync(
+                await _userManager.SetAuthenticationTokenAsync(
                     user, "AniBand", "RefreshToken", refreshToken);
 
-                var claims = await _userService.GetClaimsAsync(user);
+                var claims = await _userManager.GetClaimsAsync(user);
+                claims.Add(new Claim(CustomClaimTypes.Actor,user.Email));
                 var identity = new ClaimsIdentity(
                     claims,
                     JwtBearerDefaults.AuthenticationScheme);
@@ -101,10 +115,10 @@ namespace AniBand.Auth.Services.Services
                 HttpStatusCode.UnprocessableEntity);
         }
 
-        public async Task<IHttpResult<RefreshDto>> Refresh(string refreshToken)
+        public async Task<IHttpResult<RefreshDto>> RefreshAsync(string refreshToken)
         {
             var refreshTokenObject = _tokenService.DecodeRefreshToken(refreshToken);
-            var user = await _userService.FindByIdAsync(refreshTokenObject.UserId);
+            var user = await _userManager.GetByIdAsync(refreshTokenObject.UserId);
             if (user == null)
             {
                 return new HttpResult<RefreshDto>(
@@ -113,7 +127,9 @@ namespace AniBand.Auth.Services.Services
                     HttpStatusCode.UnprocessableEntity);
             }
 
-            var activeRefreshToken = await _userService.GetAuthenticationTokenAsync(
+            _currentUserSetter.SetUser(user);
+            
+            var activeRefreshToken = await _userManager.GetAuthenticationTokenAsync(
                 user, "AniBand", "RefreshToken");
             if (activeRefreshToken != refreshToken)
             {
@@ -128,22 +144,23 @@ namespace AniBand.Auth.Services.Services
 
             var newJwtToken = await _tokenService.GenerateTokenAsync(user);
             var newRefreshToken = _tokenService.GenerateRefreshToken(user);
-            await _userService.SetAuthenticationTokenAsync(
+            await _userManager.SetAuthenticationTokenAsync(
                 user, "AniBand", "RefreshToken", newRefreshToken);
+
             return new HttpResult<RefreshDto>(new RefreshDto
             {
                 Token = newJwtToken, RefreshToken = newRefreshToken
             });
         }
 
-        public async Task<IHttpResult> Revoke(string token)
+        public async Task<IHttpResult> RevokeAsync(string token)
         {
             if (string.IsNullOrEmpty(token))
             {
                 return new HttpResult("Token is required", HttpStatusCode.BadRequest);
             }
 
-            var response = await _tokenService.RevokeToken(token);
+            var response = await _tokenService.RevokeTokenAsync(token);
 
             if (!response)
             {
