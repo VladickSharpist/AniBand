@@ -3,7 +3,10 @@ using AniBand.Domain.Interfaces;
 
 namespace AniBand.Domain.Models
 {
-    public class RefreshToken:IEntity,ICreatableEntity,IUpdatableEntity
+    public class RefreshToken
+        :IEntity,
+         ICreatableEntity,
+         IUpdatableEntity
     {
         public long Id { get; set; }
         

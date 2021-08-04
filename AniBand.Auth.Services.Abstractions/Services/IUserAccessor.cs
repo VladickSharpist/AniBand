@@ -4,6 +4,6 @@ namespace AniBand.Auth.Services.Abstractions.Services
 {
     public interface IUserAccessor
     {
-        User GetUser();
+        User User { get; }
     }
 }

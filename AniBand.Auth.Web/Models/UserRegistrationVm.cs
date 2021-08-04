@@ -2,7 +2,7 @@
 
 namespace AniBand.Auth.Web.Models
 {
-    public class UserRegistrationViewModel
+    public class UserRegistrationVm
     {
         [Required(ErrorMessage = "Username is required")]
         public string UserName { get; set; }

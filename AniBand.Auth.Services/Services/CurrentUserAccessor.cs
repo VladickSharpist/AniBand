@@ -4,19 +4,22 @@ using AniBand.Domain.Models;
 namespace AniBand.Auth.Services.Services
 {
     public class CurrentUserAccessor
-        : IUserAccessor,
-            IUserSetter
+        : IUserAccessor, 
+        IUserSetter
     {
-        private User _user;
+        private User _user = default;
 
-        public User GetUser()
+        public User User
         {
-            return _user;
+            get => _user;
+            set
+            {
+                if (value != default)
+                {
+                    _user = value;
+                }
+            }
         }
-
-        public void SetUser(User user)
-        {
-            _user = user;
-        }
+        
     }
 }

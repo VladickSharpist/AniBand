@@ -27,7 +27,8 @@ namespace AniBand.DataAccess
             IUserAccessor userAccessor) 
             : base(options)
         {
-            _userAccessor = userAccessor;
+            _userAccessor = userAccessor 
+                ?? throw new NullReferenceException(nameof(userAccessor));
         }
 
         public DbSet<RefreshToken> RefreshTokensHistory { get; set; }
@@ -60,35 +61,31 @@ namespace AniBand.DataAccess
         {
             var entries = ChangeTracker.Entries();
             
-            var user = _userAccessor.GetUser();
+            var user = _userAccessor.User;
             var actorId = user?.Id 
                           ?? Users.Single(u 
                                   => u.NormalizedEmail == "SYSTEM").Id;
-            
-            foreach (var entry in entries)
+
+            foreach (var entry in ChangeTracker
+                .Entries()
+                .Where(
+                    e => e.Entity is IUpdatableEntity
+                         && e.State == EntityState.Modified)
+                .ToList())
             {
-                switch (entry.State)
-                {
-                    case EntityState.Added:
-                        
-                        if (entry.Entity is ICreatableEntity creatableEntity)
-                        {
-                            creatableEntity.CreateDate = DateTime.Now;
-                            creatableEntity.CreatedById = actorId;
-                        }
-
-                        break;
-                    
-                    case EntityState.Modified:
-                        
-                        if (entry.Entity is IUpdatableEntity updatableEntity)
-                        {
-                            updatableEntity.UpdateDate = DateTime.Now;
-                            updatableEntity.UpdatedById = actorId;
-                        }
-
-                        break;
-                }
+                ((IUpdatableEntity) entry.Entity).UpdateDate = DateTime.Now;
+                ((IUpdatableEntity) entry.Entity).UpdatedById = actorId;
+            }
+            
+            foreach (var entry in ChangeTracker
+                .Entries()
+                .Where(
+                    e => e.Entity is ICreatableEntity
+                         && e.State == EntityState.Added)
+                .ToList())
+            {
+                ((ICreatableEntity) entry.Entity).CreateDate = DateTime.Now;
+                ((ICreatableEntity) entry.Entity).CreatedById = actorId;
             }
         }
     }

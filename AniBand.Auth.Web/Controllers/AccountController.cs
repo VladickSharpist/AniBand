@@ -25,9 +25,9 @@ namespace AniBand.Auth.Web.Controllers
             IAuthService authService)
         {
             _mapper = mapper
-                      ?? throw new NullReferenceException(nameof(mapper));
-            _authService = authService 
-                           ?? throw new NullReferenceException(nameof(authService));
+                ?? throw new NullReferenceException(nameof(mapper));
+            _authService = authService
+                ?? throw new NullReferenceException(nameof(authService));
         }
 
         [Authorize]
@@ -38,23 +38,20 @@ namespace AniBand.Auth.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<IHttpResult>> Register(UserRegistrationViewModel userViewModel)
+        public async Task<ActionResult<IHttpResult>> Register(UserRegistrationVm userVm)
             => Ok(await _authService.RegisterAsync(
-                _mapper.Map<RegisterUserDto>(userViewModel)));
+                _mapper.Map<RegisterUserDto>(userVm)));
 
 
         [HttpPost]
-        public async Task<IActionResult> Login(UserLoginViewModel userViewModel)
+        public async Task<ActionResult<RefreshTokenVm>> Login(UserLoginVm userVm)
         {
             var result = await _authService.AuthenticateAsync(
-                _mapper.Map<LoginUserDto>(userViewModel));
+                _mapper.Map<LoginUserDto>(userVm));
             if (!result.IsEmpty)
             {
                 await HttpContext.SignInAsync(result.Data.ClaimsPrincipal);
-                return new ObjectResult(new
-                {
-                    token = result.Data.RefreshToken
-                });
+                return _mapper.Map<RefreshTokenVm>(result.Data);
             }
 
             return Ok(result);

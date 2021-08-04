@@ -35,14 +35,15 @@ namespace AniBand.Auth.Services.Services
             IUserSetter currentUserSetter)
         {
             _mapper = mapper 
-                      ?? throw new NullReferenceException(nameof(mapper));
+                ?? throw new NullReferenceException(nameof(mapper));
             _tokenService = tokenService 
-                            ?? throw new NullReferenceException(nameof(tokenService));
+                ?? throw new NullReferenceException(nameof(tokenService));
             _roleManager = roleManager
-                           ?? throw new NullReferenceException(nameof(roleManager));
+                ?? throw new NullReferenceException(nameof(roleManager));
             _userManager = userManager
-                           ?? throw new NullReferenceException(nameof(userManager));
-            _currentUserSetter = currentUserSetter;
+                ?? throw new NullReferenceException(nameof(userManager));
+            _currentUserSetter = currentUserSetter
+                ?? throw new NullReferenceException(nameof(currentUserSetter));
         }
 
         public async Task<IHttpResult> RegisterAsync(RegisterUserDto model)
@@ -63,7 +64,8 @@ namespace AniBand.Auth.Services.Services
                 var userRole = await _roleManager
                     .FindByNameAsync(Roles.User.ToString());
                 var userPermissions = (await _roleManager.GetClaimsAsync(userRole))
-                    .Where(c => c.Type == CustomClaimTypes.Permission)
+                    .Where(c => 
+                        c.Type == CustomClaimTypes.Permission)
                     .ToList();
                 await _userManager.AddClaimsAsync(user, userPermissions);
 
@@ -88,14 +90,16 @@ namespace AniBand.Auth.Services.Services
 
             if (await _userManager.CheckPasswordAsync(user, model.Password))
             {
-                _currentUserSetter.SetUser(user);
+                _currentUserSetter.User = user;
                 
                 var refreshToken = _tokenService.GenerateRefreshToken(user);
                 await _userManager.SetAuthenticationTokenAsync(
                     user, "AniBand", "RefreshToken", refreshToken);
 
                 var claims = await _userManager.GetClaimsAsync(user);
-                claims.Add(new Claim(CustomClaimTypes.Actor,user.Email));
+                claims.Add(new Claim (
+                    CustomClaimTypes.Actor, 
+                    user.Email));
                 var identity = new ClaimsIdentity(
                     claims,
                     JwtBearerDefaults.AuthenticationScheme);
@@ -104,7 +108,8 @@ namespace AniBand.Auth.Services.Services
                 {
                     Data = new AuthDto
                     {
-                        RefreshToken = refreshToken, ClaimsPrincipal = new ClaimsPrincipal(identity)
+                        RefreshToken = refreshToken, 
+                        ClaimsPrincipal = new ClaimsPrincipal(identity)
                     }
                 };
             }
@@ -127,7 +132,7 @@ namespace AniBand.Auth.Services.Services
                     HttpStatusCode.UnprocessableEntity);
             }
 
-            _currentUserSetter.SetUser(user);
+            _currentUserSetter.User = user;
             
             var activeRefreshToken = await _userManager.GetAuthenticationTokenAsync(
                 user, "AniBand", "RefreshToken");
@@ -149,7 +154,8 @@ namespace AniBand.Auth.Services.Services
 
             return new HttpResult<RefreshDto>(new RefreshDto
             {
-                Token = newJwtToken, RefreshToken = newRefreshToken
+                Token = newJwtToken, 
+                RefreshToken = newRefreshToken
             });
         }
 

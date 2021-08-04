@@ -2,7 +2,7 @@
 
 namespace AniBand.Auth.Web.Models
 {
-    public class UserLoginViewModel
+    public class UserLoginVm
     {
         [Required]
         [EmailAddress]

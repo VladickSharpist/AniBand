@@ -4,6 +4,6 @@ namespace AniBand.Auth.Services.Abstractions.Services
 {
     public interface IUserSetter
     {
-        void SetUser(User user);
+        User User { set; }
     }
 }

@@ -34,15 +34,15 @@ namespace AniBand.Auth.Services.Services
             IUserSetter currentUserSetter)
         {
             _jwtSettings = jwtSettings
-                           ?? throw new NullReferenceException(nameof(jwtSettings));
+                ?? throw new NullReferenceException(nameof(jwtSettings));
             _refreshTokenRepository = refreshTokenRepository
-                                      ?? throw new NullReferenceException(nameof(refreshTokenRepository));
+                ?? throw new NullReferenceException(nameof(refreshTokenRepository));
             _userManager = userManager
-                           ?? throw new NullReferenceException(nameof(userManager));
+                ?? throw new NullReferenceException(nameof(userManager));
             _userTokenRepository = userTokenRepository
-                                   ?? throw new NullReferenceException(nameof(userTokenRepository));
+                ?? throw new NullReferenceException(nameof(userTokenRepository));
             _currentUserSetter = currentUserSetter
-                                 ?? throw new NullReferenceException(nameof(currentUserSetter));
+                ?? throw new NullReferenceException(nameof(currentUserSetter));
         }
 
         public SigningCredentials GetSigningCredentials()
@@ -94,7 +94,9 @@ namespace AniBand.Auth.Services.Services
         {
             var token = new RefreshTokenDto
             {
-                Created = DateTime.Now, Expires = DateTime.Now.AddDays(7), UserId = user.Id
+                Created = DateTime.Now, 
+                Expires = DateTime.Now.AddDays(7), 
+                UserId = user.Id
             };
 
             return EncodeRefreshToken(token);
@@ -137,7 +139,7 @@ namespace AniBand.Auth.Services.Services
             }
 
             var user = await _userManager.GetByIdAsync(userId.Value);
-            _currentUserSetter.SetUser(user);
+            _currentUserSetter.User = user;
             
             var refreshToken = DecodeRefreshToken(
                 await _userManager.GetAuthenticationTokenAsync(
