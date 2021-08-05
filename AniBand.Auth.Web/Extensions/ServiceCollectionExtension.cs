@@ -4,10 +4,12 @@ using System.Text;
 using System.Threading.Tasks;
 using AniBand.Auth.Services.Abstractions.Extensions;
 using AniBand.Auth.Services.Extensions;
+using AniBand.Auth.Web.Filters.Permission;
 using AniBand.DataAccess;
 using AniBand.DataAccess.Extensions;
 using AniBand.Domain.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -36,6 +38,10 @@ namespace AniBand.Auth.Web.Extensions
                 .AddUser()
                 .AddAuth();
         
+        public static IServiceCollection AddFilters(this IServiceCollection services)
+            => services
+                .AddHandlers();
+        
         private static IServiceCollection AddIdentity(this IServiceCollection services)
             => services
                 .AddIdentity<User, IdentityRole<long>>()
@@ -52,7 +58,8 @@ namespace AniBand.Auth.Web.Extensions
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
                 })
-                .AddJwtConfiguration(configuration);
+                .AddJwtConfiguration(configuration)
+                .AddFilters();
 
         private static IServiceCollection AddJwtConfiguration(this IServiceCollection services, IConfiguration conf)
             => services
@@ -91,6 +98,12 @@ namespace AniBand.Auth.Web.Extensions
                 .Services;
 
         private static IServiceCollection AddWebMapper(this IServiceCollection services)
-            => services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            => services
+                .AddAutoMapper(Assembly.GetExecutingAssembly());
+
+        private static IServiceCollection AddHandlers(this IServiceCollection services)
+            => services
+                .AddSingleton<IAuthorizationHandler, PermissionHandler>();
+        
     }
 }

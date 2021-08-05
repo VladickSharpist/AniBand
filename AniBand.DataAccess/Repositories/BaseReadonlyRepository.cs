@@ -5,7 +5,6 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AniBand.DataAccess.Abstractions.Repositories;
 using AniBand.Domain.Interfaces;
-using AniBand.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace AniBand.DataAccess.Repositories

@@ -6,10 +6,12 @@ using AniBand.Auth.Services.Abstractions.Helpers.Generic;
 using AniBand.Auth.Services.Abstractions.Models;
 using AniBand.Auth.Services.Abstractions.Services;
 using AniBand.Auth.Services.Helpers;
+using AniBand.Auth.Web.Filters;
+using AniBand.Auth.Web.Filters.Permission;
 using AniBand.Auth.Web.Models;
+using AniBand.Auth.Web.Permissions;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
 
 namespace AniBand.Auth.Web.Controllers
 {
@@ -30,7 +32,7 @@ namespace AniBand.Auth.Web.Controllers
                 ?? throw new NullReferenceException(nameof(authService));
         }
 
-        [Authorize]
+        [Permission(Permission.AdminPermission.AddVideo)]
         [HttpPost]
         public string MyName()
         {
