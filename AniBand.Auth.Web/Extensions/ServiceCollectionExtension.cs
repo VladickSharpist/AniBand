@@ -3,7 +3,9 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using AniBand.Auth.Services.Abstractions.Extensions;
+using AniBand.Auth.Services.Abstractions.Services;
 using AniBand.Auth.Services.Extensions;
+using AniBand.Auth.Services.Services;
 using AniBand.Auth.Web.Filters.Permission;
 using AniBand.DataAccess;
 using AniBand.DataAccess.Extensions;
@@ -20,11 +22,16 @@ namespace AniBand.Auth.Web.Extensions
 {
     public static class ServiceCollectionExtension
     {
-        public static IServiceCollection AddMapper(this IServiceCollection services)
+        public static IServiceCollection AddAuthentication(this IServiceCollection services, IConfiguration conf)
             => services
-                .AddWebMapper()
-                .AddServiceMapper();
+                .AddIdentity()
+                .AddIdentityConfiguration(conf)
+                .AddScoped<ITokenService, TokenService>();
 
+        public static IServiceCollection AddInfrastructure(this IServiceCollection services)
+            => services
+                .AddMapper();
+        
         public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration conf)
             => services
                 .AddDbContext<AniBandDbContext>(x =>
@@ -36,11 +43,11 @@ namespace AniBand.Auth.Web.Extensions
             => services
                 .AddUser()
                 .AddAuth();
-
-        public static IServiceCollection AddWeb(this IServiceCollection services, IConfiguration conf)
+        
+        private static IServiceCollection AddMapper(this IServiceCollection services)
             => services
-                .AddIdentity()
-                .AddIdentityConfiguration(conf);
+                .AddWebMapper()
+                .AddServiceMapper();
 
         private static IServiceCollection AddIdentity(this IServiceCollection services)
             => services

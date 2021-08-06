@@ -1,3 +1,5 @@
+using System.Net.Sockets;
+using AniBand.Auth.Services.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,12 +22,9 @@ namespace AniBand.Auth.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDatabase(Configuration);
-            
+            services.AddAuthentication(Configuration);
             services.AddServices();
-            
-            services.AddWeb(Configuration);
-            
-            services.AddMapper();
+            services.AddInfrastructure();
 
             services.AddHttpContextAccessor();
             services.AddControllers();

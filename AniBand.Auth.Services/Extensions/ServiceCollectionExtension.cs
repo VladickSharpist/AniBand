@@ -19,7 +19,6 @@ namespace AniBand.Auth.Services.Extensions
 
         public static IServiceCollection AddAuth(this IServiceCollection services)
             => services
-                .AddScoped<ITokenService, TokenService>()
                 .AddScoped<IAuthService, AuthService>();
     }
 }
