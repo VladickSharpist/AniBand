@@ -6,6 +6,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AniBand.Auth.Services.Abstractions\AniBand.Auth.Services.Abstractions.csproj" />
+    <ProjectReference Include="..\AniBand.Core.Abstractions\AniBand.Core.Abstractions.csproj" />
+    <ProjectReference Include="..\AniBand.Core\AniBand.Core.csproj" />
     <ProjectReference Include="..\AniBand.DataAccess\AniBand.DataAccess.csproj" />
     <ProjectReference Include="..\AniBand.Domain\AniBand.Domain.csproj" />
   </ItemGroup>

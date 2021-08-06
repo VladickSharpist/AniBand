@@ -10,9 +10,9 @@ using AniBand.Domain;
 using AniBand.Domain.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.Text.Json;
-using AniBand.Auth.Services.Abstractions.Helpers;
 using AniBand.Auth.Services.Abstractions.Models;
 using AniBand.Auth.Services.Extensions;
+using AniBand.Core.Abstractions.Infrastructure.Helpers;
 using AniBand.DataAccess.Abstractions.Repositories;
 using Microsoft.AspNetCore.Identity;
 
@@ -47,7 +47,7 @@ namespace AniBand.Auth.Services.Services
         {
             var key = Encoding.UTF8.GetBytes(
                 _configurationHelper
-                    .SecretKey());
+                    .SecretKey);
 
             var secret = new SymmetricSecurityKey(key);
             return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
@@ -78,8 +78,8 @@ namespace AniBand.Auth.Services.Services
             var claims = await GetClaimsAsync(user);
 
             var jwt = new JwtSecurityToken(
-                issuer:_configurationHelper.Issuer(),
-                audience: _configurationHelper.Audience(),
+                issuer:_configurationHelper.Issuer,
+                audience: _configurationHelper.Audience,
                 claims: claims,
                 expires: DateTime.UtcNow.AddMinutes(5),
                 signingCredentials: GetSigningCredentials()
@@ -119,7 +119,8 @@ namespace AniBand.Auth.Services.Services
         {
             var historyToken = new RefreshToken
             {
-                Token = EncodeRefreshToken(tokenDto), OwnerId = user.Id
+                Token = EncodeRefreshToken(tokenDto),
+                OwnerId = user.Id
             };
             
             _refreshTokenRepository.Save(historyToken);
