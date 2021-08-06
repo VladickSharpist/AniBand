@@ -30,18 +30,18 @@ namespace AniBand.Auth.Web.Extensions
                 .AddDbContext<AniBandDbContext>(x =>
                     x.UseSqlServer(
                         conf.GetValue<string>("connectionString")))
-                .AddRepositories()
-                .AddIdentityConfiguration(conf);
+                .AddRepositories();
 
         public static IServiceCollection AddServices(this IServiceCollection services)
             => services
                 .AddUser()
                 .AddAuth();
 
-        private static IServiceCollection AddFilters(this IServiceCollection services)
+        public static IServiceCollection AddWeb(this IServiceCollection services, IConfiguration conf)
             => services
-                .AddHandlers();
-        
+                .AddIdentity()
+                .AddIdentityConfiguration(conf);
+
         private static IServiceCollection AddIdentity(this IServiceCollection services)
             => services
                 .AddIdentity<User, IdentityRole<long>>()
@@ -51,7 +51,6 @@ namespace AniBand.Auth.Web.Extensions
 
         private static IServiceCollection AddIdentityConfiguration(this IServiceCollection services, IConfiguration configuration)
             => services
-                .AddIdentity()
                 .Configure<IdentityOptions>(options =>
                 {
                     options.Password.RequireDigit = false;
@@ -60,6 +59,10 @@ namespace AniBand.Auth.Web.Extensions
                 })
                 .AddJwtConfiguration(configuration)
                 .AddFilters();
+        
+        private static IServiceCollection AddFilters(this IServiceCollection services)
+            => services
+                .AddHandlers();
 
         private static IServiceCollection AddJwtConfiguration(this IServiceCollection services, IConfiguration conf)
             => services

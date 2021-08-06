@@ -23,6 +23,8 @@ namespace AniBand.Auth.Web
             
             services.AddServices();
             
+            services.AddWeb(Configuration);
+            
             services.AddMapper();
 
             services.AddHttpContextAccessor();
