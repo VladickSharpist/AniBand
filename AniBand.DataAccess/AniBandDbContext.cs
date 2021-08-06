@@ -24,6 +24,7 @@ namespace AniBand.DataAccess
     {
         private readonly IUserAccessor _userAccessor;
 
+        private const string SYSTEM_NORMALIZED_EMAIL = "SYSTEM";
         public AniBandDbContext(DbContextOptions options,
             IUserAccessor userAccessor) 
             : base(options)
@@ -57,13 +58,17 @@ namespace AniBand.DataAccess
 
         private void OnBeforeSaving()
         {
-            var entries = ChangeTracker.Entries();
-            
             var user = _userAccessor.User;
             var actorId = user?.Id 
                           ?? Users.Single(u 
-                                  => u.NormalizedEmail == "SYSTEM").Id;
+                                  => u.NormalizedEmail == SYSTEM_NORMALIZED_EMAIL).Id;
 
+            SaveUpdatableEntities(actorId);
+            SaveCreatableEntities(actorId);
+        }
+
+        private void SaveUpdatableEntities(long actorId)
+        {
             foreach (var entry in ChangeTracker
                 .Entries()
                 .Where(
@@ -74,7 +79,10 @@ namespace AniBand.DataAccess
                 ((IUpdatableEntity) entry.Entity).UpdateDate = DateTime.Now;
                 ((IUpdatableEntity) entry.Entity).UpdatedById = actorId;
             }
-            
+        }
+
+        private void SaveCreatableEntities(long actorId)
+        {
             foreach (var entry in ChangeTracker
                 .Entries()
                 .Where(
