@@ -7,7 +7,8 @@ namespace AniBand.Auth.Web.Filters.Permission
 {
     public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
     {
-        private const string allPermissions = "*";
+        private const string ALL_PERMISSIONS = "*";
+        
         protected override Task HandleRequirementAsync(
             AuthorizationHandlerContext context, 
             PermissionRequirement requirement)
@@ -32,6 +33,6 @@ namespace AniBand.Auth.Web.Filters.Permission
         }
 
         private bool HasAllPermissions(Claim claim)
-            => claim.Value == allPermissions;
+            => claim.Value == ALL_PERMISSIONS;
     }
 }

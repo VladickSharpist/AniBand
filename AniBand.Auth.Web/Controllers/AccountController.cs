@@ -6,7 +6,6 @@ using AniBand.Auth.Services.Abstractions.Helpers.Generic;
 using AniBand.Auth.Services.Abstractions.Models;
 using AniBand.Auth.Services.Abstractions.Services;
 using AniBand.Auth.Services.Helpers;
-using AniBand.Auth.Web.Filters;
 using AniBand.Auth.Web.Filters.Permission;
 using AniBand.Auth.Web.Models;
 using AniBand.Auth.Web.Permissions;

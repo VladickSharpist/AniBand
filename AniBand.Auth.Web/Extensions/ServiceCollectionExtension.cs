@@ -37,8 +37,8 @@ namespace AniBand.Auth.Web.Extensions
             => services
                 .AddUser()
                 .AddAuth();
-        
-        public static IServiceCollection AddFilters(this IServiceCollection services)
+
+        private static IServiceCollection AddFilters(this IServiceCollection services)
             => services
                 .AddHandlers();
         
@@ -54,9 +54,9 @@ namespace AniBand.Auth.Web.Extensions
                 .AddIdentity()
                 .Configure<IdentityOptions>(options =>
                 {
-                options.Password.RequireDigit = false;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireUppercase = false;
+                    options.Password.RequireDigit = false;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireUppercase = false;
                 })
                 .AddJwtConfiguration(configuration)
                 .AddFilters();

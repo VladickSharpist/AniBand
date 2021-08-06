@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using AniBand.Auth.Services.Abstractions.Services;
@@ -35,11 +36,8 @@ namespace AniBand.DataAccess
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<RefreshToken>()
-                .HasOne(t => t.Owner)
-                .WithMany(u => u.RefreshTokensHistory)
-                .HasForeignKey(t => t.OwnerId);
-
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+            
             base.OnModelCreating(modelBuilder);
         }
 

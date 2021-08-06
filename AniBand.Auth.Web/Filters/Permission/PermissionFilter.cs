@@ -6,7 +6,9 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace AniBand.Auth.Web.Filters.Permission
 {
-    public class PermissionFilter : Attribute, IAsyncAuthorizationFilter
+    public class PermissionFilter 
+        : Attribute, 
+        IAsyncAuthorizationFilter
     {
         private readonly IAuthorizationService _authorizationService;
         private readonly string[] _permissions;
@@ -23,14 +25,14 @@ namespace AniBand.Auth.Web.Filters.Permission
 
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
-            var ok = await _authorizationService.AuthorizeAsync(
+            var result = await _authorizationService.AuthorizeAsync(
                 context
                     .HttpContext
                     .User, 
                 null,
                 new PermissionRequirement(_permissions));
 
-            if (!ok.Succeeded)
+            if (!result.Succeeded)
             {
                 context.Result = new ChallengeResult();
             } 
