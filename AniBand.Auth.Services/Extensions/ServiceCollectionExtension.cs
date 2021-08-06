@@ -1,4 +1,6 @@
-﻿using AniBand.Auth.Services.Abstractions.Services;
+﻿using AniBand.Auth.Services.Abstractions.Helpers;
+using AniBand.Auth.Services.Abstractions.Services;
+using AniBand.Auth.Services.Helpers;
 using AniBand.Auth.Services.Services;
 using AniBand.Domain.Models;
 using Microsoft.AspNetCore.Identity;
@@ -20,5 +22,8 @@ namespace AniBand.Auth.Services.Extensions
         public static IServiceCollection AddAuth(this IServiceCollection services)
             => services
                 .AddScoped<IAuthService, AuthService>();
+
+        public static IServiceCollection AddHelpers(this IServiceCollection services)
+            => services.AddScoped<IConfigurationHelper, ConfigurationHelper>();
     }
 }

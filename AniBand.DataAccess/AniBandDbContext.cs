@@ -25,6 +25,7 @@ namespace AniBand.DataAccess
         private readonly IUserAccessor _userAccessor;
 
         private const string SYSTEM_NORMALIZED_EMAIL = "SYSTEM";
+        
         public AniBandDbContext(DbContextOptions options,
             IUserAccessor userAccessor) 
             : base(options)
