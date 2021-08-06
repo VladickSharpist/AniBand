@@ -1,3 +1,5 @@
+using System.Net.Sockets;
+using AniBand.Auth.Services.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,11 +21,10 @@ namespace AniBand.Auth.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddServices();
-            
             services.AddDatabase(Configuration);
-            
-            services.AddMapper();
+            services.AddAuthentication(Configuration);
+            services.AddServices();
+            services.AddInfrastructure();
 
             services.AddHttpContextAccessor();
             services.AddControllers();

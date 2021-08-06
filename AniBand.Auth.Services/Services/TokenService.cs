@@ -59,7 +59,7 @@ namespace AniBand.Auth.Services.Services
         {
             var claims = new List<Claim>
             {
-                new Claim(CustomClaimTypes.Actor, user.UserName)
+                new Claim(CustomClaimTypes.Actor, user.Email)
             };
 
             var roles = await _userManager.GetRolesAsync(user);

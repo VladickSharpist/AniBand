@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using AniBand.DataAccess.Abstractions.Repositories;
 using AniBand.Domain.Interfaces;
-using AniBand.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace AniBand.DataAccess.Repositories
