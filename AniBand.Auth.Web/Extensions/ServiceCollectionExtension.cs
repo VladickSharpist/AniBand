@@ -7,6 +7,9 @@ using AniBand.Auth.Services.Abstractions.Services;
 using AniBand.Auth.Services.Extensions;
 using AniBand.Auth.Services.Services;
 using AniBand.Auth.Web.Filters.Permission;
+using AniBand.Core.Abstractions.Infrastructure.Helpers;
+using AniBand.Core.Extensions;
+using AniBand.Core.Infrastructure.Helpers;
 using AniBand.DataAccess;
 using AniBand.DataAccess.Extensions;
 using AniBand.Domain.Models;
@@ -28,16 +31,25 @@ namespace AniBand.Auth.Web.Extensions
                 .AddIdentityConfiguration(conf)
                 .AddScoped<ITokenService, TokenService>();
 
-        public static IServiceCollection AddInfrastructure(this IServiceCollection services)
+        public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration conf)
             => services
-                .AddMapper();
+                .AddMapper()
+                .AddHelpers(conf);
         
-        public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration conf)
+        public static IServiceCollection AddDatabase(this IServiceCollection services)
+            => services
+                .AddContext(services
+                    .BuildServiceProvider()
+                    .GetRequiredService<IConfigurationHelper>())
+                .AddRepositories();
+
+        private static IServiceCollection AddContext(
+            this IServiceCollection services,
+            IConfigurationHelper confHelper)
             => services
                 .AddDbContext<AniBandDbContext>(x =>
                     x.UseSqlServer(
-                        conf.GetValue<string>("connectionString")))
-                .AddRepositories();
+                        confHelper.ConnectionString));
 
         public static IServiceCollection AddServices(this IServiceCollection services)
             => services
@@ -56,7 +68,9 @@ namespace AniBand.Auth.Web.Extensions
                 .AddEntityFrameworkStores<AniBandDbContext>()
                 .Services;
 
-        private static IServiceCollection AddIdentityConfiguration(this IServiceCollection services, IConfiguration configuration)
+        private static IServiceCollection AddIdentityConfiguration(
+            this IServiceCollection services, 
+            IConfiguration configuration)
             => services
                 .Configure<IdentityOptions>(options =>
                 {
@@ -64,14 +78,18 @@ namespace AniBand.Auth.Web.Extensions
                     options.Password.RequireNonAlphanumeric = false;
                     options.Password.RequireUppercase = false;
                 })
-                .AddJwtConfiguration(configuration)
+                .AddJwtConfiguration(services
+                    .BuildServiceProvider()
+                    .GetRequiredService<IConfigurationHelper>())
                 .AddFilters();
         
         private static IServiceCollection AddFilters(this IServiceCollection services)
             => services
                 .AddHandlers();
 
-        private static IServiceCollection AddJwtConfiguration(this IServiceCollection services, IConfiguration conf)
+        private static IServiceCollection AddJwtConfiguration(
+            this IServiceCollection services,
+            IConfigurationHelper confHelper)
             => services
                 .AddAuthentication(options =>
                 {
@@ -86,9 +104,8 @@ namespace AniBand.Auth.Web.Extensions
                         ValidateIssuer = false, 
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
-                            .GetBytes(conf
-                                .GetSection("JWTSettings:securityKey")
-                                .Value)),
+                            .GetBytes(confHelper
+                                .SecretKey)),
                         ValidateLifetime = true, 
                         ClockSkew = TimeSpan.Zero
                     };

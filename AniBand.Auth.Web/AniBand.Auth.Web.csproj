@@ -26,6 +26,7 @@
   <ItemGroup>
     <ProjectReference Include="..\AniBand.Auth.Services.Abstractions\AniBand.Auth.Services.Abstractions.csproj" />
     <ProjectReference Include="..\AniBand.Auth.Services\AniBand.Auth.Services.csproj" />
+    <ProjectReference Include="..\AniBand.Core\AniBand.Core.csproj" />
     <ProjectReference Include="..\AniBand.DataAccess\AniBand.DataAccess.csproj" />
     <ProjectReference Include="..\AniBand.Domain\AniBand.Domain.csproj" />
     <ProjectReference Include="..\AniBand.video.Services.Abstractions\AniBand.Video.Services.Abstractions.csproj" />

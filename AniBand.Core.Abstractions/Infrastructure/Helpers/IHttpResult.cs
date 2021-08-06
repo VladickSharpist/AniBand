@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Net;
 
-namespace AniBand.Auth.Services.Abstractions.Helpers
+namespace AniBand.Core.Abstractions.Infrastructure.Helpers
 {
     public interface IHttpResult
     {

@@ -1,4 +1,4 @@
-﻿namespace AniBand.Auth.Services.Abstractions.Helpers.Generic
+﻿namespace AniBand.Core.Abstractions.Infrastructure.Helpers.Generic
 {
     public interface IHttpResult<T>:IHttpResult
     {

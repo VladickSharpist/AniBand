@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Net;
-using AniBand.Auth.Services.Abstractions.Helpers.Generic;
+using AniBand.Core.Abstractions.Infrastructure.Helpers.Generic;
 
-namespace AniBand.Auth.Services.Helpers.Generic
+namespace AniBand.Core.Infrastructure.Helpers.Generic
 {
     public sealed class HttpResult<T> : HttpResult,IHttpResult<T>
     {

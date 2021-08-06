@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using AniBand.Auth.Services.Abstractions.Helpers;
+using AniBand.Core.Abstractions.Infrastructure.Helpers;
 
-namespace AniBand.Auth.Services.Helpers
+namespace AniBand.Core.Infrastructure.Helpers
 {
     public class HttpResult : IHttpResult
     {

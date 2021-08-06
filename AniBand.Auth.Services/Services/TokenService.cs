@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 using AniBand.Auth.Services.Abstractions.Services;
 using AniBand.Domain;
 using AniBand.Domain.Models;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Text.Json;
 using AniBand.Auth.Services.Abstractions.Models;
 using AniBand.Auth.Services.Extensions;
+using AniBand.Core.Abstractions.Infrastructure.Helpers;
 using AniBand.DataAccess.Abstractions.Repositories;
 using Microsoft.AspNetCore.Identity;
 
@@ -20,21 +20,18 @@ namespace AniBand.Auth.Services.Services
 {
     public class TokenService : ITokenService
     {
-        private readonly IConfiguration _jwtSettings;
         private readonly IBaseReadWriteRepository<RefreshToken> _refreshTokenRepository;
         private readonly IBaseReadonlyRepository<UserToken> _userTokenRepository;
         private readonly UserManager<User> _userManager;
         private readonly IUserSetter _currentUserSetter;
+        private readonly IConfigurationHelper _configurationHelper;
 
         public TokenService(
-            IConfiguration jwtSettings,
             IBaseReadWriteRepository<RefreshToken> refreshTokenRepository,
             UserManager<User> userManager, 
             IBaseReadonlyRepository<UserToken> userTokenRepository,
-            IUserSetter currentUserSetter)
+            IUserSetter currentUserSetter, IConfigurationHelper configurationHelper)
         {
-            _jwtSettings = jwtSettings
-                ?? throw new NullReferenceException(nameof(jwtSettings));
             _refreshTokenRepository = refreshTokenRepository
                 ?? throw new NullReferenceException(nameof(refreshTokenRepository));
             _userManager = userManager
@@ -43,13 +40,14 @@ namespace AniBand.Auth.Services.Services
                 ?? throw new NullReferenceException(nameof(userTokenRepository));
             _currentUserSetter = currentUserSetter
                 ?? throw new NullReferenceException(nameof(currentUserSetter));
+            _configurationHelper = configurationHelper;
         }
 
         public SigningCredentials GetSigningCredentials()
         {
             var key = Encoding.UTF8.GetBytes(
-                _jwtSettings.GetSection("JWTSettings:securityKey")
-                    .Value);
+                _configurationHelper
+                    .SecretKey);
 
             var secret = new SymmetricSecurityKey(key);
             return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
@@ -80,8 +78,8 @@ namespace AniBand.Auth.Services.Services
             var claims = await GetClaimsAsync(user);
 
             var jwt = new JwtSecurityToken(
-                issuer: _jwtSettings.GetSection("JWTSettings:validIssuer").Value,
-                audience: _jwtSettings.GetSection("JWTSettings:validAudience").Value,
+                issuer:_configurationHelper.Issuer,
+                audience: _configurationHelper.Audience,
                 claims: claims,
                 expires: DateTime.UtcNow.AddMinutes(5),
                 signingCredentials: GetSigningCredentials()
@@ -121,7 +119,8 @@ namespace AniBand.Auth.Services.Services
         {
             var historyToken = new RefreshToken
             {
-                Token = EncodeRefreshToken(tokenDto), OwnerId = user.Id
+                Token = EncodeRefreshToken(tokenDto),
+                OwnerId = user.Id
             };
             
             _refreshTokenRepository.Save(historyToken);

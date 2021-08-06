@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using AniBand.Auth.Services.Abstractions.Helpers;
-using AniBand.Auth.Services.Abstractions.Helpers.Generic;
 using AniBand.Auth.Services.Abstractions.Models;
+using AniBand.Core.Abstractions.Infrastructure.Helpers;
+using AniBand.Core.Abstractions.Infrastructure.Helpers.Generic;
 
 namespace AniBand.Auth.Services.Abstractions.Services
 {
