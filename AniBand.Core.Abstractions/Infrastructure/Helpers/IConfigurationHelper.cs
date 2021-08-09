@@ -9,5 +9,7 @@
         string Issuer { get; }
 
         string Audience { get; }
+        
+        string LogsFilePath { get; }
     }
 }

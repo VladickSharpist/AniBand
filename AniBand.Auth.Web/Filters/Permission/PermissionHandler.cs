@@ -5,7 +5,8 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace AniBand.Auth.Web.Filters.Permission
 {
-    public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
+    public class PermissionHandler 
+        : AuthorizationHandler<PermissionRequirement>
     {
         private const string ALL_PERMISSIONS = "*";
         

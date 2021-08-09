@@ -10,6 +10,7 @@ using AniBand.Auth.Web.Filters.Permission;
 using AniBand.Core.Abstractions.Infrastructure.Helpers;
 using AniBand.Core.Extensions;
 using AniBand.Core.Infrastructure.Helpers;
+using AniBand.Core.Infrastructure.Logger;
 using AniBand.DataAccess;
 using AniBand.DataAccess.Extensions;
 using AniBand.Domain.Models;
@@ -25,16 +26,21 @@ namespace AniBand.Auth.Web.Extensions
 {
     public static class ServiceCollectionExtension
     {
-        public static IServiceCollection AddAuthentication(this IServiceCollection services, IConfiguration conf)
+        public static IServiceCollection AddAuthentication(
+            this IServiceCollection services, 
+            IConfiguration conf)
             => services
                 .AddIdentity()
-                .AddIdentityConfiguration(conf)
+                .AddIdentityConfiguration()
                 .AddScoped<ITokenService, TokenService>();
 
-        public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration conf)
+        public static IServiceCollection AddInfrastructure(
+            this IServiceCollection services, 
+            IConfiguration conf)
             => services
                 .AddMapper()
-                .AddHelpers(conf);
+                .AddHelpers(conf)
+                .AddLoggers();
         
         public static IServiceCollection AddDatabase(this IServiceCollection services)
             => services
@@ -68,9 +74,7 @@ namespace AniBand.Auth.Web.Extensions
                 .AddEntityFrameworkStores<AniBandDbContext>()
                 .Services;
 
-        private static IServiceCollection AddIdentityConfiguration(
-            this IServiceCollection services, 
-            IConfiguration configuration)
+        private static IServiceCollection AddIdentityConfiguration(this IServiceCollection services)
             => services
                 .Configure<IdentityOptions>(options =>
                 {

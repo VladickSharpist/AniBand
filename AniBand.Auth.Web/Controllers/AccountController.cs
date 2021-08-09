@@ -11,6 +11,7 @@ using AniBand.Core.Abstractions.Infrastructure.Helpers.Generic;
 using AniBand.Core.Infrastructure.Helpers;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.Logging;
 
 namespace AniBand.Auth.Web.Controllers
 {
@@ -20,15 +21,19 @@ namespace AniBand.Auth.Web.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IAuthService _authService;
+        private readonly ILogger _logger;
 
         public AccountController(
             IMapper mapper,
-            IAuthService authService)
+            IAuthService authService, 
+            ILogger<AccountController> logger)
         {
             _mapper = mapper
                 ?? throw new NullReferenceException(nameof(mapper));
             _authService = authService
                 ?? throw new NullReferenceException(nameof(authService));
+            _logger = logger
+                ?? throw new NullReferenceException(nameof(logger));
         }
 
         [Permission(Permission.AdminPermission.AddVideo)]
@@ -52,9 +57,10 @@ namespace AniBand.Auth.Web.Controllers
             if (!result.IsEmpty)
             {
                 await HttpContext.SignInAsync(result.Data.ClaimsPrincipal);
+                _logger.Log(LogLevel.Information, "User login in");
                 return _mapper.Map<RefreshTokenVm>(result.Data);
             }
-
+            _logger.Log(LogLevel.Information, "User failed login");
             return Ok(result);
         }
 

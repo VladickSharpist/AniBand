@@ -8,7 +8,7 @@ namespace AniBand.Auth.Web.Filters.Permission
 {
     public class PermissionFilter 
         : Attribute, 
-        IAsyncAuthorizationFilter
+          IAsyncAuthorizationFilter
     {
         private readonly IAuthorizationService _authorizationService;
         private readonly string[] _permissions;

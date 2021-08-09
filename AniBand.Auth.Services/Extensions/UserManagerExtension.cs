@@ -11,11 +11,11 @@ namespace AniBand.Auth.Services.Extensions
         public static User GetById(
             this UserManager<User> manager,
             long id) 
-            => manager.Users.FirstOrDefault(u => u.Id == id);
+                => manager.Users.FirstOrDefault(u => u.Id == id);
         
         public static async Task<User> GetByIdAsync(
             this UserManager<User> manager,
             long id) 
-            => await manager.Users.FirstOrDefaultAsync(u => u.Id == id);
+                => await manager.Users.FirstOrDefaultAsync(u => u.Id == id);
     }
 }
