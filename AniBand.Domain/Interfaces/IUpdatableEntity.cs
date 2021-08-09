@@ -2,7 +2,8 @@
 
 namespace AniBand.Domain.Interfaces
 {
-    public interface IUpdatableEntity
+    public interface IUpdatableEntity 
+        : ICreatableEntity
     {
         public DateTime? UpdateDate { get; set; }
 
