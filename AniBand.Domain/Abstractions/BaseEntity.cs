@@ -4,8 +4,8 @@ using AniBand.Domain.Interfaces;
 namespace AniBand.Domain.Abstractions
 {
     public class BaseEntity 
-        : IUpdatableEntity , 
-        IEntity
+        : IUpdatableEntity, 
+          IEntity
     {
         public DateTime CreateDate { get; set; }
         

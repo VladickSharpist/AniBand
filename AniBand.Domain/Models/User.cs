@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Identity;
 namespace AniBand.Domain.Models
 {
     public class User
-        :IdentityUser<long>,
-         IEntity,
-         IUpdatableEntity
+        : IdentityUser<long>,
+          IEntity,
+          IUpdatableEntity
     {
         public DateTime RegistrationDate { get; set; }
 
