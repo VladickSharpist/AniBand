@@ -30,7 +30,8 @@ namespace AniBand.Auth.Services.Services
             IBaseReadWriteRepository<RefreshToken> refreshTokenRepository,
             UserManager<User> userManager, 
             IBaseReadonlyRepository<UserToken> userTokenRepository,
-            IUserSetter currentUserSetter, IConfigurationHelper configurationHelper)
+            IUserSetter currentUserSetter, 
+            IConfigurationHelper configurationHelper)
         {
             _refreshTokenRepository = refreshTokenRepository
                 ?? throw new NullReferenceException(nameof(refreshTokenRepository));
@@ -40,7 +41,8 @@ namespace AniBand.Auth.Services.Services
                 ?? throw new NullReferenceException(nameof(userTokenRepository));
             _currentUserSetter = currentUserSetter
                 ?? throw new NullReferenceException(nameof(currentUserSetter));
-            _configurationHelper = configurationHelper;
+            _configurationHelper = configurationHelper
+                ?? throw new NullReferenceException(nameof(configurationHelper));
         }
 
         public SigningCredentials GetSigningCredentials()
@@ -63,11 +65,13 @@ namespace AniBand.Auth.Services.Services
             var roles = await _userManager.GetRolesAsync(user);
             foreach (var role in roles)
             {
-                claims.Add(new Claim(CustomClaimTypes.Role, role));
+                claims.Add(
+                    new Claim(CustomClaimTypes.Role, role));
             }
 
             var permissions = (await _userManager.GetClaimsAsync(user))
-                .Where(c => c.Type == CustomClaimTypes.Permission)
+                .Where(c => 
+                    c.Type == CustomClaimTypes.Permission)
                 .ToList();
             claims.AddRange(permissions);
             return claims;
@@ -129,7 +133,8 @@ namespace AniBand.Auth.Services.Services
         public async Task<bool> RevokeTokenAsync(string token)
         {
             var userId = (await _userTokenRepository
-                .GetNoTrackingAsync(t => t.Value == token))
+                .GetNoTrackingAsync(t => 
+                        t.Value == token))
                     .FirstOrDefault()?
                     .UserId;
             if (!userId.HasValue)

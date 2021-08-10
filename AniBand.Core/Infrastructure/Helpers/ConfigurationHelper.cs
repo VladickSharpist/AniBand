@@ -21,6 +21,10 @@ namespace AniBand.Core.Infrastructure.Helpers
         public string Audience => _configuration
             .GetSection("JWTSettings:validAudience")
             .Value;
+
+        public string LogsFilePath => _configuration
+            .GetSection("PathToLogFiles:TextLogPath")
+            .Value;
         
         public ConfigurationHelper(IConfiguration configuration)
         {

@@ -20,12 +20,20 @@ namespace AniBand.Core.Infrastructure.Helpers.Generic
             Data = data;
         }
 
-        public HttpResult(T data, List<string> errors, HttpStatusCode statusCode) : base(errors, statusCode)
+        public HttpResult(
+            T data, 
+            List<string> errors, 
+            HttpStatusCode statusCode) 
+            : base(errors, statusCode)
         {
             Data = data;
         }
 
-        public HttpResult(T data, string error, HttpStatusCode statusCode) : base(error, statusCode)
+        public HttpResult(
+            T data, 
+            string error, 
+            HttpStatusCode statusCode) 
+            : base(error, statusCode)
         {
             Data = data;
         }

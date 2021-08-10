@@ -2,7 +2,8 @@
 
 namespace AniBand.Auth.Web.Filters.Permission
 {
-    public class PermissionRequirement : IAuthorizationRequirement
+    public class PermissionRequirement 
+        : IAuthorizationRequirement
     {
         public string[] Permissions { get; set; }
 

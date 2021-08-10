@@ -5,7 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Infrastructure" />
+      <Folder Include="Infrastructure\Logger\Logs" />
     </ItemGroup>
 
     <ItemGroup>
@@ -16,6 +16,9 @@
       <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.17" />
       <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="3.1.17" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.17" />
+      <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.17" />
+      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.17" />
+      <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.1.17" />
     </ItemGroup>
 
 </Project>

@@ -19,14 +19,18 @@ namespace AniBand.Core.Infrastructure.Helpers
             StatusCode = HttpStatusCode.OK;
         }
 
-        public HttpResult(string error, HttpStatusCode statusCode)
+        public HttpResult(
+            string error, 
+            HttpStatusCode statusCode)
         {
             Errors = new List<string>();
             Errors.Add(error);
             StatusCode = statusCode;
         }
         
-        public HttpResult(List<string> errors, HttpStatusCode statusCode)
+        public HttpResult(
+            List<string> errors, 
+            HttpStatusCode statusCode)
         {
             Errors = new List<string>(errors);
             StatusCode = statusCode;

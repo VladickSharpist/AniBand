@@ -5,13 +5,14 @@ namespace AniBand.Auth.Services.Services
 {
     public class CurrentUserAccessor
         : IUserAccessor, 
-        IUserSetter
+          IUserSetter
     {
         private User _user = default;
 
         public User User
         {
             get => _user;
+            
             set
             {
                 if (value != default)

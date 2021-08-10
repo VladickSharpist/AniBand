@@ -21,7 +21,9 @@ namespace AniBand.Auth.Services.Abstractions.Services
 
         string EncodeRefreshToken(RefreshTokenDto tokenDto);
 
-        void MoveToHistory(User user, RefreshTokenDto tokenDto);
+        void MoveToHistory(
+            User user, 
+            RefreshTokenDto tokenDto);
 
         Task<bool> RevokeTokenAsync(string token);
     }
