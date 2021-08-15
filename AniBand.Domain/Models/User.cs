@@ -21,5 +21,11 @@ namespace AniBand.Domain.Models
         public DateTime? UpdateDate { get; set; }
         
         public long? UpdatedById { get; set; }
+
+        public virtual List<Rate> Rates { get; set; }
+
+        public virtual List<Comment> Comments { get; set; }
+
+        public virtual List<View> Views { get; set; }
     }
 }

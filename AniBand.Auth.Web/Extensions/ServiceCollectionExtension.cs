@@ -9,11 +9,11 @@ using AniBand.Auth.Services.Services;
 using AniBand.Auth.Web.Filters.Permission;
 using AniBand.Core.Abstractions.Infrastructure.Helpers;
 using AniBand.Core.Extensions;
-using AniBand.Core.Infrastructure.Helpers;
-using AniBand.Core.Infrastructure.Logger;
 using AniBand.DataAccess;
 using AniBand.DataAccess.Extensions;
 using AniBand.Domain.Models;
+using AniBand.Video.Services.Abstractions.Extensions;
+using AniBand.Video.Services.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -40,7 +40,8 @@ namespace AniBand.Auth.Web.Extensions
             => services
                 .AddMapper()
                 .AddHelpers(conf)
-                .AddLoggers();
+                .AddLoggers()
+                .StorageConfiguration();
         
         public static IServiceCollection AddDatabase(this IServiceCollection services)
             => services
@@ -55,17 +56,19 @@ namespace AniBand.Auth.Web.Extensions
             => services
                 .AddDbContext<AniBandDbContext>(x =>
                     x.UseSqlServer(
-                        confHelper.ConnectionString));
+                        confHelper.ConnectionString),ServiceLifetime.Transient);
 
         public static IServiceCollection AddServices(this IServiceCollection services)
             => services
                 .AddUser()
-                .AddAuth();
+                .AddAuth()
+                .AddVideo();
         
         private static IServiceCollection AddMapper(this IServiceCollection services)
             => services
-                .AddWebMapper()
-                .AddServiceMapper();
+                .AddWebAuthMapper()
+                .AddAuthServiceMapper()
+                .AddVideoServiceMapper();
 
         private static IServiceCollection AddIdentity(this IServiceCollection services)
             => services
@@ -128,7 +131,7 @@ namespace AniBand.Auth.Web.Extensions
                 })
                 .Services;
 
-        private static IServiceCollection AddWebMapper(this IServiceCollection services)
+        private static IServiceCollection AddWebAuthMapper(this IServiceCollection services)
             => services
                 .AddAutoMapper(Assembly.GetExecutingAssembly());
 

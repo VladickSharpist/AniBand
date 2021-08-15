@@ -1,4 +1,5 @@
-﻿using AniBand.Core.Abstractions.Infrastructure.Helpers;
+﻿using System;
+using AniBand.Core.Abstractions.Infrastructure.Helpers;
 using Microsoft.Extensions.Configuration;
 
 namespace AniBand.Core.Infrastructure.Helpers
@@ -24,6 +25,15 @@ namespace AniBand.Core.Infrastructure.Helpers
 
         public string LogsFilePath => _configuration
             .GetSection("PathToLogFiles:TextLogPath")
+            .Value;
+
+        public double TokenExpireSeconds => Convert
+            .ToDouble(_configuration
+            .GetSection("JWTSettings:expiryInSeconds")
+            .Value);
+
+        public string LocalPathFileStorage => _configuration
+            .GetSection("PathToStoreFiles:LocalPath")
             .Value;
         
         public ConfigurationHelper(IConfiguration configuration)

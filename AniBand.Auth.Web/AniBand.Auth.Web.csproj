@@ -30,6 +30,7 @@
     <ProjectReference Include="..\AniBand.DataAccess\AniBand.DataAccess.csproj" />
     <ProjectReference Include="..\AniBand.Domain\AniBand.Domain.csproj" />
     <ProjectReference Include="..\AniBand.video.Services.Abstractions\AniBand.Video.Services.Abstractions.csproj" />
+    <ProjectReference Include="..\AniBand.Video.Services\AniBand.Video.Services.csproj" />
   </ItemGroup>
 
 

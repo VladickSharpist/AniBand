@@ -1,5 +1,8 @@
-﻿using AniBand.Core.Abstractions.Infrastructure.Helpers;
+﻿using System;
+using AniBand.Core.Abstractions.Infrastructure.Helpers;
+using AniBand.Core.Abstractions.Infrastructure.Storages;
 using AniBand.Core.Infrastructure.Helpers;
+using AniBand.Core.Infrastructure.Storages;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -26,5 +29,15 @@ namespace AniBand.Core.Extensions
                           .BuildServiceProvider()
                           .GetRequiredService<IConfigurationHelper>());
                 });
+
+        public static IServiceCollection StorageConfiguration(this IServiceCollection services)
+            => services
+                .AddLocalFileStorage(opt =>
+                    opt.UseLocal());
+
+        private static IServiceCollection AddLocalFileStorage(
+            this IServiceCollection services,
+            Func<IFileStorageBuilder,IServiceCollection> build)
+                => build(new FileStorageBuilder(services));
     }
 }

@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Expression.Encoder" Version="4.0.4276.4" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\AniBand.Auth.Web\AniBand.Auth.Web.csproj" />
+      <ProjectReference Include="..\AniBand.Video.Services\AniBand.Video.Services.csproj" />
+    </ItemGroup>
+
+</Project>

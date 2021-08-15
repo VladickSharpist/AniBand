@@ -85,7 +85,8 @@ namespace AniBand.Auth.Services.Services
                 issuer:_configurationHelper.Issuer,
                 audience: _configurationHelper.Audience,
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(5),
+                expires: DateTime.UtcNow.AddSeconds(
+                    _configurationHelper.TokenExpireSeconds),
                 signingCredentials: GetSigningCredentials()
             );
 
