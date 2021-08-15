@@ -53,6 +53,7 @@ namespace AniBand.Video.Services.Services
                     "Files count doesnt match Videos count", 
                     HttpStatusCode.UnprocessableEntity);
             }
+            
             foreach (var videoDto in videos)
             {
                 var season = (await _seasonReadRepository

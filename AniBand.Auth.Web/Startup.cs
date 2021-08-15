@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using AniBand.Auth.Web.Extensions;
+using AniBand.Web.Core.Extensions;
 using Microsoft.Extensions.Configuration;
 
 namespace AniBand.Auth.Web
@@ -23,7 +24,8 @@ namespace AniBand.Auth.Web
             services.AddServices();
             services.AddAuthentication(Configuration);
             services.AddDatabase();
-
+            services.AddWebAuthMapper();
+            
             services.AddHttpContextAccessor();
             services.AddControllers();
         }

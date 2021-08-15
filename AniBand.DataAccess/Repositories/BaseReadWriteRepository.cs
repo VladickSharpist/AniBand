@@ -91,7 +91,7 @@ namespace AniBand.DataAccess.Repositories
         public virtual async Task RemoveAsync(long id)
         {
             var model = await _dbSet.SingleOrDefaultAsync(x => x.Id == id);
-            RemoveAsync(model);
+            await RemoveAsync(model);
         }
     }
 }

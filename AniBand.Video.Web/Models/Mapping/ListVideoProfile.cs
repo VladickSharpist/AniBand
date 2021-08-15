@@ -8,9 +8,12 @@ namespace AniBand.Video.Web.Models.Mapping
     {
         public ListVideoProfile()
         {
-            CreateMap<ListVideoVM, List<VideoDto>>()
+            CreateMap<ListVideoVM, ListVideoDto>()
                 .ForMember(lvd => 
-                    lvd, opt =>
+                    lvd.VideosDto, opt =>
+                        opt.AllowNull())
+                .ForMember(lvd => 
+                    lvd.VideosDto, opt =>
                         opt.MapFrom(listVideoVm => 
                             MapVideoDto(listVideoVm)));
         }

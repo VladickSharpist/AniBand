@@ -7,9 +7,9 @@ namespace AniBand.Core.Infrastructure.Logger.FileLogger
 {
     public class FileLoggerProvider : ILoggerProvider
     {
-        private bool _disposed = false;
         private string _path;
         private List<FileLogger> _loggers;
+        private bool _disposed = false;
 
         public FileLoggerProvider(string path)
         {

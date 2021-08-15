@@ -1,6 +1,5 @@
-using AniBand.Auth.Web.Extensions;
 using AniBand.Video.Web.Extensions;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using AniBand.Web.Core.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -25,9 +24,8 @@ namespace AniBand.Video.Web
             services.AddDatabase();
             services.AddServices();
             services.AddAuthentication(Configuration);
-
-
             services.AddWebVideoMapper();
+
             services.AddControllers();
         }
 

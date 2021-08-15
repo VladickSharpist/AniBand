@@ -29,7 +29,8 @@ namespace AniBand.Video.Web.Controllers
         public async Task<ActionResult<IHttpResult>> AddVideo([FromForm] ListVideoVM model)
             =>Ok(await _videoService
                 .AddVideoAsync(
-                    _mapper.Map<List<VideoDto>>(model)));
+                    _mapper.Map<ListVideoDto>(model)
+                        .VideosDto));
         
 
         [HttpPost]

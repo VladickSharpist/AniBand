@@ -20,13 +20,16 @@ namespace AniBand.Video.Web.Models.Mapping
 
         private List<VideoDto> MapVideosDto(SeasonVm svm)
         {
-            if (svm.Videos == null && svm.Files == null)
+            if (svm.Videos == null 
+                && svm.Files == null)
             {
                 return new List<VideoDto>();
             }
             
-            if(svm.Videos != null && svm.Files == null 
-               || svm.Files != null && svm.Videos == null)
+            if(svm.Videos != null 
+               && svm.Files == null
+               || svm.Files != null 
+               && svm.Videos == null)
             {
                 return null;
             }

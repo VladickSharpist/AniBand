@@ -18,7 +18,9 @@ namespace AniBand.Core.Infrastructure.Storages
 
         public async void SaveFile(IFormFile file, string fileName)
         {
-            using (var fileStream = new FileStream(_filePath + $"\\{fileName}", FileMode.OpenOrCreate))
+            using (var fileStream = new FileStream(
+                _filePath + $"\\{fileName}", 
+                FileMode.OpenOrCreate))
             {
                 await file.CopyToAsync(fileStream);
             }

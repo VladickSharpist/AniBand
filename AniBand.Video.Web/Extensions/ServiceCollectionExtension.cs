@@ -6,6 +6,7 @@ namespace AniBand.Video.Web.Extensions
     public static class ServiceCollectionExtension
     {
         public static IServiceCollection AddWebVideoMapper(this IServiceCollection services)
-            => services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            => services
+                .AddAutoMapper(Assembly.GetExecutingAssembly());
     }
 }
