@@ -4,7 +4,8 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AniBand.DataAccess.Configurations
 {
-    public class ViewConfiguration : IEntityTypeConfiguration<View>
+    internal class ViewConfiguration 
+        : IEntityTypeConfiguration<View>
     {
         public void Configure(EntityTypeBuilder<View> builder)
         {

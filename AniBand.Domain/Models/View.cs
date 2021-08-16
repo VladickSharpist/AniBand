@@ -1,9 +1,9 @@
-﻿using AniBand.Domain.Abstractions;
+﻿using AniBand.Domain.Abstractions.Abstractions;
 
 namespace AniBand.Domain.Models
 {
     public class View
-        :BaseEntity     
+        : BaseEntity     
     {
         public long UserId { get; set; }
 

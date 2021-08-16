@@ -1,9 +1,9 @@
 ﻿using System;
-using AniBand.Domain.Interfaces;
+using AniBand.Domain.Abstractions.Interfaces;
 
-namespace AniBand.Domain.Abstractions
+namespace AniBand.Domain.Abstractions.Abstractions
 {
-    public class BaseEntity 
+    public abstract class BaseEntity 
         : IUpdatableEntity, 
           IEntity
     {

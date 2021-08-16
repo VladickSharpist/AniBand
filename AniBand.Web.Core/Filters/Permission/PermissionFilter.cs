@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace AniBand.Auth.Web.Filters.Permission
+namespace AniBand.Web.Core.Filters.Permission
 {
     public class PermissionFilter 
         : Attribute, 

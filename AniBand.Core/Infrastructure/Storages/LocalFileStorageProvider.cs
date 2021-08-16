@@ -4,15 +4,16 @@ using AniBand.Core.Abstractions.Infrastructure.Storages;
 
 namespace AniBand.Core.Infrastructure.Storages
 {
-    public class LocalFileStorageProvider : IFileStorageProvider
+    internal class LocalFileStorageProvider 
+        : IFileStorageProvider
     {
         private readonly IConfigurationHelper _helper;
-        private List<LocalFileStorage> _localStorages;
+        private IList<IFileStorage> _localStorages;
         private bool _disposed = false;
         public LocalFileStorageProvider(IConfigurationHelper helper)
         {
             _helper = helper;
-            _localStorages = new List<LocalFileStorage>();
+            _localStorages = new List<IFileStorage>();
         }
         
         protected virtual void Dispose(bool disposing)
@@ -35,7 +36,8 @@ namespace AniBand.Core.Infrastructure.Storages
 
         public IFileStorage CreateStorage()
         {
-            var localStorage = new LocalFileStorage(_helper.LocalPathFileStorage);
+            var localStorage = new LocalFileStorage(
+                _helper.LocalPathFileStorage);
             _localStorages.Add(localStorage);
             return localStorage;
         }

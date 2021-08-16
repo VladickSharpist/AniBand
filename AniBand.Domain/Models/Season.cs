@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using AniBand.Domain.Abstractions;
+using AniBand.Domain.Abstractions.Abstractions;
 
 namespace AniBand.Domain.Models
 {
@@ -16,6 +16,6 @@ namespace AniBand.Domain.Models
 
         public virtual Studio Studio { get; set; }
 
-        public virtual List<Video> Videos { get; set; }
+        public virtual ICollection<Video> Videos { get; set; }
     }
 }

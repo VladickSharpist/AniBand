@@ -3,7 +3,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 
-namespace AniBand.Auth.Web.Filters.Permission
+namespace AniBand.Web.Core.Filters.Permission
 {
     public class PermissionHandler 
         : AuthorizationHandler<PermissionRequirement>

@@ -8,4 +8,8 @@
     <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="3.1.17" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AniBand.Domain.Abstractions\AniBand.Domain.Abstractions.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using AniBand.Auth.Services.Abstractions.Services;
-using AniBand.Domain.Interfaces;
+using AniBand.Domain.Abstractions.Interfaces;
 using AniBand.Domain.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -12,7 +12,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AniBand.DataAccess
 {
-    public class AniBandDbContext : IdentityDbContext<
+    public class AniBandDbContext 
+        : IdentityDbContext<
         User, 
         IdentityRole<long>, 
         long,

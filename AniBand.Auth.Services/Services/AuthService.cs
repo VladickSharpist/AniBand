@@ -19,7 +19,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace AniBand.Auth.Services.Services
 {
-    public class AuthService : IAuthService
+    internal class AuthService : IAuthService
     {
         private readonly IMapper _mapper;
         private readonly ITokenService _tokenService;

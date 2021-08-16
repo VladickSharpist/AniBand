@@ -1,18 +1,17 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AniBand.Core.Abstractions.Infrastructure.Helpers;
 using AniBand.Video.Services.Abstractions.Models;
 using AniBand.Video.Services.Abstractions.Services;
 using AniBand.Video.Web.Models;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AniBand.Video.Web.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class VideoController : ControllerBase
+    public class VideoController 
+        : ControllerBase
     {
         private readonly IVideoService _videoService;
         private readonly IMapper _mapper;

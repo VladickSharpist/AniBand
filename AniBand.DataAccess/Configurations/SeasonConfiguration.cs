@@ -4,7 +4,8 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AniBand.DataAccess.Configurations
 {
-    public class SeasonConfiguration : IEntityTypeConfiguration<Season>
+    internal class SeasonConfiguration 
+        : IEntityTypeConfiguration<Season>
     {
         public void Configure(EntityTypeBuilder<Season> builder)
             => builder

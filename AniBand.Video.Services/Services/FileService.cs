@@ -1,12 +1,14 @@
-﻿using AniBand.Core.Abstractions.Infrastructure.Storages;
+﻿using System;
+using System.IO;
+using System.Security.Cryptography;
+using AniBand.Core.Abstractions.Infrastructure.Storages;
 using AniBand.Video.Services.Abstractions.Services;
 using MediaToolkit;
 using MediaToolkit.Model;
-using Microsoft.AspNetCore.Http;
 
 namespace AniBand.Video.Services.Services
 {
-    public class FileService
+    internal class FileService
         : IFileService
     {
         private readonly IFileStorage _fileStorage;
@@ -16,9 +18,9 @@ namespace AniBand.Video.Services.Services
             _fileStorage = storageProvider.CreateStorage();
         }
 
-        public string StoreFileGetUrl(IFormFile file, string fileName)
+        public string StoreFileGetUrl(Stream file, string fileName)
         {
-            _fileStorage.SaveFile(file, fileName);
+            _fileStorage.SaveFileAsync(file, fileName);
             return _fileStorage.FilePath + $"\\{fileName}";
         }
 
@@ -31,6 +33,21 @@ namespace AniBand.Video.Services.Services
             }
 
             return video.Metadata.Duration.TotalSeconds;
+        }
+
+        public string GetFileHash(string url)
+        {
+            using (var md5 = MD5.Create())
+            {
+                using (var stream = File.OpenRead(url))
+                {
+                    var hash = md5.ComputeHash(stream);
+                    return BitConverter
+                        .ToString(hash)
+                        .Replace("-", string.Empty)
+                        .ToLowerInvariant();
+                }
+            }
         }
     }
 }

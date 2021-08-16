@@ -1,4 +1,4 @@
-﻿using AniBand.Domain.Interfaces;
+﻿using AniBand.Domain.Abstractions.Interfaces;
 using Microsoft.AspNetCore.Identity;
 
 namespace AniBand.Domain.Models

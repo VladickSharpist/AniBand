@@ -1,25 +1,20 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using AniBand.DataAccess.Abstractions.Repositories;
-using AniBand.Domain.Interfaces;
+using AniBand.Domain.Abstractions.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace AniBand.DataAccess.Repositories
 {
-    public class BaseReadWriteRepository<TEntity>
-        : IBaseReadWriteRepository<TEntity> 
+    internal class BaseReadWriteRepository<TEntity>
+        : BaseReadonlyRepository<TEntity>, 
+          IBaseReadWriteRepository<TEntity> 
         where TEntity : class, IEntity
     {
-        protected AniBandDbContext _aniBandDbContext;
-        protected DbSet<TEntity> _dbSet;
-
-        public BaseReadWriteRepository(AniBandDbContext aniBandDbContext)
+        public BaseReadWriteRepository(AniBandDbContext aniBandDbContext) 
+            : base(aniBandDbContext)
         {
-            this._aniBandDbContext = aniBandDbContext 
-                                    ?? throw new NullReferenceException(nameof(aniBandDbContext));
-            _dbSet = aniBandDbContext.Set<TEntity>();
         }
 
         public virtual void Save(TEntity model)

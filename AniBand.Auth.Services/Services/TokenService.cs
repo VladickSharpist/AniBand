@@ -18,7 +18,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace AniBand.Auth.Services.Services
 {
-    public class TokenService : ITokenService
+    internal class TokenService : ITokenService
     {
         private readonly IBaseReadWriteRepository<RefreshToken> _refreshTokenRepository;
         private readonly IBaseReadonlyRepository<UserToken> _userTokenRepository;

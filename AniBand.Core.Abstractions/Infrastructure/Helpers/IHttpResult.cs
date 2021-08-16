@@ -7,7 +7,7 @@ namespace AniBand.Core.Abstractions.Infrastructure.Helpers
     {
         HttpStatusCode StatusCode { get; set; }
         
-        List<string> Errors { get; set; }
+        ICollection<string> Errors { get; set; }
         
         bool IsSuccessful { get; }
         

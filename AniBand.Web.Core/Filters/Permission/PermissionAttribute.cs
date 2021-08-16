@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AniBand.Auth.Web.Filters.Permission
+namespace AniBand.Web.Core.Filters.Permission
 {
     public class PermissionAttribute : TypeFilterAttribute
     {

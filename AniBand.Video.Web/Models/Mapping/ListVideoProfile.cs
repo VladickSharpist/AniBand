@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using AniBand.Video.Services.Abstractions.Models;
 using AutoMapper;
 
@@ -18,23 +19,22 @@ namespace AniBand.Video.Web.Models.Mapping
                             MapVideoDto(listVideoVm)));
         }
 
-        private List<VideoDto> MapVideoDto(ListVideoVM listVideoVm)
+        private IEnumerable<VideoDto> MapVideoDto(ListVideoVM listVideoVm)
         {
             if (listVideoVm.Files.Count == listVideoVm.Videos.Count)
             {
-                var list = new List<VideoDto>();
-                for (var  i = 0; i < listVideoVm.Videos.Count; i++)
-                {
-                    list.Add(new VideoDto()
+                var videosDtoList = listVideoVm
+                    .Videos
+                    .Select((element, index) => 
+                    new VideoDto()
                     {
-                        Description = listVideoVm.Videos[i].Description,
-                        Title = listVideoVm.Videos[i].Title,
-                        SeasonId = listVideoVm.Videos[i].SeasonId,
-                        VideoFile = listVideoVm.Files[i]
+                    Title = element.Title,
+                    Description = element.Description, 
+                    SeasonId = element.SeasonId,
+                    VideoFile = listVideoVm.Files[index].OpenReadStream()
                     });
-                }
-
-                return list;
+                
+                return videosDtoList;
             }
 
             return null;

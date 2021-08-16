@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using AniBand.Domain.Abstractions;
+using AniBand.Domain.Abstractions.Abstractions;
 
 namespace AniBand.Domain.Models
 {
@@ -16,12 +16,14 @@ namespace AniBand.Domain.Models
 
         public long SeasonId { get; set; }
 
+        public string VideoFileHash { get; set; }
+
         public virtual Season Season { get; set; }
 
-        public virtual List<View> Views { get; set; }
+        public virtual ICollection<View> Views { get; set; }
 
-        public virtual List<Comment> Comments { get; set; }
+        public virtual ICollection<Comment> Comments { get; set; }
 
-        public virtual List<Rate> Rates { get; set; }
+        public virtual ICollection<Rate> Rates { get; set; }
     }
 }

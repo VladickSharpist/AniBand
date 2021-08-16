@@ -4,7 +4,8 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AniBand.DataAccess.Configurations
 {
-    public class RateConfiguration : IEntityTypeConfiguration<Rate>
+    internal class RateConfiguration 
+        : IEntityTypeConfiguration<Rate>
     {
         public void Configure(EntityTypeBuilder<Rate> builder)
         {

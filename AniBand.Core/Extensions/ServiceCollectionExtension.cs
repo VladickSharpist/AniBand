@@ -30,14 +30,14 @@ namespace AniBand.Core.Extensions
                           .GetRequiredService<IConfigurationHelper>());
                 });
 
-        public static IServiceCollection StorageConfiguration(this IServiceCollection services)
+        public static IServiceCollection AddStorageConfiguration(this IServiceCollection services)
             => services
                 .AddLocalFileStorage(opt =>
                     opt.UseLocal());
 
         private static IServiceCollection AddLocalFileStorage(
             this IServiceCollection services,
-            Func<IFileStorageBuilder,IServiceCollection> build)
-                => build(new FileStorageBuilder(services));
+            Func<IFileStorageBuilder, IServiceCollection> build)
+            => build(new FileStorageBuilder(services));
     }
 }

@@ -3,7 +3,8 @@ using Microsoft.EntityFrameworkCore.Storage;
 
 namespace AniBand.DataAccess.Abstractions.Repositories
 {
-    public interface IBaseReadWriteRepository<TEntity>
+    public interface IBaseReadWriteRepository<TEntity> 
+        : IBaseReadonlyRepository<TEntity>
     {
         void Save(TEntity model);
 

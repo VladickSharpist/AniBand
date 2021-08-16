@@ -1,5 +1,5 @@
 ﻿using System;
-using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace AniBand.Core.Abstractions.Infrastructure.Storages
 {
@@ -7,7 +7,7 @@ namespace AniBand.Core.Abstractions.Infrastructure.Storages
     {
         public string FilePath { get; }
         
-        void SaveFile(IFormFile file, string fileName);
+        void SaveFileAsync(Stream file, string fileName);
         
         IDisposable BeginScope<TState>(TState state);
     }

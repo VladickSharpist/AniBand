@@ -3,7 +3,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace AniBand.Core.Infrastructure.Storages
 {
-    public class FileStorageBuilder : IFileStorageBuilder
+    internal class FileStorageBuilder 
+        : IFileStorageBuilder
     {
         public FileStorageBuilder(IServiceCollection services)
         {
@@ -14,6 +15,6 @@ namespace AniBand.Core.Infrastructure.Storages
 
         public IServiceCollection UseLocal()
             => Services
-                .AddScoped<IFileStorageProvider,LocalFileStorageProvider>();
+                .AddScoped<IFileStorageProvider, LocalFileStorageProvider>();
     }
 }

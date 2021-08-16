@@ -4,7 +4,8 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AniBand.DataAccess.Configurations
 {
-    public class VideoConfiguration : IEntityTypeConfiguration<Video>
+    internal class VideoConfiguration 
+        : IEntityTypeConfiguration<Video>
     {
         public void Configure(EntityTypeBuilder<Video> builder)
             => builder

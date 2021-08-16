@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace AniBand.Auth.Web.Filters.Permission
+namespace AniBand.Web.Core.Filters.Permission
 {
     public class PermissionRequirement 
         : IAuthorizationRequirement

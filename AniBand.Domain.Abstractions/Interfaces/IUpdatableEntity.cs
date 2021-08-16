@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AniBand.Domain.Interfaces
+namespace AniBand.Domain.Abstractions.Interfaces
 {
     public interface IUpdatableEntity 
         : ICreatableEntity

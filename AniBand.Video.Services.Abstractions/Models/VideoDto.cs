@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.IO;
 
 namespace AniBand.Video.Services.Abstractions.Models
 {
@@ -6,7 +6,7 @@ namespace AniBand.Video.Services.Abstractions.Models
     {
         public string Title { get; set; }
 
-        public IFormFile VideoFile { get; set; }
+        public Stream VideoFile { get; set; }
 
         public string Description { get; set; }
 

@@ -1,4 +1,5 @@
 ﻿using AniBand.Domain.Abstractions;
+using AniBand.Domain.Abstractions.Abstractions;
 
 namespace AniBand.Domain.Models
 {

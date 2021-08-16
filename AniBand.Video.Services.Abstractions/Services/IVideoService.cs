@@ -7,7 +7,7 @@ namespace AniBand.Video.Services.Abstractions.Services
 {
     public interface IVideoService
     {
-        Task<IHttpResult> AddVideoAsync(List<VideoDto> videos);
+        Task<IHttpResult> AddVideoAsync(IEnumerable<VideoDto> videos);
         
         Task<IHttpResult> AddSeasonAsync(SeasonDto season);
     }

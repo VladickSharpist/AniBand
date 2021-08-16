@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace AniBand.Video.Services.Abstractions.Models
 {
@@ -9,7 +9,7 @@ namespace AniBand.Video.Services.Abstractions.Models
 
         public string Description { get; set; }
 
-        public IFormFile Image { get; set; }
+        public Stream Image { get; set; }
 
         public long StudioId { get; set; }
 

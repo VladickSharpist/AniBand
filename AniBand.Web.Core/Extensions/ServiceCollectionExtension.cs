@@ -2,10 +2,7 @@
 using System.Text;
 using System.Threading.Tasks;
 using AniBand.Auth.Services.Abstractions.Extensions;
-using AniBand.Auth.Services.Abstractions.Services;
 using AniBand.Auth.Services.Extensions;
-using AniBand.Auth.Services.Services;
-using AniBand.Auth.Web.Filters.Permission;
 using AniBand.Core.Abstractions.Infrastructure.Helpers;
 using AniBand.Core.Extensions;
 using AniBand.DataAccess;
@@ -13,6 +10,7 @@ using AniBand.DataAccess.Extensions;
 using AniBand.Domain.Models;
 using AniBand.Video.Services.Abstractions.Extensions;
 using AniBand.Video.Services.Extensions;
+using AniBand.Web.Core.Filters.Permission;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -26,12 +24,12 @@ namespace AniBand.Web.Core.Extensions
     public static class ServiceCollectionExtension
     {
         public static IServiceCollection AddAuthentication(
-            this IServiceCollection services, 
+            this IServiceCollection services,
             IConfiguration conf)
             => services
                 .AddIdentity()
                 .AddIdentityConfiguration()
-                .AddScoped<ITokenService, TokenService>();
+                .AddAuthenticateServices();
 
         public static IServiceCollection AddInfrastructure(
             this IServiceCollection services, 
@@ -40,7 +38,7 @@ namespace AniBand.Web.Core.Extensions
                 .AddMapper()
                 .AddHelpers(conf)
                 .AddLoggers()
-                .StorageConfiguration();
+                .AddStorageConfiguration();
         
         public static IServiceCollection AddDatabase(this IServiceCollection services)
             => services
@@ -55,7 +53,7 @@ namespace AniBand.Web.Core.Extensions
             => services
                 .AddDbContext<AniBandDbContext>(x =>
                     x.UseSqlServer(
-                        confHelper.ConnectionString),ServiceLifetime.Transient);
+                        confHelper.ConnectionString), ServiceLifetime.Transient);
 
         public static IServiceCollection AddServices(this IServiceCollection services)
             => services

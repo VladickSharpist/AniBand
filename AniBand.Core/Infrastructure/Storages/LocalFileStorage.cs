@@ -1,11 +1,11 @@
 ﻿using System;
 using System.IO;
 using AniBand.Core.Abstractions.Infrastructure.Storages;
-using Microsoft.AspNetCore.Http;
 
 namespace AniBand.Core.Infrastructure.Storages
 {
-    public class LocalFileStorage : IFileStorage
+    internal class LocalFileStorage 
+        : IFileStorage
     {
         private string _filePath;
 
@@ -16,7 +16,7 @@ namespace AniBand.Core.Infrastructure.Storages
 
         public string FilePath => _filePath;
 
-        public async void SaveFile(IFormFile file, string fileName)
+        public async void SaveFileAsync(Stream file, string fileName)
         {
             using (var fileStream = new FileStream(
                 _filePath + $"\\{fileName}", 

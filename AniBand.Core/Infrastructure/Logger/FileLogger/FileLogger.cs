@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 
 namespace AniBand.Core.Infrastructure.Logger.FileLogger
 {
-    public class FileLogger : ILogger
+    internal class FileLogger : ILogger
     {
         private string _filePath;
         private static object _lock = new object();
