@@ -11,5 +11,9 @@
         string Audience { get; }
         
         string LogsFilePath { get; }
+        
+        double TokenExpireSeconds { get; }
+        
+        string LocalPathFileStorage { get; }
     }
 }

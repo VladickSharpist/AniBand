@@ -4,12 +4,12 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AniBand.DataAccess.Abstractions.Repositories;
-using AniBand.Domain.Interfaces;
+using AniBand.Domain.Abstractions.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace AniBand.DataAccess.Repositories
 {
-    public class BaseReadonlyRepository<TEntity>
+    internal class BaseReadonlyRepository<TEntity>
         : IBaseReadonlyRepository<TEntity> 
         where TEntity : class, IEntity
     {

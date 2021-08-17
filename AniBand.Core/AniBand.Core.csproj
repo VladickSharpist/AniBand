@@ -5,10 +5,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Infrastructure\Logger\Logs" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\AniBand.Core.Abstractions\AniBand.Core.Abstractions.csproj" />
     </ItemGroup>
 

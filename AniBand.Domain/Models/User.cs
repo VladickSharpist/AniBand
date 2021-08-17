@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using AniBand.Domain.Interfaces;
+using AniBand.Domain.Abstractions.Interfaces;
 using Microsoft.AspNetCore.Identity;
 
 namespace AniBand.Domain.Models
@@ -12,7 +12,7 @@ namespace AniBand.Domain.Models
     {
         public DateTime RegistrationDate { get; set; }
 
-        public virtual List<RefreshToken> RefreshTokensHistory { get; set; }
+        public virtual ICollection<RefreshToken> RefreshTokensHistory { get; set; }
         
         public DateTime CreateDate { get; set; }
         
@@ -21,5 +21,11 @@ namespace AniBand.Domain.Models
         public DateTime? UpdateDate { get; set; }
         
         public long? UpdatedById { get; set; }
+
+        public virtual ICollection<Rate> Rates { get; set; }
+
+        public virtual ICollection<Comment> Comments { get; set; }
+
+        public virtual ICollection<View> Views { get; set; }
     }
 }

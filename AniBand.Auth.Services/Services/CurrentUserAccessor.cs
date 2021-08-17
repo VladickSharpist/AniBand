@@ -3,7 +3,7 @@ using AniBand.Domain.Models;
 
 namespace AniBand.Auth.Services.Services
 {
-    public class CurrentUserAccessor
+    internal class CurrentUserAccessor
         : IUserAccessor, 
           IUserSetter
     {

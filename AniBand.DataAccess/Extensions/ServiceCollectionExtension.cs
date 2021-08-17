@@ -12,6 +12,16 @@ namespace AniBand.DataAccess.Extensions
                 .AddScoped<IBaseReadWriteRepository<RefreshToken>,
                     BaseReadWriteRepository<RefreshToken>>()
                 .AddScoped<IBaseReadonlyRepository<UserToken>,
-                    BaseReadonlyRepository<UserToken>>();
+                    BaseReadonlyRepository<UserToken>>()
+                .AddScoped<IBaseReadonlyRepository<Season>,
+                BaseReadonlyRepository<Season>>()
+                .AddScoped<IBaseReadWriteRepository<Video>,
+                    BaseReadWriteRepository<Video>>()
+                .AddScoped<IBaseReadonlyRepository<Video>,
+                    BaseReadonlyRepository<Video>>()
+                .AddScoped<IBaseReadWriteRepository<Season>,
+                    BaseReadWriteRepository<Season>>()
+                .AddScoped<IBaseReadonlyRepository<Studio>,
+                    BaseReadonlyRepository<Studio>>();
     }
 }

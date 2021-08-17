@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using AniBand.Auth.Services.Abstractions.Services;
-using AniBand.Domain.Interfaces;
+using AniBand.Domain.Abstractions.Interfaces;
 using AniBand.Domain.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -12,7 +12,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AniBand.DataAccess
 {
-    public class AniBandDbContext : IdentityDbContext<
+    public class AniBandDbContext 
+        : IdentityDbContext<
         User, 
         IdentityRole<long>, 
         long,
@@ -36,6 +37,12 @@ namespace AniBand.DataAccess
         }
 
         public DbSet<RefreshToken> RefreshTokensHistory { get; set; }
+        public DbSet<Studio> Studios { get; set; }
+        public DbSet<Season> Seasons { get; set; }
+        public DbSet<Video> Videos { get; set; }
+        public DbSet<Rate> Rates { get; set; }
+        public DbSet<Comment> Comments { get; set; }
+        public DbSet<View> Views { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

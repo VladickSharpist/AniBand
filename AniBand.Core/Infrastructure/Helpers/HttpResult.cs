@@ -9,7 +9,7 @@ namespace AniBand.Core.Infrastructure.Helpers
     {
         public HttpStatusCode StatusCode { get; set; }
 
-        public List<string> Errors { get; set; }
+        public ICollection<string> Errors { get; set; }
 
         public bool IsSuccessful => (Errors == null || !Errors.Any()) 
                                     && StatusCode == HttpStatusCode.OK;

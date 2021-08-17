@@ -18,7 +18,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace AniBand.Auth.Services.Services
 {
-    public class TokenService : ITokenService
+    internal class TokenService : ITokenService
     {
         private readonly IBaseReadWriteRepository<RefreshToken> _refreshTokenRepository;
         private readonly IBaseReadonlyRepository<UserToken> _userTokenRepository;
@@ -85,7 +85,8 @@ namespace AniBand.Auth.Services.Services
                 issuer:_configurationHelper.Issuer,
                 audience: _configurationHelper.Audience,
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(5),
+                expires: DateTime.UtcNow.AddSeconds(
+                    _configurationHelper.TokenExpireSeconds),
                 signingCredentials: GetSigningCredentials()
             );
 

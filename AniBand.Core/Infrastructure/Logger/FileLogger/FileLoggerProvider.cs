@@ -1,20 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 
 namespace AniBand.Core.Infrastructure.Logger.FileLogger
 {
-    public class FileLoggerProvider : ILoggerProvider
+    internal class FileLoggerProvider : ILoggerProvider
     {
-        private bool _disposed = false;
         private string _path;
-        private List<FileLogger> _loggers;
+        private IList<ILogger> _loggers;
+        private bool _disposed = false;
 
         public FileLoggerProvider(string path)
         {
             _path = path;
-            _loggers = new List<FileLogger>();
+            _loggers = new List<ILogger>();
         }
 
         protected virtual void Dispose(bool disposing)
