@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using AniBand.DataAccess.Abstractions.Repositories;
+using AniBand.DataAccess.Abstractions.Repositories.Generic;
 using AniBand.Domain.Abstractions.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,9 +16,9 @@ namespace AniBand.DataAccess.Repositories
         protected AniBandDbContext _aniBandDbContext;
         protected DbSet<TEntity> _dbSet;
 
-        public BaseReadonlyRepository(AniBandDbContext aniBandDbContext)
+        public BaseReadonlyRepository(DbContext aniBandDbContext)
         {
-            _aniBandDbContext = aniBandDbContext 
+            _aniBandDbContext = aniBandDbContext as AniBandDbContext
                 ?? throw new NullReferenceException(nameof(aniBandDbContext));
             _dbSet = aniBandDbContext.Set<TEntity>();
         }

@@ -18,29 +18,21 @@ namespace AniBand.Video.Services.Services
     internal class VideoService
         : IVideoService
     {
-        private readonly IBaseReadonlyRepository<Studio> _studioRepository;
-        private readonly IBaseReadWriteRepository<Season> _seasonRepository;
-        private readonly IBaseReadWriteRepository<Episode> _videoRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IFileService _fileService;
 
         public VideoService(
-            IBaseReadWriteRepository<Episode> videoRepository,
             IMapper mapper,
-            IFileService fileService, 
-            IBaseReadWriteRepository<Season> seasonRepository, 
-            IBaseReadonlyRepository<Studio> studioRepository)
+            IFileService fileService,
+            IUnitOfWork unitOfWork)
         {
-            _videoRepository = videoRepository
-                ?? throw new NullReferenceException(nameof(videoRepository));
             _mapper = mapper
                 ?? throw new NullReferenceException(nameof(mapper));
             _fileService = fileService
                 ?? throw new NullReferenceException(nameof(fileService));
-            _seasonRepository = seasonRepository
-                ?? throw new NullReferenceException(nameof(seasonRepository));
-            _studioRepository = studioRepository
-                ?? throw new NullReferenceException(nameof(studioRepository));
+            _unitOfWork = unitOfWork
+                ?? throw new NullReferenceException(nameof(unitOfWork));
         }
 
         public async Task<IHttpResult> AddVideoAsync(IEnumerable<VideoDto> videos)
@@ -54,7 +46,8 @@ namespace AniBand.Video.Services.Services
             
             foreach (var videoDto in videos)
             {
-                var season = (await _seasonRepository
+                var season = (await _unitOfWork
+                        .GetReadonlyRepository<Season>()
                         .GetNoTrackingAsync(v =>
                             v.Id == videoDto.SeasonId))
                         .SingleOrDefault();
@@ -67,7 +60,9 @@ namespace AniBand.Video.Services.Services
                 }
 
                 var video = _mapper.Map<Episode>(videoDto);
-                await _videoRepository.SaveAsync(video);
+                await _unitOfWork
+                    .GetReadWriteRepository<Episode>()
+                    .SaveAsync(video);
                 
                 var fileName = season.Id + "-" + video.Id;
                 try
@@ -81,13 +76,17 @@ namespace AniBand.Video.Services.Services
                 }
                 catch (Exception e)
                 {
-                    await _videoRepository.RemoveAsync(video);
+                    await _unitOfWork
+                        .GetReadWriteRepository<Episode>()
+                        .RemoveAsync(video);
                     return new HttpResult(
                         e.Message,  
                         HttpStatusCode.BadRequest);
                 }
                 
-                await _videoRepository.SaveAsync(video);
+                await _unitOfWork
+                    .GetReadWriteRepository<Episode>()
+                    .SaveAsync(video);
             }
             
             return new HttpResult();
@@ -102,13 +101,16 @@ namespace AniBand.Video.Services.Services
                     HttpStatusCode.UnprocessableEntity);
             }
             
-            var studio = (await _studioRepository
+            var studio = (await _unitOfWork
+                    .GetReadonlyRepository<Studio>()
                     .GetNoTrackingAsync(s =>
                         s.Id == seasonDto.StudioId))
                 .SingleOrDefault();
             
             var season = _mapper.Map<Season>(seasonDto);
-            await _seasonRepository.SaveAsync(season);
+            await _unitOfWork
+                .GetReadWriteRepository<Season>()
+                .SaveAsync(season);
             
             if (seasonDto.VideosDto.Count > 0)
             {
@@ -118,7 +120,9 @@ namespace AniBand.Video.Services.Services
                 var result = await AddVideoAsync(seasonDto.VideosDto);
                 if (!result.IsSuccessful)
                 {
-                    await _seasonRepository.RemoveAsync(season);
+                    await _unitOfWork
+                        .GetReadWriteRepository<Season>()
+                        .RemoveAsync(season);
                     return result;
                 }
             }
@@ -130,7 +134,9 @@ namespace AniBand.Video.Services.Services
             season.ImageUrl = _fileService
                 .StoreFileGetUrl(seasonDto.Image, imageFileName);
             
-            await _seasonRepository.SaveAsync(season);
+            await _unitOfWork
+                .GetReadWriteRepository<Season>()
+                .SaveAsync(season);
             
             return new HttpResult();
         }
