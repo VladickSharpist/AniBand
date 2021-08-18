@@ -16,7 +16,11 @@ namespace AniBand.Video.Web.Models.Mapping
                 .ForMember(sdt =>
                     sdt.VideosDto, opt =>
                         opt.MapFrom(svm => 
-                            MapVideosDto(svm)));
+                            MapVideosDto(svm)))
+                .ForMember(sdt => 
+                    sdt.Image, opt => 
+                        opt.MapFrom(svm => 
+                            svm.Image.OpenReadStream()));
         }
 
         private IEnumerable<VideoDto> MapVideosDto(SeasonVm svm)

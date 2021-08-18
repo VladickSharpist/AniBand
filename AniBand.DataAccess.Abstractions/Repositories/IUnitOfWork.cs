@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using AniBand.DataAccess.Abstractions.Repositories.Generic;
 using AniBand.Domain.Abstractions.Interfaces;
 
+using IDbTransaction = AniBand.DataAccess.Abstractions.Models.IDbTransaction;
+
 namespace AniBand.DataAccess.Abstractions.Repositories
 {
     public interface IUnitOfWork : IDisposable
@@ -19,19 +21,11 @@ namespace AniBand.DataAccess.Abstractions.Repositories
             where TEntity : class, IEntity
             where TIRepository : class, IBaseReadonlyRepository<TEntity>;
 
-        void BeginTransaction(
+        IDbTransaction BeginTransaction(
             IsolationLevel level = IsolationLevel.ReadUncommitted);
 
-        Task BeginTransactionAsync(
+        Task<IDbTransaction> BeginTransactionAsync(
             IsolationLevel level = IsolationLevel.ReadUncommitted);
-
-        void RollBack();
-
-        Task RollBackAsync();
-
-        void Commit();
-
-        Task CommitAsync();
         
         int SaveChanges();
         

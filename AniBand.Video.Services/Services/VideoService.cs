@@ -35,7 +35,8 @@ namespace AniBand.Video.Services.Services
                 ?? throw new NullReferenceException(nameof(unitOfWork));
         }
 
-        public async Task<IHttpResult> AddVideoAsync(IEnumerable<VideoDto> videos)
+        public async Task<IHttpResult> AddVideosAsync(
+            IEnumerable<VideoDto> videos)
         {
             if (videos == null)
             {
@@ -43,52 +44,32 @@ namespace AniBand.Video.Services.Services
                     "Files count doesnt match Videos count", 
                     HttpStatusCode.UnprocessableEntity);
             }
-            
-            foreach (var videoDto in videos)
+
+            using (var transaction = await _unitOfWork.BeginTransactionAsync())
             {
-                var season = (await _unitOfWork
-                        .GetReadonlyRepository<Season>()
-                        .GetNoTrackingAsync(v =>
-                            v.Id == videoDto.SeasonId))
-                        .SingleOrDefault();
-
-                if (season == null)
-                {
-                    return new HttpResult(
-                        "No such season", 
-                        HttpStatusCode.BadRequest);
-                }
-
-                var video = _mapper.Map<Episode>(videoDto);
-                await _unitOfWork
-                    .GetReadWriteRepository<Episode>()
-                    .SaveAsync(video);
-                
-                var fileName = season.Id + "-" + video.Id;
                 try
                 {
-                    video.Url = _fileService
-                        .StoreFileGetUrl(videoDto.VideoFile, fileName);
-                    video.DurationInSeconds = _fileService
-                        .GetVideoDuration(video.Url);
-                    video.VideoFileHash = _fileService
-                        .GetFileHash(video.Url);
+                    foreach (var videoDto in videos)
+                    {
+                        var result = await SaveVideoAsync(videoDto);
+                        if (!result.IsSuccessful)
+                        {
+                            await transaction.RollBackAsync();
+                            return result;
+                        }
+                    }
+                    
+                    await transaction.CommitAsync();
                 }
                 catch (Exception e)
                 {
-                    await _unitOfWork
-                        .GetReadWriteRepository<Episode>()
-                        .RemoveAsync(video);
+                    await transaction.RollBackAsync();
                     return new HttpResult(
-                        e.Message,  
-                        HttpStatusCode.BadRequest);
+                        e.Message, 
+                        HttpStatusCode.UnprocessableEntity);
                 }
-                
-                await _unitOfWork
-                    .GetReadWriteRepository<Episode>()
-                    .SaveAsync(video);
             }
-            
+
             return new HttpResult();
         }
 
@@ -106,38 +87,98 @@ namespace AniBand.Video.Services.Services
                     .GetNoTrackingAsync(s =>
                         s.Id == seasonDto.StudioId))
                 .SingleOrDefault();
-            
-            var season = _mapper.Map<Season>(seasonDto);
-            await _unitOfWork
-                .GetReadWriteRepository<Season>()
-                .SaveAsync(season);
-            
-            if (seasonDto.VideosDto.Count > 0)
+
+            using (var transaction = await _unitOfWork.BeginTransactionAsync())
             {
-                seasonDto.VideosDto
-                    .ForEach(v => 
-                        v.SeasonId = season.Id);
-                var result = await AddVideoAsync(seasonDto.VideosDto);
-                if (!result.IsSuccessful)
+                try
                 {
+                    var season = _mapper.Map<Season>(seasonDto);
                     await _unitOfWork
                         .GetReadWriteRepository<Season>()
-                        .RemoveAsync(season);
-                    return result;
+                        .SaveAsync(season);
+            
+                    if (seasonDto.VideosDto.Count > 0)
+                    {
+                        // seasonDto.VideosDto
+                        //     .ForEach(v => 
+                        //         v.SeasonId = season.Id);
+                        foreach (var videoDto in seasonDto.VideosDto)
+                        {
+                            var result = await SaveVideoAsync(videoDto);
+                            if (!result.IsSuccessful)
+                            {
+                                await transaction.RollBackAsync();
+                                return result;
+                            }
+                        }
+                    }
+            
+                    var imageFileName = studio != null 
+                        ? studio.Id + "-" + season.Id
+                        : "NoStudio-" + season.Id;
+            
+                    season.ImageUrl = _fileService
+                        .StoreFileGetUrl(seasonDto.Image, imageFileName);
+            
+                    await _unitOfWork
+                        .GetReadWriteRepository<Season>()
+                        .SaveAsync(season);
+                    
+                    await transaction.CommitAsync();
+                }
+                catch (Exception e)
+                {
+                    await transaction.RollBackAsync();
+                    return new HttpResult(
+                        e.Message,
+                        HttpStatusCode.BadRequest);
                 }
             }
-            
-            var imageFileName = studio != null 
-                ? studio.Id + "-" + season.Id
-                : "NoStudio-" + season.Id;
-            
-            season.ImageUrl = _fileService
-                .StoreFileGetUrl(seasonDto.Image, imageFileName);
-            
+
+            return new HttpResult();
+        }
+
+        public async Task<IHttpResult> SaveVideoAsync(VideoDto videoDto)
+        {
+            var season = (await _unitOfWork
+                    .GetReadonlyRepository<Season>()
+                    .GetNoTrackingAsync(v =>
+                        v.Id == videoDto.SeasonId))
+                .SingleOrDefault();
+
+            if (season == null)
+            {
+                return new HttpResult(
+                    "No such season", 
+                    HttpStatusCode.BadRequest);
+            }
+
+            var video = _mapper.Map<Episode>(videoDto);
             await _unitOfWork
-                .GetReadWriteRepository<Season>()
-                .SaveAsync(season);
-            
+                .GetReadWriteRepository<Episode>()
+                .SaveAsync(video);
+                
+            var fileName = season.Id + "-" + video.Id;
+            try
+            {
+                video.Url = _fileService
+                    .StoreFileGetUrl(videoDto.VideoFile, fileName);
+                video.DurationInSeconds = _fileService
+                    .GetVideoDuration(video.Url);
+                video.VideoFileHash = _fileService
+                    .GetFileHash(video.Url);
+            }
+            catch (Exception e)
+            {
+                return new HttpResult(
+                    e.Message,  
+                    HttpStatusCode.BadRequest);
+            }
+                
+            await _unitOfWork
+                .GetReadWriteRepository<Episode>()
+                .SaveAsync(video);
+
             return new HttpResult();
         }
     }

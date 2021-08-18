@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Data;
+using AniBand.DataAccess.Abstractions.Models;
 using AniBand.DataAccess.Abstractions.Repositories;
 using AniBand.DataAccess.Abstractions.Repositories.Generic;
 using AniBand.Domain.Abstractions.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Storage;
+using IDbTransaction = AniBand.DataAccess.Abstractions.Models.IDbTransaction;
 
 namespace AniBand.DataAccess.Repositories
 {
@@ -18,10 +19,8 @@ namespace AniBand.DataAccess.Repositories
     {
         private bool _disposed;
         private Dictionary<Type, object> _repositories;
-        private IDbContextTransaction _transaction;
-        
         public TContext DbContext { get; }
-        
+
         public UnitOfWork(TContext context)
         {
             DbContext = context 
@@ -86,44 +85,20 @@ namespace AniBand.DataAccess.Repositories
             where TEntity : class 
             => DbContext.Set<TEntity>().FromSqlRaw(sql, parameters);
 
-        public void BeginTransaction(
+        public IDbTransaction BeginTransaction(
             IsolationLevel level = IsolationLevel.ReadUncommitted)
         {
-            _transaction = DbContext
-                .Database
-                .BeginTransaction(level);
+            var transaction = new DbTransaction(DbContext);
+            transaction.BeginTransaction();
+            return transaction;
         }
 
-        public async Task BeginTransactionAsync(
+        public async Task<IDbTransaction> BeginTransactionAsync(
             IsolationLevel level = IsolationLevel.ReadUncommitted)
         { 
-            _transaction = await DbContext
-                    .Database
-                    .BeginTransactionAsync(level);
-        }
-
-        public void RollBack()
-        { 
-            _transaction.Rollback();
-            _transaction.Dispose();
-        }
-        
-        public async Task RollBackAsync()
-        { 
-            await _transaction.RollbackAsync();
-            await _transaction.DisposeAsync();
-        }
-        
-        public void Commit()
-        { 
-            _transaction.Commit();
-            _transaction.Dispose();
-        }
-        
-        public async Task CommitAsync()
-        { 
-            await _transaction.CommitAsync();
-            await _transaction.DisposeAsync();
+            var transaction = new DbTransaction(DbContext);
+            await transaction.BeginTransactionAsync();
+            return transaction;
         }
 
         public int SaveChanges()
@@ -139,7 +114,6 @@ namespace AniBand.DataAccess.Repositories
         public void Dispose()
         {
             Dispose(true);
-
             GC.SuppressFinalize(this);
         }
         
