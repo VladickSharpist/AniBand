@@ -1,8 +1,11 @@
+using System.Data;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace AniBand.DataAccess.Abstractions.Models
+using IDbTransaction = AniBand.DataAccess.Abstractions.Models.IDbTransaction;
+
+namespace AniBand.DataAccess.Models
 {
     public class DbTransaction 
         : IDbTransaction
@@ -16,18 +19,18 @@ namespace AniBand.DataAccess.Abstractions.Models
             _context = dbContext;
         }
 
-        public void BeginTransaction()
+        public void BeginTransaction(IsolationLevel level)
         {
             _transaction = _context
                 .Database
-                .BeginTransaction();
+                .BeginTransaction(level);
         }
         
-        public async Task BeginTransactionAsync()
+        public async Task BeginTransactionAsync(IsolationLevel level)
         {
             _transaction = await _context
                 .Database
-                .BeginTransactionAsync();
+                .BeginTransactionAsync(level);
         }
         
         public void RollBack()

@@ -70,12 +70,14 @@ namespace AniBand.DataAccess.Repositories
         public virtual void Remove(long id)
         {
             var model = _dbSet.SingleOrDefault(x => x.Id == id);
+           
             Remove(model);
         }
         
         public virtual async Task RemoveAsync(long id)
         {
             var model = await _dbSet.SingleOrDefaultAsync(x => x.Id == id);
+
             await RemoveAsync(model);
         }
     }

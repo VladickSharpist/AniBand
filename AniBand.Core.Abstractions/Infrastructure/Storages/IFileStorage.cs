@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace AniBand.Core.Abstractions.Infrastructure.Storages
 {
@@ -7,7 +8,9 @@ namespace AniBand.Core.Abstractions.Infrastructure.Storages
     {
         public string FilePath { get; }
         
-        void SaveFileAsync(Stream file, string fileName);
+        Task SaveFileAsync(Stream file, string fileName);
+
+        void DeleteFile(string filePath);
         
         IDisposable BeginScope<TState>(TState state);
     }

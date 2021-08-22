@@ -1,4 +1,5 @@
 using System;
+using System.Data;
 using System.Threading.Tasks;
 
 namespace AniBand.DataAccess.Abstractions.Models
@@ -6,11 +7,16 @@ namespace AniBand.DataAccess.Abstractions.Models
     public interface IDbTransaction
         : IDisposable
     {
-        void BeginTransaction();
-        Task BeginTransactionAsync();
+        void BeginTransaction(IsolationLevel level);
+        
+        Task BeginTransactionAsync(IsolationLevel level);
+        
         void RollBack();
+        
         Task RollBackAsync();
+        
         void Commit();
+        
         Task CommitAsync();
     }
 }

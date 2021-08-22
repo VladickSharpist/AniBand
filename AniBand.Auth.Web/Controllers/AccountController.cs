@@ -8,6 +8,8 @@ using AniBand.Auth.Web.Permissions;
 using AniBand.Core.Abstractions.Infrastructure.Helpers;
 using AniBand.Core.Abstractions.Infrastructure.Helpers.Generic;
 using AniBand.Core.Infrastructure.Helpers;
+using AniBand.Web.Core;
+using AniBand.Web.Core.Controllers;
 using AniBand.Web.Core.Filters.Permission;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication;
@@ -17,9 +19,9 @@ namespace AniBand.Auth.Web.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class AccountController : ControllerBase
+    public class AccountController 
+        : BaseController
     {
-        private readonly IMapper _mapper;
         private readonly IAuthService _authService;
         private readonly ILogger _logger;
 
@@ -27,20 +29,12 @@ namespace AniBand.Auth.Web.Controllers
             IMapper mapper,
             IAuthService authService, 
             ILogger<AccountController> logger)
+            :base(mapper)
         {
-            _mapper = mapper
-                ?? throw new NullReferenceException(nameof(mapper));
             _authService = authService
                 ?? throw new NullReferenceException(nameof(authService));
             _logger = logger
                 ?? throw new NullReferenceException(nameof(logger));
-        }
-
-        [Permission(Permission.AdminPermission.AddVideo)]
-        [HttpPost]
-        public string MyName()
-        {
-            return "MyName";
         }
 
         [HttpPost]

@@ -6,9 +6,11 @@ using System.Data;
 using AniBand.DataAccess.Abstractions.Models;
 using AniBand.DataAccess.Abstractions.Repositories;
 using AniBand.DataAccess.Abstractions.Repositories.Generic;
+using AniBand.DataAccess.Models;
 using AniBand.Domain.Abstractions.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+
 using IDbTransaction = AniBand.DataAccess.Abstractions.Models.IDbTransaction;
 
 namespace AniBand.DataAccess.Repositories
@@ -18,7 +20,7 @@ namespace AniBand.DataAccess.Repositories
         where TContext : DbContext
     {
         private bool _disposed;
-        private Dictionary<Type, object> _repositories;
+        private IDictionary<Type, object> _repositories;
         public TContext DbContext { get; }
 
         public UnitOfWork(TContext context)
@@ -89,7 +91,7 @@ namespace AniBand.DataAccess.Repositories
             IsolationLevel level = IsolationLevel.ReadUncommitted)
         {
             var transaction = new DbTransaction(DbContext);
-            transaction.BeginTransaction();
+            transaction.BeginTransaction(level);
             return transaction;
         }
 
@@ -97,7 +99,7 @@ namespace AniBand.DataAccess.Repositories
             IsolationLevel level = IsolationLevel.ReadUncommitted)
         { 
             var transaction = new DbTransaction(DbContext);
-            await transaction.BeginTransactionAsync();
+            await transaction.BeginTransactionAsync(level);
             return transaction;
         }
 

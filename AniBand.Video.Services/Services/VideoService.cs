@@ -4,7 +4,9 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using AniBand.Core.Abstractions.Infrastructure.Helpers;
+using AniBand.Core.Abstractions.Infrastructure.Helpers.Generic;
 using AniBand.Core.Infrastructure.Helpers;
+using AniBand.Core.Infrastructure.Helpers.Generic;
 using AniBand.DataAccess.Abstractions.Repositories;
 using AniBand.Domain.Models;
 using AniBand.Video.Services.Abstractions.Models;
@@ -99,9 +101,9 @@ namespace AniBand.Video.Services.Services
             
                     if (seasonDto.VideosDto.Count > 0)
                     {
-                        // seasonDto.VideosDto
-                        //     .ForEach(v => 
-                        //         v.SeasonId = season.Id);
+                        seasonDto.VideosDto
+                            .ForEach(v => 
+                                v.SeasonId = season.Id);
                         foreach (var videoDto in seasonDto.VideosDto)
                         {
                             var result = await SaveVideoAsync(videoDto);
@@ -178,6 +180,165 @@ namespace AniBand.Video.Services.Services
             await _unitOfWork
                 .GetReadWriteRepository<Episode>()
                 .SaveAsync(video);
+
+            return new HttpResult();
+        }
+
+        public async Task<IHttpResult<IEnumerable<SeasonDto>>> GetAllSeasonsAsync()
+        {
+            var seasons = await _unitOfWork
+                .GetReadonlyRepository<Season>()
+                .GetAsync(
+                    null,
+                    null,
+                    season => season.Videos);
+            
+            var seasonsDto = _mapper.Map<IEnumerable<SeasonDto>>(seasons);
+
+            return new HttpResult<IEnumerable<SeasonDto>>(seasonsDto);
+        }
+
+        public async Task<IHttpResult<SeasonDto>> GetSeasonByIdAsync(long id)
+        {
+            var season = (await _unitOfWork
+                .GetReadonlyRepository<Season>()
+                .GetAsync(s => 
+                    s.Id == Convert.ToInt64(id),
+                    null,
+                    s => s.Videos))
+                .SingleOrDefault();
+
+            if (season == null)
+            {
+                return new HttpResult<SeasonDto>(
+                    null,
+                    "No such Season",
+                    HttpStatusCode.BadRequest);
+            }
+
+            return new HttpResult<SeasonDto>(
+                _mapper.Map<SeasonDto>(season));
+        }
+
+        public async Task<IHttpResult<IEnumerable<VideoDto>>> GetVideosBySeasonIdAsync(long id)
+        {
+            var season = (await _unitOfWork
+                    .GetReadonlyRepository<Season>()
+                    .GetAsync(s => 
+                        s.Id == Convert.ToInt64(id),
+                        null,
+                        s => s.Videos))
+                .SingleOrDefault();
+
+            if (season == null)
+            {
+                return new HttpResult<IEnumerable<VideoDto>>(
+                    null,
+                    "No such Season",
+                    HttpStatusCode.BadRequest);
+            }
+
+            var videosDto = _mapper.Map<IEnumerable<VideoDto>>(season.Videos);
+
+            return new HttpResult<IEnumerable<VideoDto>>(videosDto);
+        }
+
+        public async Task<IHttpResult<VideoDto>> GetVideoByIdAsync(long id)
+        {
+            var video = (await _unitOfWork
+                    .GetReadonlyRepository<Episode>()
+                    .GetAsync(s => 
+                        s.Id == Convert.ToInt64(id)))
+                .SingleOrDefault();
+
+            if (video == null)
+            {
+                return new HttpResult<VideoDto>(
+                    null,
+                    "No such Episode",
+                    HttpStatusCode.BadRequest);
+            }
+            
+            return new HttpResult<VideoDto>(
+                _mapper.Map<VideoDto>(video));
+        }
+
+        public async Task<IHttpResult> DeleteSeasonByIdAsync(long id)
+        {
+            var seasonRepo = _unitOfWork
+                .GetReadWriteRepository<Season>();
+
+            var season = (await seasonRepo
+                    .GetAsync(s => 
+                        s.Id == Convert.ToInt64(id),
+                        null,
+                        s => s.Videos))
+                .SingleOrDefault();
+
+            if (season == null)
+            {
+                return new HttpResult(
+                    "Wrong id or no such season",
+                    HttpStatusCode.BadRequest);   
+            }
+            
+            using (var transaction = await _unitOfWork.BeginTransactionAsync())
+            {
+                try
+                {
+                    await seasonRepo.RemoveAsync(season);
+                    _fileService.DeleteFile(season.ImageUrl);
+                    foreach (var seasonVideo in season.Videos)
+                    { 
+                        _fileService.DeleteFile(seasonVideo.Url);
+                    }
+                    await transaction.CommitAsync();
+                }
+                catch (Exception e)
+                {
+                    await transaction.RollBackAsync();
+                    return new HttpResult(
+                        e.Message,
+                        HttpStatusCode.BadRequest);
+                }
+            }
+
+            return new HttpResult();
+        }
+
+        public async Task<IHttpResult> DeleteVideoByIdAsync(long id)
+        {
+            var episodeRepo = _unitOfWork
+                .GetReadWriteRepository<Episode>();
+
+            var episode = (await episodeRepo
+                    .GetAsync(s => 
+                        s.Id == Convert.ToInt64(id)))
+                .SingleOrDefault();
+
+            if (episode == null)
+            {
+                return new HttpResult(
+                    "Wrong id or no such episode",
+                    HttpStatusCode.BadRequest);   
+            }
+            
+            using (var transaction = await _unitOfWork.BeginTransactionAsync())
+            {
+                try
+                {
+                    await episodeRepo.RemoveAsync(episode);
+                    _fileService.DeleteFile(episode.Url);
+                    await transaction.CommitAsync();
+                }
+                catch (Exception e)
+                {
+                    await transaction.RollBackAsync();
+                    return new HttpResult(
+                        e.Message,
+                        HttpStatusCode.BadRequest);
+                }
+            }
 
             return new HttpResult();
         }

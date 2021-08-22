@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 using AniBand.Core.Abstractions.Infrastructure.Storages;
 
 namespace AniBand.Core.Infrastructure.Storages
@@ -16,7 +17,7 @@ namespace AniBand.Core.Infrastructure.Storages
 
         public string FilePath => _filePath;
 
-        public async void SaveFileAsync(Stream file, string fileName)
+        public async Task SaveFileAsync(Stream file, string fileName)
         {
             using (var fileStream = new FileStream(
                 _filePath + $"\\{fileName}", 
@@ -24,6 +25,11 @@ namespace AniBand.Core.Infrastructure.Storages
             {
                 await file.CopyToAsync(fileStream);
             }
+        }
+
+        public void DeleteFile(string filePath)
+        {
+            File.Delete(filePath);
         }
 
         public IDisposable BeginScope<TState>(TState state)
