@@ -3,12 +3,10 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
-using IDbTransaction = AniBand.DataAccess.Abstractions.Models.IDbTransaction;
-
-namespace AniBand.DataAccess.Models
+namespace AniBand.DataAccess
 {
     public class DbTransaction 
-        : IDbTransaction
+        : Abstractions.IDbTransaction
     {
         private DbContext _context;
         private IDbContextTransaction _transaction;

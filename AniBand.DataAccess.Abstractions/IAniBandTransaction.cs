@@ -2,7 +2,7 @@ using System;
 using System.Data;
 using System.Threading.Tasks;
 
-namespace AniBand.DataAccess.Abstractions.Models
+namespace AniBand.DataAccess.Abstractions
 {
     public interface IDbTransaction
         : IDisposable

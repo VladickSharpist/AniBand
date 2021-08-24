@@ -23,7 +23,7 @@ namespace AniBand.Video.Web.Controllers
         public VideoController(
             IVideoService videoService,
             IMapper mapper)
-            :base(mapper)
+            : base(mapper)
         {
             _videoService = videoService;
         }
@@ -31,7 +31,7 @@ namespace AniBand.Video.Web.Controllers
         [Permission(Permissions.Permission.AdminPermission.AddVideo)]
         [HttpPost]
         public async Task<ActionResult<IHttpResult>> AddVideo([FromForm] ListVideoVM model)
-            =>Ok(await _videoService
+            => Ok(await _videoService
                 .AddVideosAsync(
                     _mapper.Map<ListVideoDto>(model)
                         .VideosDto));

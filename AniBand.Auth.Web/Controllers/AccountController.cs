@@ -29,7 +29,7 @@ namespace AniBand.Auth.Web.Controllers
             IMapper mapper,
             IAuthService authService, 
             ILogger<AccountController> logger)
-            :base(mapper)
+            : base(mapper)
         {
             _authService = authService
                 ?? throw new NullReferenceException(nameof(authService));

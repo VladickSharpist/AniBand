@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using AniBand.DataAccess.Abstractions.Repositories.Generic;
 using AniBand.Domain.Abstractions.Interfaces;
 
-using IDbTransaction = AniBand.DataAccess.Abstractions.Models.IDbTransaction;
+using IDbTransaction = AniBand.DataAccess.Abstractions.IDbTransaction;
 
 namespace AniBand.DataAccess.Abstractions.Repositories
 {

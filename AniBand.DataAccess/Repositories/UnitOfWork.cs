@@ -3,15 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Data;
-using AniBand.DataAccess.Abstractions.Models;
 using AniBand.DataAccess.Abstractions.Repositories;
 using AniBand.DataAccess.Abstractions.Repositories.Generic;
-using AniBand.DataAccess.Models;
 using AniBand.Domain.Abstractions.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
-using IDbTransaction = AniBand.DataAccess.Abstractions.Models.IDbTransaction;
+using IDbTransaction = AniBand.DataAccess.Abstractions.IDbTransaction;
 
 namespace AniBand.DataAccess.Repositories
 {
