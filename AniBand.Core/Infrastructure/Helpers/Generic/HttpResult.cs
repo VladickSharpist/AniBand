@@ -22,7 +22,7 @@ namespace AniBand.Core.Infrastructure.Helpers.Generic
 
         public HttpResult(
             T data, 
-            List<string> errors, 
+            ICollection<string> errors, 
             HttpStatusCode statusCode) 
             : base(errors, statusCode)
         {

@@ -20,29 +20,25 @@ namespace AniBand.Auth.Services.Services
 {
     internal class TokenService : ITokenService
     {
-        private readonly IBaseReadWriteRepository<RefreshToken> _refreshTokenRepository;
-        private readonly IBaseReadonlyRepository<UserToken> _userTokenRepository;
         private readonly UserManager<User> _userManager;
         private readonly IUserSetter _currentUserSetter;
         private readonly IConfigurationHelper _configurationHelper;
+        private readonly IUnitOfWork _unitOfWork;
 
         public TokenService(
-            IBaseReadWriteRepository<RefreshToken> refreshTokenRepository,
-            UserManager<User> userManager, 
-            IBaseReadonlyRepository<UserToken> userTokenRepository,
+            UserManager<User> userManager,
             IUserSetter currentUserSetter, 
-            IConfigurationHelper configurationHelper)
+            IConfigurationHelper configurationHelper, 
+            IUnitOfWork unitOfWork)
         {
-            _refreshTokenRepository = refreshTokenRepository
-                ?? throw new NullReferenceException(nameof(refreshTokenRepository));
             _userManager = userManager
                 ?? throw new NullReferenceException(nameof(userManager));
-            _userTokenRepository = userTokenRepository
-                ?? throw new NullReferenceException(nameof(userTokenRepository));
             _currentUserSetter = currentUserSetter
                 ?? throw new NullReferenceException(nameof(currentUserSetter));
             _configurationHelper = configurationHelper
                 ?? throw new NullReferenceException(nameof(configurationHelper));
+            _unitOfWork = unitOfWork
+                ?? throw new NullReferenceException(nameof(unitOfWork));
         }
 
         public SigningCredentials GetSigningCredentials()
@@ -128,13 +124,16 @@ namespace AniBand.Auth.Services.Services
                 OwnerId = user.Id
             };
             
-            _refreshTokenRepository.Save(historyToken);
+            _unitOfWork
+                .GetReadWriteRepository<RefreshToken>()
+                .Save(historyToken);
         }
 
         public async Task<bool> RevokeTokenAsync(string token)
         {
-            var userId = (await _userTokenRepository
-                .GetNoTrackingAsync(t => 
+            var userId = (await _unitOfWork
+                    .GetReadonlyRepository<UserToken>()
+                    .GetNoTrackingAsync(t => 
                         t.Value == token))
                     .FirstOrDefault()?
                     .UserId;

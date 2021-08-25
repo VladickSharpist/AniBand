@@ -9,6 +9,12 @@ namespace AniBand.Video.Services.Abstractions.Models.Mapping
         public VideoProfile()
         {
             CreateMap<VideoDto, Episode>();
+            CreateMap<Episode, VideoDto>()
+                .ForMember(e => 
+                        e.VideoFileUrl,
+                    opt => 
+                        opt.MapFrom(dto => 
+                            dto.Url));
         }
     }
 }

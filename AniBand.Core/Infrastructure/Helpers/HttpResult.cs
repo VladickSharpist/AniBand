@@ -24,12 +24,11 @@ namespace AniBand.Core.Infrastructure.Helpers
             HttpStatusCode statusCode)
         {
             Errors = new List<string>();
-            Errors.Add(error);
             StatusCode = statusCode;
         }
         
         public HttpResult(
-            List<string> errors, 
+            ICollection<string> errors, 
             HttpStatusCode statusCode)
         {
             Errors = new List<string>(errors);

@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using AniBand.DataAccess.Abstractions.Repositories;
+using AniBand.DataAccess.Abstractions.Repositories.Generic;
 using AniBand.Domain.Abstractions.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -12,7 +12,7 @@ namespace AniBand.DataAccess.Repositories
           IBaseReadWriteRepository<TEntity> 
         where TEntity : class, IEntity
     {
-        public BaseReadWriteRepository(AniBandDbContext aniBandDbContext) 
+        public BaseReadWriteRepository(DbContext aniBandDbContext) 
             : base(aniBandDbContext)
         {
         }
@@ -55,16 +55,6 @@ namespace AniBand.DataAccess.Repositories
             await _aniBandDbContext.SaveChangesAsync();
         }
 
-        public IDbContextTransaction BeginTransaction()
-            => _aniBandDbContext
-                .Database
-                .BeginTransaction();
-        
-        public async Task<IDbContextTransaction> BeginTransactionAsync()
-            => await _aniBandDbContext
-                .Database
-                .BeginTransactionAsync();
-
         public virtual void Remove(TEntity model)
         {
             _aniBandDbContext.Remove(model);
@@ -80,12 +70,14 @@ namespace AniBand.DataAccess.Repositories
         public virtual void Remove(long id)
         {
             var model = _dbSet.SingleOrDefault(x => x.Id == id);
+           
             Remove(model);
         }
         
         public virtual async Task RemoveAsync(long id)
         {
             var model = await _dbSet.SingleOrDefaultAsync(x => x.Id == id);
+
             await RemoveAsync(model);
         }
     }

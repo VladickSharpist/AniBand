@@ -10,6 +10,8 @@ namespace AniBand.Video.Services.Abstractions.Models
         public string Description { get; set; }
 
         public Stream Image { get; set; }
+        
+        public string ImageUrl { get; set; }
 
         public long StudioId { get; set; }
 

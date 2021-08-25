@@ -45,7 +45,7 @@ namespace AniBand.Web.Core.Extensions
                 .AddContext(services
                     .BuildServiceProvider()
                     .GetRequiredService<IConfigurationHelper>())
-                .AddRepositories();
+                .AddUnitOfWork<AniBandDbContext>();
         
         private static IServiceCollection AddContext(
             this IServiceCollection services,

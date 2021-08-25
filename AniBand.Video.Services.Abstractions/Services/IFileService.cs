@@ -9,5 +9,9 @@ namespace AniBand.Video.Services.Abstractions.Services
         double GetVideoDuration(string url);
 
         string GetFileHash(string url);
+
+        FileStream GetFileStream(string url);
+
+        void DeleteFile(string url);
     }
 }

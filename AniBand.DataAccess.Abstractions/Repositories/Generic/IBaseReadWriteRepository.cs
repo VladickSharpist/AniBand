@@ -1,10 +1,12 @@
 ﻿using System.Threading.Tasks;
+using AniBand.Domain.Abstractions.Interfaces;
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace AniBand.DataAccess.Abstractions.Repositories
+namespace AniBand.DataAccess.Abstractions.Repositories.Generic
 {
     public interface IBaseReadWriteRepository<TEntity> 
         : IBaseReadonlyRepository<TEntity>
+        where TEntity : class, IEntity
     {
         void Save(TEntity model);
 
@@ -14,10 +16,6 @@ namespace AniBand.DataAccess.Abstractions.Repositories
 
         Task SaveChangesAsync();
 
-        IDbContextTransaction BeginTransaction();
-
-        Task<IDbContextTransaction> BeginTransactionAsync();
-        
         void Remove(TEntity model);
         
         Task RemoveAsync(TEntity model);

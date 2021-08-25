@@ -49,5 +49,15 @@ namespace AniBand.Video.Services.Services
                 }
             }
         }
+
+        public FileStream GetFileStream(string url)
+        {
+            return new FileStream(url, FileMode.Open, FileAccess.Read);
+        }
+
+        public void DeleteFile(string url)
+        {
+            _fileStorage.DeleteFile(url);
+        }
     }
 }
