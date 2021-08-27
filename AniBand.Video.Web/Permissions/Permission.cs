@@ -10,6 +10,7 @@
         
         public static class UserPermission
         {
+            public const string Approved = "api.AniBand.User.Approved";
             public const string CommentVideo = "api.AniBand.User.CommentVideo";
             public const string WatchVideo = "api.AniBand.User.WatchVideo";
         }

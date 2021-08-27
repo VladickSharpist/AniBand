@@ -10,6 +10,7 @@
     <ProjectReference Include="..\AniBand.Core\AniBand.Core.csproj" />
     <ProjectReference Include="..\AniBand.DataAccess\AniBand.DataAccess.csproj" />
     <ProjectReference Include="..\AniBand.Domain\AniBand.Domain.csproj" />
+    <ProjectReference Include="..\AniBand.SignalR.Services.Abstractions\AniBand.SignalR.Services.Abstractions.csproj" />
   </ItemGroup>
 
   <ItemGroup>

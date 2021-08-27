@@ -4,14 +4,16 @@ using AniBand.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AniBand.DataAccess.Migrations
 {
     [DbContext(typeof(AniBandDbContext))]
-    partial class AniBandDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210825123414_RemoveIsApprovedAddStatusUser")]
+    partial class RemoveIsApprovedAddStatusUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,38 +59,6 @@ namespace AniBand.DataAccess.Migrations
                     b.HasIndex("VideoId");
 
                     b.ToTable("Comments");
-                });
-
-            modelBuilder.Entity("AniBand.Domain.Models.Notification", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long>("CreatedById")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Message")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("UpdatedById")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("AniBand.Domain.Models.Rate", b =>
@@ -247,9 +217,6 @@ namespace AniBand.DataAccess.Migrations
 
                     b.Property<long>("CreatedById")
                         .HasColumnType("bigint");
-
-                    b.Property<string>("DeclineMessage")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -546,17 +513,6 @@ namespace AniBand.DataAccess.Migrations
                     b.Navigation("Video");
                 });
 
-            modelBuilder.Entity("AniBand.Domain.Models.Notification", b =>
-                {
-                    b.HasOne("AniBand.Domain.Models.User", "User")
-                        .WithMany("Notifications")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("AniBand.Domain.Models.Rate", b =>
                 {
                     b.HasOne("AniBand.Domain.Models.User", "User")
@@ -690,8 +646,6 @@ namespace AniBand.DataAccess.Migrations
             modelBuilder.Entity("AniBand.Domain.Models.User", b =>
                 {
                     b.Navigation("Comments");
-
-                    b.Navigation("Notifications");
 
                     b.Navigation("Rates");
 

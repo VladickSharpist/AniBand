@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using AniBand.Auth.Web.Extensions;
+using AniBand.SignalR.Services.Abstractions.Hubs;
 using AniBand.Web.Core.Extensions;
 using Microsoft.Extensions.Configuration;
 
@@ -38,7 +39,8 @@ namespace AniBand.Auth.Web
                 app.UseDeveloperExceptionPage();
             }
             app.UseHttpsRedirection();
-
+            
+            
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
@@ -46,6 +48,7 @@ namespace AniBand.Auth.Web
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHubs();
             });
         }
     }

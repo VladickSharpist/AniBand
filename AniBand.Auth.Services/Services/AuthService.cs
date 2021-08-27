@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Security.Claims;
@@ -13,6 +14,7 @@ using AniBand.Core.Infrastructure.Helpers.Generic;
 using AniBand.Domain;
 using AniBand.Domain.Enums;
 using AniBand.Domain.Models;
+using AniBand.SignalR.Services.Abstractions.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -26,13 +28,15 @@ namespace AniBand.Auth.Services.Services
         private readonly RoleManager<IdentityRole<long>> _roleManager;
         private readonly UserManager<User> _userManager;
         private readonly IUserSetter _currentUserSetter;
+        private readonly INotificationService _notificationService;
 
         public AuthService(
             IMapper mapper,
             ITokenService tokenService,
             RoleManager<IdentityRole<long>> roleManager,
             UserManager<User> userManager, 
-            IUserSetter currentUserSetter)
+            IUserSetter currentUserSetter, 
+            INotificationService notificationService)
         {
             _mapper = mapper 
                 ?? throw new NullReferenceException(nameof(mapper));
@@ -44,6 +48,8 @@ namespace AniBand.Auth.Services.Services
                 ?? throw new NullReferenceException(nameof(userManager));
             _currentUserSetter = currentUserSetter
                 ?? throw new NullReferenceException(nameof(currentUserSetter));
+            _notificationService = notificationService
+                ?? throw new NullReferenceException(nameof(notificationService));;
         }
 
         public async Task<IHttpResult> RegisterAsync(RegisterUserDto model)
@@ -54,6 +60,7 @@ namespace AniBand.Auth.Services.Services
                 .All(u => 
                     u.Email != model.Email))
             {
+                user.Status = AccountStatus.Waiting;
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (!result.Succeeded)
                 {
@@ -75,7 +82,14 @@ namespace AniBand.Auth.Services.Services
                         c.Type == CustomClaimTypes.Permission)
                     .ToList();
                 await _userManager.AddClaimsAsync(user, userPermissions);
-
+                
+                var admins = await _userManager.GetUsersInRoleAsync(Roles.Admin.ToString()) as List<User>;
+                admins.ForEach(async admin => 
+                    await _notificationService
+                        .NotifyAsync(
+                            admin.Email,
+                            $"User {user.Email} try to register"));
+                
                 return new HttpResult();
             }
 
@@ -95,6 +109,14 @@ namespace AniBand.Auth.Services.Services
                     HttpStatusCode.UnprocessableEntity);
             }
 
+            if (user.Status == AccountStatus.Declined)
+            {
+                return new HttpResult<AuthDto>(
+                    null,
+                    user.DeclineMessage,
+                    HttpStatusCode.Forbidden);
+            }
+            
             if (await _userManager.CheckPasswordAsync(user, model.Password))
             {
                 _currentUserSetter.User = user;
