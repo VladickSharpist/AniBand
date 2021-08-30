@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Routing;
 
 namespace AniBand.Web.Core.Extensions
 {
-    public static class EndPointRouteBuilder
+    public static class RouteBuilderExtension
     {
         public static IEndpointRouteBuilder MapHubs(this IEndpointRouteBuilder builder)
         {

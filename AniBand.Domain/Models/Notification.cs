@@ -10,5 +10,7 @@ namespace AniBand.Domain.Models
         public virtual User User { get; set; }
 
         public string Message { get; set; }
+
+        public bool IsViewed { get; set; }
     }
 }

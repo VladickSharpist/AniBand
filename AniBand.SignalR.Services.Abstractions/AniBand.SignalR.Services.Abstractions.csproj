@@ -5,10 +5,13 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="AutoMapper" Version="10.1.1" />
+      <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
       <PackageReference Include="Microsoft.AspNetCore.SignalR.Core" Version="1.1.0" />
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\AniBand.Core.Abstractions\AniBand.Core.Abstractions.csproj" />
       <ProjectReference Include="..\AniBand.Domain\AniBand.Domain.csproj" />
     </ItemGroup>
 

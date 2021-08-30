@@ -39,7 +39,7 @@ namespace AniBand.Auth.Services.Services
                 ?? throw new NullReferenceException(nameof(tokenService));
         }
 
-        public IEnumerable<UserDto> GetUnApprovedUsersAsync()
+        public IEnumerable<UserDto> GetUnApprovedUsers()
         {
             var unApprovedUsers = _userManager
                 .GetUsersByField(u => 
@@ -48,7 +48,7 @@ namespace AniBand.Auth.Services.Services
             return _mapper.Map<IEnumerable<UserDto>>(unApprovedUsers);
         }
 
-        public async Task<IHttpResult> ApproveUser(long id)
+        public async Task<IHttpResult> ApproveUserAsync(long id)
         {
             try
             {
@@ -63,13 +63,13 @@ namespace AniBand.Auth.Services.Services
 
             var user = await _userManager.GetByIdAsync(id);
             await _notificationService.NotifyAsync(
-                user.Email, 
+                user.Id.ToString(), 
                 "Your account approved");
             return new HttpResult();
         }
         
 
-        public async Task<IHttpResult> DeclineUser(long id, string message)
+        public async Task<IHttpResult> DeclineUserAsync(long id, string message)
         {
             try
             {

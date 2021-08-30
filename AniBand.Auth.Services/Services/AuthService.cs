@@ -83,11 +83,14 @@ namespace AniBand.Auth.Services.Services
                     .ToList();
                 await _userManager.AddClaimsAsync(user, userPermissions);
                 
-                var admins = await _userManager.GetUsersInRoleAsync(Roles.Admin.ToString()) as List<User>;
+                var admins = await _userManager
+                    .GetUsersInRoleAsync(
+                        Roles.Admin.ToString()) as List<User>;
+                
                 admins.ForEach(async admin => 
                     await _notificationService
                         .NotifyAsync(
-                            admin.Email,
+                            admin.Id.ToString(),
                             $"User {user.Email} try to register"));
                 
                 return new HttpResult();
@@ -131,7 +134,7 @@ namespace AniBand.Auth.Services.Services
                 var claims = await _userManager.GetClaimsAsync(user);
                 claims.Add(new Claim (
                     CustomClaimTypes.Actor, 
-                    user.Email));
+                    user.Id.ToString()));
                 
                 var identity = new ClaimsIdentity(
                     claims,

@@ -8,7 +8,7 @@
             public const string RemoveVideo = "api.AniBand.Admin.RemoveVideo";
             public const string ApproveUser = "api.AniBand.Admin.ApproveUser";
             public const string DeclineUser = "api.AniBand.Admin.DeclineUser";
-            public const string ProvideInfo = "api.AniBand.Admin.ProvideInfo";
+            public const string GetUsers = "api.AniBand.Admin.GetUsers";
         }
         
         public static class UserPermission
