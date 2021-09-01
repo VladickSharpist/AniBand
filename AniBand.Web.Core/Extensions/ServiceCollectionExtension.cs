@@ -8,6 +8,7 @@ using AniBand.Core.Extensions;
 using AniBand.DataAccess;
 using AniBand.DataAccess.Extensions;
 using AniBand.Domain.Models;
+using AniBand.SignalR.Services.Extensions;
 using AniBand.Video.Services.Abstractions.Extensions;
 using AniBand.Video.Services.Extensions;
 using AniBand.Web.Core.Filters.Permission;
@@ -38,7 +39,10 @@ namespace AniBand.Web.Core.Extensions
                 .AddMapper()
                 .AddHelpers(conf)
                 .AddLoggers()
-                .AddStorageConfiguration();
+                .AddStorageConfiguration()
+                .AddSignalR()
+                .Services
+                .AddUserIdProviders();
         
         public static IServiceCollection AddDatabase(this IServiceCollection services)
             => services
@@ -59,7 +63,8 @@ namespace AniBand.Web.Core.Extensions
             => services
                 .AddUser()
                 .AddAuth()
-                .AddVideo();
+                .AddVideo()
+                .AddSignalRServices();
         
         private static IServiceCollection AddMapper(this IServiceCollection services)
             => services

@@ -37,8 +37,8 @@ namespace AniBand.Auth.Web
             {
                 app.UseDeveloperExceptionPage();
             }
+            
             app.UseHttpsRedirection();
-
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
@@ -46,6 +46,7 @@ namespace AniBand.Auth.Web
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHubs();
             });
         }
     }

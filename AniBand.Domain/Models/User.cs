@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using AniBand.Domain.Abstractions.Interfaces;
+using AniBand.Domain.Enums;
 using Microsoft.AspNetCore.Identity;
 
 namespace AniBand.Domain.Models
@@ -21,6 +22,12 @@ namespace AniBand.Domain.Models
         public DateTime? UpdateDate { get; set; }
         
         public long? UpdatedById { get; set; }
+
+        public AccountStatus Status { get; set; }
+
+        public string DeclineMessage { get; set; }
+
+        public virtual ICollection<Notification> Notifications { get; set; }
 
         public virtual ICollection<Rate> Rates { get; set; }
 

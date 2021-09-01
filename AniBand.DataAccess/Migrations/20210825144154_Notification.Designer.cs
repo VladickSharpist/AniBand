@@ -4,14 +4,16 @@ using AniBand.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AniBand.DataAccess.Migrations
 {
     [DbContext(typeof(AniBandDbContext))]
-    partial class AniBandDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210825144154_Notification")]
+    partial class Notification
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -71,9 +73,6 @@ namespace AniBand.DataAccess.Migrations
 
                     b.Property<long>("CreatedById")
                         .HasColumnType("bigint");
-
-                    b.Property<bool>("IsViewed")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Message")
                         .HasColumnType("nvarchar(max)");

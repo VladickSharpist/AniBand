@@ -24,6 +24,7 @@ namespace AniBand.Core.Infrastructure.Helpers
             HttpStatusCode statusCode)
         {
             Errors = new List<string>();
+            Errors.Add(error);
             StatusCode = statusCode;
         }
         

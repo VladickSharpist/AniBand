@@ -53,6 +53,7 @@ namespace AniBand.Video.Web.Controllers
                 IEnumerable<SeasonGetVm>>(result));
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult<IHttpResult<SeasonGetVm>>> GetSeasonById(long id)
         {
@@ -62,6 +63,7 @@ namespace AniBand.Video.Web.Controllers
                 SeasonGetVm>(result));
         }
         
+        [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult<IHttpResult<IEnumerable<VideoGetVm>>>> GetVideosBySeasonId(long id)
         {
@@ -71,6 +73,7 @@ namespace AniBand.Video.Web.Controllers
                 IEnumerable<VideoGetVm>>(result));
         }
         
+        [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult<IHttpResult<VideoGetVm>>> GetVideoById(long id)
         {

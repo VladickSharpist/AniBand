@@ -6,6 +6,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\AniBand.Core.Abstractions\AniBand.Core.Abstractions.csproj" />
+      <ProjectReference Include="..\AniBand.Domain\AniBand.Domain.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -15,6 +16,11 @@
       <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.17" />
       <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.17" />
       <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.1.17" />
+      <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
+      <PackageReference Include="Microsoft.AspNetCore.SignalR.Core" Version="1.1.0" />
+    </ItemGroup>
+
+    <ItemGroup>
     </ItemGroup>
 
 </Project>

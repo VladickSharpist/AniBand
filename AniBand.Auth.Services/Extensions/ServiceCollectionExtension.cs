@@ -15,7 +15,8 @@ namespace AniBand.Auth.Services.Extensions
                 .AddScoped<IUserAccessor>(di 
                     => di.GetRequiredService<CurrentUserAccessor>())
                 .AddScoped<IUserSetter>(di 
-                    => di.GetRequiredService<CurrentUserAccessor>());
+                    => di.GetRequiredService<CurrentUserAccessor>())
+                .AddScoped<IUserService, UserService>();
 
         public static IServiceCollection AddAuth(this IServiceCollection services)
             => services

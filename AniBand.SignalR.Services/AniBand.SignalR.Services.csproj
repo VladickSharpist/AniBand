@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
+      <PackageReference Include="Microsoft.AspNetCore.SignalR.Core" Version="1.1.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\AniBand.Core\AniBand.Core.csproj" />
+      <ProjectReference Include="..\AniBand.DataAccess.Abstractions\AniBand.DataAccess.Abstractions.csproj" />
+      <ProjectReference Include="..\AniBand.SignalR.Services.Abstractions\AniBand.SignalR.Services.Abstractions.csproj" />
+    </ItemGroup>
+
+</Project>

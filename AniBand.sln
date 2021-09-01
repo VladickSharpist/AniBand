@@ -37,6 +37,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AniBand.Web.Core", "AniBand
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AniBand.Domain.Abstractions", "AniBand.Domain.Abstractions\AniBand.Domain.Abstractions.csproj", "{FAA0030A-0093-4397-8AF1-B62865E0C898}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AniBand.SignalR.Services", "AniBand.SignalR.Services\AniBand.SignalR.Services.csproj", "{F53E3EE8-99DF-427A-831B-B4A98BD46449}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AniBand.SignalR.Services.Abstractions", "AniBand.SignalR.Services.Abstractions\AniBand.SignalR.Services.Abstractions.csproj", "{7885A577-604E-4365-B13F-D95544E5C46C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -95,6 +99,14 @@ Global
 		{FAA0030A-0093-4397-8AF1-B62865E0C898}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FAA0030A-0093-4397-8AF1-B62865E0C898}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FAA0030A-0093-4397-8AF1-B62865E0C898}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F53E3EE8-99DF-427A-831B-B4A98BD46449}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F53E3EE8-99DF-427A-831B-B4A98BD46449}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F53E3EE8-99DF-427A-831B-B4A98BD46449}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F53E3EE8-99DF-427A-831B-B4A98BD46449}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7885A577-604E-4365-B13F-D95544E5C46C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7885A577-604E-4365-B13F-D95544E5C46C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7885A577-604E-4365-B13F-D95544E5C46C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7885A577-604E-4365-B13F-D95544E5C46C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -113,6 +125,8 @@ Global
 		{AE8ABA0D-A366-4220-A655-AEEEF35F217E} = {5D890671-D95C-4A1E-8088-42E5A50C358F}
 		{DE12BDF4-5201-4C2D-876D-ACB4C716C4F0} = {5D890671-D95C-4A1E-8088-42E5A50C358F}
 		{FAA0030A-0093-4397-8AF1-B62865E0C898} = {1B6FE3FE-0B6B-4DCB-93DF-427BA4DB7EAA}
+		{F53E3EE8-99DF-427A-831B-B4A98BD46449} = {5B0D9510-5118-4C90-9685-CEA88AC49BBE}
+		{7885A577-604E-4365-B13F-D95544E5C46C} = {5B0D9510-5118-4C90-9685-CEA88AC49BBE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {07587552-78FC-418E-B69F-190F7209102A}
