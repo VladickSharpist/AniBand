@@ -108,7 +108,7 @@ namespace AniBand.DataAccess.Repositories
 
             foreach (var include in includes)
             {
-                query.Include(include);
+                query = query.Include(include);
             }
             
             if (filter != null)
@@ -133,7 +133,7 @@ namespace AniBand.DataAccess.Repositories
 
             foreach (var include in includes)
             {
-                query.Include(include);
+                query = query.Include(include);
             }
             
             if (filter != null)
@@ -183,7 +183,7 @@ namespace AniBand.DataAccess.Repositories
 
             foreach (var include in includes)
             {
-                query.Include(include);
+                query = query.Include(include);
             }
             
             if (filter != null)

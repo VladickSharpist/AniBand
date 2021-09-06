@@ -8,6 +8,7 @@ using AniBand.Core.Extensions;
 using AniBand.DataAccess;
 using AniBand.DataAccess.Extensions;
 using AniBand.Domain.Models;
+using AniBand.SignalR.Services.Abstractions.Extensions;
 using AniBand.SignalR.Services.Extensions;
 using AniBand.Video.Services.Abstractions.Extensions;
 using AniBand.Video.Services.Extensions;
@@ -40,7 +41,11 @@ namespace AniBand.Web.Core.Extensions
                 .AddHelpers(conf)
                 .AddLoggers()
                 .AddStorageConfiguration()
-                .AddSignalR()
+                .AddSignalR(e =>
+                {
+                    e.EnableDetailedErrors = true;
+                    e.MaximumReceiveMessageSize = 102400000;
+                })
                 .Services
                 .AddUserIdProviders();
         
@@ -69,7 +74,8 @@ namespace AniBand.Web.Core.Extensions
         private static IServiceCollection AddMapper(this IServiceCollection services)
             => services
                 .AddAuthServiceMapper()
-                .AddVideoServiceMapper();
+                .AddVideoServiceMapper()
+                .AddSignalRServiceMapper();
 
         private static IServiceCollection AddIdentity(this IServiceCollection services)
             => services
@@ -124,6 +130,19 @@ namespace AniBand.Web.Core.Extensions
                             if (context.Exception is SecurityTokenExpiredException)
                             {
                                 context.Response.Headers.Add("Token-Expired", "true");
+                            }
+
+                            return Task.CompletedTask;
+                        }, 
+                        OnMessageReceived = context =>
+                        {
+                            var accessToken = context.Request.Query["access_token"];
+
+                            var path = context.HttpContext.Request.Path;
+                            if (!string.IsNullOrEmpty(accessToken) &&
+                                (path.StartsWithSegments("/hubs/notifications")))
+                            {
+                                context.Token = accessToken;
                             }
 
                             return Task.CompletedTask;

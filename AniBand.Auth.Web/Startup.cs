@@ -25,6 +25,14 @@ namespace AniBand.Auth.Web
             services.AddAuthentication(Configuration);
             services.AddDatabase();
             services.AddWebAuthMapper();
+
+            services.AddCors(options =>
+                options.AddPolicy("Client", builder =>
+                    builder
+                        .AllowAnyHeader()
+                        .WithOrigins("http://localhost:3000", "http://localhost:3001", "http://localhost:3002")
+                        .AllowAnyMethod()
+                        .AllowCredentials()));
             
             services.AddHttpContextAccessor();
             services.AddControllers();
@@ -37,7 +45,8 @@ namespace AniBand.Auth.Web
             {
                 app.UseDeveloperExceptionPage();
             }
-            
+
+            app.UseCors("Client");
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthentication();

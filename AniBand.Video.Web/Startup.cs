@@ -25,6 +25,14 @@ namespace AniBand.Video.Web
             services.AddServices();
             services.AddAuthentication(Configuration);
             services.AddWebVideoMapper();
+            
+            services.AddCors(options =>
+                options.AddPolicy("Client", builder =>
+                    builder
+                        .AllowAnyHeader()
+                        .WithOrigins("http://localhost:3000", "http://localhost:3001", "http://localhost:3002")
+                        .AllowAnyMethod()
+                        .AllowCredentials()));
 
             services.AddControllers();
         }
@@ -36,7 +44,8 @@ namespace AniBand.Video.Web
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            
+            app.UseCors("Client");
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -44,7 +53,11 @@ namespace AniBand.Video.Web
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+                endpoints.MapHubs();
+            });
         }
     }
 }

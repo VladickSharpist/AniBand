@@ -40,7 +40,7 @@ namespace AniBand.Auth.Services.Extensions
                 throw new NullReferenceException("User doesnt exist or id is wrong");
             }
 
-            user.Status = AccountStatus.Approved;
+            user.Status = Status.Approved;
             await manager.AddClaimAsync(
                 user, 
                 new Claim(
@@ -61,7 +61,7 @@ namespace AniBand.Auth.Services.Extensions
                 throw new NullReferenceException("User doesnt exist or id is wrong");
             }
 
-            user.Status = AccountStatus.Declined;
+            user.Status = Status.Declined;
             user.DeclineMessage = message;
             await manager.UpdateAsync(user);
         }

@@ -23,7 +23,7 @@ namespace AniBand.Domain.Models
         
         public long? UpdatedById { get; set; }
 
-        public AccountStatus Status { get; set; }
+        public Status Status { get; set; }
 
         public string DeclineMessage { get; set; }
 

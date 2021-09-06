@@ -60,7 +60,7 @@ namespace AniBand.Auth.Services.Services
                 .All(u => 
                     u.Email != model.Email))
             {
-                user.Status = AccountStatus.Waiting;
+                user.Status = Status.Waiting;
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (!result.Succeeded)
                 {
@@ -112,7 +112,7 @@ namespace AniBand.Auth.Services.Services
                     HttpStatusCode.UnprocessableEntity);
             }
 
-            if (user.Status == AccountStatus.Declined)
+            if (user.Status == Status.Declined)
             {
                 return new HttpResult<AuthDto>(
                     null,

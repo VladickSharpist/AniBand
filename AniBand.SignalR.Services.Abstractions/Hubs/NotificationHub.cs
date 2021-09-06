@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using AniBand.Domain;
 using AniBand.SignalR.Services.Abstractions.Interfaces;
 using AniBand.SignalR.Services.Abstractions.Services;
 using Microsoft.AspNetCore.SignalR;
@@ -23,11 +24,11 @@ namespace AniBand.SignalR.Services.Abstractions.Hubs
         {
             var newNotifications = (await _notificationService
                 .GetUnViewedNotificationsAsync(
-                    Convert.ToInt64(Context.ConnectionId)))
+                    Convert.ToInt64(Context.User?.FindFirst(CustomClaimTypes.Actor)?.Value)))
                 .Data
                 .ToList()
                 .Select(n => n.Message);
-
+        
             await Clients.Caller.GetNewNotificationsAsync(newNotifications);
             
             await base.OnConnectedAsync();

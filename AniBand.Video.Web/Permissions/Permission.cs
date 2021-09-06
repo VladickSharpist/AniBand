@@ -6,6 +6,7 @@
         {
             public const string AddVideo = "api.AniBand.Admin.AddVideo";
             public const string RemoveVideo = "api.AniBand.Admin.RemoveVideo";
+            public const string ApproveComment = "api.AniBand.Admin.ApproveComment";
         }
         
         public static class UserPermission

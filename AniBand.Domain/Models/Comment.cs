@@ -1,4 +1,5 @@
 ﻿using AniBand.Domain.Abstractions.Abstractions;
+using AniBand.Domain.Enums;
 
 namespace AniBand.Domain.Models
 {
@@ -16,5 +17,9 @@ namespace AniBand.Domain.Models
         public virtual Video Video { get; set; }
 
         public long? ParentCommentId { get; set; }
+
+        public Status Status  { get; set; }
+
+        public string DeclineMessage { get; set; }
     }
 }

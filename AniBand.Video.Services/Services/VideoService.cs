@@ -8,11 +8,13 @@ using AniBand.Core.Abstractions.Infrastructure.Helpers.Generic;
 using AniBand.Core.Infrastructure.Helpers;
 using AniBand.Core.Infrastructure.Helpers.Generic;
 using AniBand.DataAccess.Abstractions.Repositories;
+using AniBand.Domain.Enums;
 using AniBand.Domain.Models;
+using AniBand.SignalR.Services.Abstractions.Services;
 using AniBand.Video.Services.Abstractions.Models;
 using AniBand.Video.Services.Abstractions.Services;
 using AutoMapper;
-
+using Microsoft.AspNetCore.Identity;
 using Episode = AniBand.Domain.Models.Video;
 
 namespace AniBand.Video.Services.Services
@@ -23,11 +25,15 @@ namespace AniBand.Video.Services.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IFileService _fileService;
+        private readonly UserManager<User> _userManager;
+        private readonly INotificationService _notificationService;
 
         public VideoService(
             IMapper mapper,
             IFileService fileService,
-            IUnitOfWork unitOfWork)
+            IUnitOfWork unitOfWork, 
+            UserManager<User> userManager, 
+            INotificationService notificationService)
         {
             _mapper = mapper
                 ?? throw new NullReferenceException(nameof(mapper));
@@ -35,6 +41,10 @@ namespace AniBand.Video.Services.Services
                 ?? throw new NullReferenceException(nameof(fileService));
             _unitOfWork = unitOfWork
                 ?? throw new NullReferenceException(nameof(unitOfWork));
+            _userManager = userManager
+                ?? throw new NullReferenceException(nameof(userManager));
+            _notificationService = notificationService
+                ?? throw new NullReferenceException(nameof(notificationService));
         }
 
         public async Task<IHttpResult> AddVideosAsync(
@@ -223,12 +233,17 @@ namespace AniBand.Video.Services.Services
         public async Task<IHttpResult<IEnumerable<VideoDto>>> GetVideosBySeasonIdAsync(long id)
         {
             var season = (await _unitOfWork
-                    .GetReadonlyRepository<Season>()
-                    .GetAsync(s => 
-                        s.Id == Convert.ToInt64(id),
-                        null,
-                        s => s.Videos))
+                .GetReadonlyRepository<Season>()
+                .GetAsync(s =>
+                        s.Id == Convert.ToInt64(id)))
                 .SingleOrDefault();
+            
+            var videos = await _unitOfWork
+                .GetReadonlyRepository<Episode>()
+                .GetAsync(v =>
+                        v.SeasonId == Convert.ToInt64(id),
+                    null,
+                    v => v.Comments);
 
             if (season == null)
             {
@@ -238,7 +253,7 @@ namespace AniBand.Video.Services.Services
                     HttpStatusCode.BadRequest);
             }
 
-            var videosDto = _mapper.Map<IEnumerable<VideoDto>>(season.Videos);
+            var videosDto = _mapper.Map<IEnumerable<VideoDto>>(videos);
 
             return new HttpResult<IEnumerable<VideoDto>>(videosDto);
         }
@@ -248,7 +263,11 @@ namespace AniBand.Video.Services.Services
             var video = (await _unitOfWork
                     .GetReadonlyRepository<Episode>()
                     .GetAsync(s => 
-                        s.Id == Convert.ToInt64(id)))
+                        s.Id == Convert.ToInt64(id),
+                        null,
+                        v => 
+                            v.Comments.Where(c => 
+                                c.Status == Status.Approved)))
                 .SingleOrDefault();
 
             if (video == null)
@@ -341,6 +360,159 @@ namespace AniBand.Video.Services.Services
             }
 
             return new HttpResult();
+        }
+
+        public async Task<IHttpResult> AddCommentAsync(CommentDto model)
+        {
+            var episode = (await _unitOfWork
+                    .GetReadWriteRepository<Episode>()
+                    .GetAsync(s => 
+                        s.Id == Convert.ToInt64(model.VideoId)))
+                .SingleOrDefault();
+
+            if (episode == null)
+            {
+                return new HttpResult(
+                    "Wrong id or no such episode",
+                    HttpStatusCode.BadRequest);   
+            }
+
+            var user = await _userManager
+                .FindByIdAsync(model.UserId.ToString());
+            var admins = await _userManager
+                .GetUsersInRoleAsync(Roles.Admin.ToString());
+            
+            if (user == null)
+            {
+                return new HttpResult(
+                    "Wrong id or no such user",
+                    HttpStatusCode.BadRequest);  
+            }
+
+            using (var transaction = await _unitOfWork.BeginTransactionAsync())
+            {
+                try
+                {
+                    var comment = _mapper.Map<Comment>(model);
+                    await _unitOfWork
+                        .GetReadWriteRepository<Comment>()
+                        .SaveAsync(comment);
+                    foreach (var admin in admins)
+                    {
+                        _notificationService?
+                            .NotifyAsync(
+                                admin.Id.ToString(), 
+                                $"New comment from {user.Email}");
+                    }
+                    await transaction.CommitAsync();
+                }
+                catch (Exception e)
+                {
+                    await transaction.RollBackAsync();
+                    return new HttpResult(
+                        e.Message,
+                        HttpStatusCode.BadRequest);
+                }
+            }
+
+            return new HttpResult();
+        }
+
+        public async Task<IHttpResult> ApproveCommentAsync(long id)
+        {
+            var commentRepo = _unitOfWork
+                .GetReadWriteRepository<Comment>();
+            var comment = (await commentRepo
+                    .GetAsync(c => c.Id == id))
+                .SingleOrDefault();
+            if (comment == null)
+            {
+                return new HttpResult(
+                    "Wrong id",
+                    HttpStatusCode.UnprocessableEntity);
+            }
+            
+            using (var transaction = await _unitOfWork.BeginTransactionAsync())
+            {
+                try
+                {
+                    comment.Status = Status.Approved;
+                    await commentRepo.SaveAsync(comment);
+                    await transaction.CommitAsync();
+                }
+                catch (Exception e)
+                {
+                    await transaction.RollBackAsync();
+                    return new HttpResult(
+                        e.Message,
+                        HttpStatusCode.UnprocessableEntity);
+                }
+            }
+            
+            var user = await _userManager
+                .FindByIdAsync(comment.UserId.ToString());
+            await _notificationService.NotifyAsync(
+                user.Id.ToString(),
+                "Your comment approved");
+
+            return new HttpResult();
+        }
+        
+        public async Task<IHttpResult> DeclineCommentAsync(long id, string declineMessage)
+        {
+            var commentRepo = _unitOfWork
+                .GetReadWriteRepository<Comment>();
+            var comment = (await commentRepo
+                    .GetAsync(c => c.Id == id))
+                .SingleOrDefault();
+            if (comment == null)
+            {
+                return new HttpResult(
+                    "Wrong id",
+                    HttpStatusCode.UnprocessableEntity);
+            }
+            
+            using (var transaction = await _unitOfWork.BeginTransactionAsync())
+            {
+                try
+                {
+                    comment.Status = Status.Declined;
+                    comment.DeclineMessage = declineMessage;
+                    await commentRepo.SaveAsync(comment);
+                    await transaction.CommitAsync();
+                }
+                catch (Exception e)
+                {
+                    await transaction.RollBackAsync();
+                    return new HttpResult(
+                        e.Message,
+                        HttpStatusCode.UnprocessableEntity);
+                }
+            }
+            
+            var user = await _userManager
+                .FindByIdAsync(comment.UserId.ToString());
+            await _notificationService.NotifyAsync(
+                user.Id.ToString(),
+                "Your comment declined");
+
+            return new HttpResult();
+        }
+
+        public async Task<IHttpResult<IEnumerable<WaitingCommentDto>>> GetAllWaitingCommentsAsync()
+        {
+            var waitingComments = await _unitOfWork
+                .GetReadonlyRepository<Comment>()
+                .GetNoTrackingAsync(c =>
+                    c.Status == Status.Waiting,
+                    null,
+                    c => c.User ,
+                    c => c.Video);
+
+            var commentsDto = _mapper
+                .Map<IEnumerable<WaitingCommentDto>>(waitingComments);
+
+            return new HttpResult<IEnumerable<WaitingCommentDto>>(commentsDto);
         }
     }
 }

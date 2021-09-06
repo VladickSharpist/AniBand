@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 
 namespace AniBand.Video.Services.Abstractions.Models
 {
@@ -13,5 +14,7 @@ namespace AniBand.Video.Services.Abstractions.Models
         public string Description { get; set; }
 
         public long SeasonId { get; set; }
+        
+        public virtual ICollection<CommentDto> Comments { get; set; }
     }
 }
