@@ -70,7 +70,7 @@ namespace AniBand.SignalR.Services.Services
             
             var unViewed = await notificationRepo
                 .GetAsync(n =>
-                    n.IsViewed == false);
+                    !n.IsViewed);
 
             var unViewedDto = _mapper.Map<IEnumerable<NotificationDto>>(unViewed);
             
