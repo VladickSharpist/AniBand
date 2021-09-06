@@ -109,9 +109,9 @@ namespace AniBand.Video.Services.Services
                         .GetReadWriteRepository<Season>()
                         .SaveAsync(season);
             
-                    if (seasonDto.VideosDto.Count > 0)
+                    if (seasonDto.VideosDto.ToList().Count > 0)
                     {
-                        seasonDto.VideosDto
+                        seasonDto.VideosDto.ToList()
                             .ForEach(v => 
                                 v.SeasonId = season.Id);
                         foreach (var videoDto in seasonDto.VideosDto)
@@ -196,14 +196,30 @@ namespace AniBand.Video.Services.Services
 
         public async Task<IHttpResult<IEnumerable<SeasonDto>>> GetAllSeasonsAsync()
         {
-            var seasons = await _unitOfWork
+            var seasons = (await _unitOfWork
                 .GetReadonlyRepository<Season>()
-                .GetAsync(
-                    null,
-                    null,
-                    season => season.Videos);
-            
-            var seasonsDto = _mapper.Map<IEnumerable<SeasonDto>>(seasons);
+                .GetAsync())
+                .ToList();
+
+            var seasonsDto = seasons.Select(element => 
+            {
+                var seasonDto = _mapper.Map<SeasonDto>(element);
+                var videos = _unitOfWork
+                    .GetReadonlyRepository<Episode>()
+                    .Get(v =>
+                            v.SeasonId == element.Id,
+                        null,
+                        v => v.Comments
+                            .Where(c =>
+                                c.Status == Status.Approved),
+                        v => v.Rates,
+                        v => v.Views);
+                
+                seasonDto.VideosDto = _mapper.Map<IEnumerable<VideoDto>>(videos);
+                
+                return seasonDto;
+            });
+
 
             return new HttpResult<IEnumerable<SeasonDto>>(seasonsDto);
         }
@@ -213,9 +229,7 @@ namespace AniBand.Video.Services.Services
             var season = (await _unitOfWork
                 .GetReadonlyRepository<Season>()
                 .GetAsync(s => 
-                    s.Id == Convert.ToInt64(id),
-                    null,
-                    s => s.Videos))
+                    s.Id == Convert.ToInt64(id)))
                 .SingleOrDefault();
 
             if (season == null)
@@ -226,8 +240,22 @@ namespace AniBand.Video.Services.Services
                     HttpStatusCode.BadRequest);
             }
 
-            return new HttpResult<SeasonDto>(
-                _mapper.Map<SeasonDto>(season));
+            var seasonDto = _mapper.Map<SeasonDto>(season);
+
+            var videos = await _unitOfWork
+                .GetReadonlyRepository<Episode>()
+                .GetAsync(v => 
+                    v.SeasonId == season.Id,
+                    null,
+                    v => v.Comments
+                        .Where(c => 
+                            c.Status == Status.Approved),
+                    v => v.Rates,
+                    v => v.Views);
+
+            seasonDto.VideosDto = _mapper.Map<IEnumerable<VideoDto>>(videos);
+
+            return new HttpResult<SeasonDto>(seasonDto);
         }
 
         public async Task<IHttpResult<IEnumerable<VideoDto>>> GetVideosBySeasonIdAsync(long id)
@@ -243,7 +271,11 @@ namespace AniBand.Video.Services.Services
                 .GetAsync(v =>
                         v.SeasonId == Convert.ToInt64(id),
                     null,
-                    v => v.Comments);
+                    v => v.Comments
+                        .Where(c => 
+                            c.Status == Status.Approved),
+                    v => v.Rates,
+                    v => v.Views);
 
             if (season == null)
             {
@@ -267,7 +299,10 @@ namespace AniBand.Video.Services.Services
                         null,
                         v => 
                             v.Comments.Where(c => 
-                                c.Status == Status.Approved)))
+                                c.Status == Status.Approved),
+                        v => v.Rates,
+                        v => v.Views
+                            ))
                 .SingleOrDefault();
 
             if (video == null)

@@ -15,6 +15,6 @@ namespace AniBand.Video.Services.Abstractions.Models
 
         public long StudioId { get; set; }
 
-        public List<VideoDto> VideosDto { get; set; }
+        public IEnumerable<VideoDto> VideosDto { get; set; }
     }
 }
