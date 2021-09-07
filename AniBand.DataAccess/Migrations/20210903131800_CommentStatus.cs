@@ -3,17 +3,19 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace AniBand.DataAccess.Migrations
 {
-    public partial class RemoveIsApprovedAddStatusUser : Migration
+    public partial class CommentStatus : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "IsApproved",
-                table: "AspNetUsers");
+            migrationBuilder.AddColumn<string>(
+                name: "DeclineMessage",
+                table: "Comments",
+                type: "nvarchar(max)",
+                nullable: true);
 
             migrationBuilder.AddColumn<int>(
                 name: "Status",
-                table: "AspNetUsers",
+                table: "Comments",
                 type: "int",
                 nullable: false,
                 defaultValue: Status.Waiting);
@@ -22,15 +24,12 @@ namespace AniBand.DataAccess.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Status",
-                table: "AspNetUsers");
+                name: "DeclineMessage",
+                table: "Comments");
 
-            migrationBuilder.AddColumn<bool>(
-                name: "IsApproved",
-                table: "AspNetUsers",
-                type: "bit",
-                nullable: false,
-                defaultValue: false);
+            migrationBuilder.DropColumn(
+                name: "Status",
+                table: "Comments");
         }
     }
 }

@@ -57,7 +57,7 @@ namespace AniBand.Auth.Web.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<ActionResult<RefreshTokenVm>> Login(UserLoginVm userVm)
+        public async Task<ActionResult<RefreshTokenVm>> Login([FromBody] UserLoginVm userVm)
         {
             var result = await _authService.AuthenticateAsync(
                 _mapper.Map<LoginUserDto>(userVm));
@@ -70,7 +70,7 @@ namespace AniBand.Auth.Web.Controllers
             _logger.Log(LogLevel.Information, "User failed login");
             return Ok(result.Errors);
         }
-
+        
         [HttpPost]
         public async Task<ActionResult<IHttpResult>> Logout()
         {

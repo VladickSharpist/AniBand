@@ -43,7 +43,7 @@ namespace AniBand.Auth.Services.Services
         {
             var unApprovedUsers = _userManager
                 .GetUsersByField(u => 
-                    u.Status == AccountStatus.Waiting);
+                    u.Status == Status.Waiting);
 
             return _mapper.Map<IEnumerable<UserDto>>(unApprovedUsers);
         }

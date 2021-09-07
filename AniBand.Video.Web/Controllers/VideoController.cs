@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AniBand.Core.Abstractions.Infrastructure.Helpers;
 using AniBand.Core.Abstractions.Infrastructure.Helpers.Generic;
@@ -94,5 +95,31 @@ namespace AniBand.Video.Web.Controllers
         public async Task<ActionResult<IHttpResult>> DeleteVideoById(long id)
             => Ok(await _videoService
                 .DeleteVideoByIdAsync(id));
+
+        [Permission(Permissions.Permission.UserPermission.Approved)]
+        [HttpPost]
+        public async Task<ActionResult<IHttpResult>> AddComment(CommentVm model)
+            => Ok(await _videoService
+                .AddCommentAsync(_mapper.Map<CommentDto>(model)));
+        
+        [Permission(Permissions.Permission.AdminPermission.ApproveComment)]
+        [HttpPost]
+        public async Task<ActionResult<IHttpResult>> ApproveComment(long id)
+            => Ok(await _videoService.ApproveCommentAsync(id));
+        
+        [Permission(Permissions.Permission.AdminPermission.ApproveComment)]
+        [HttpPost]
+        public async Task<ActionResult<IHttpResult>> DeclineComment(long id, string declineMessage)
+            => Ok(await _videoService.DeclineCommentAsync(id, declineMessage));
+
+        [Permission(Permissions.Permission.AdminPermission.ApproveComment)]
+        [HttpPost]
+        public async Task<ActionResult<IHttpResult<IEnumerable<WaitingCommentVm>>>> GetAllWaitingComments()
+        {
+            var result = await _videoService
+                .GetAllWaitingCommentsAsync();
+            return Ok(CheckResult<IEnumerable<WaitingCommentDto>, 
+                IEnumerable<WaitingCommentVm>>(result));
+        }
     }
 }
