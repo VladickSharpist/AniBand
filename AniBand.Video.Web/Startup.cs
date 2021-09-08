@@ -30,7 +30,10 @@ namespace AniBand.Video.Web
                 options.AddPolicy("Client", builder =>
                     builder
                         .AllowAnyHeader()
-                        .WithOrigins("http://localhost:3000", "http://localhost:3001", "http://localhost:3002")
+                        .WithOrigins(
+                            Configuration.GetSection("Origins:3000").Value,
+                            Configuration.GetSection("Origins:3001").Value,
+                            Configuration.GetSection("Origins:3002").Value)
                         .AllowAnyMethod()
                         .AllowCredentials()));
 

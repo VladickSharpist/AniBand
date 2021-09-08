@@ -1,6 +1,5 @@
-﻿using AutoMapper;
-
-using Episode = AniBand.Domain.Models.Video;
+﻿using AniBand.Domain.Models;
+using AutoMapper;
 
 namespace AniBand.Video.Services.Abstractions.Models.Mapping
 {

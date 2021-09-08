@@ -3,7 +3,7 @@ using AniBand.Domain.Abstractions.Abstractions;
 
 namespace AniBand.Domain.Models
 {
-    public class Video
+    public class Episode
         : BaseEntity
     {
         public string Title { get; set; }
@@ -18,7 +18,7 @@ namespace AniBand.Domain.Models
 
         public string VideoFileHash { get; set; }
 
-        public virtual Season Season { get; set; }
+        public virtual Anime Anime { get; set; }
 
         public virtual ICollection<View> Views { get; set; }
 

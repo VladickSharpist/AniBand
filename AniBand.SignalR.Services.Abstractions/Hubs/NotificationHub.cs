@@ -19,8 +19,8 @@ namespace AniBand.SignalR.Services.Abstractions.Hubs
             _notificationService = notificationService
                 ?? throw new NullReferenceException(nameof(notificationService));
         }
-
-        public override async Task OnConnectedAsync()
+        
+        public async Task CheckForNewNotifications()
         {
             var newNotifications = (await _notificationService
                 .GetUnViewedNotificationsAsync(

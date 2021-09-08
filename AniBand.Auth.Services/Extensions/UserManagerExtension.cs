@@ -41,11 +41,7 @@ namespace AniBand.Auth.Services.Extensions
             }
 
             user.Status = Status.Approved;
-            await manager.AddClaimAsync(
-                user, 
-                new Claim(
-                    CustomClaimTypes.Permission, 
-                    "api.AniBand.User.Approved"));
+            await manager.AddToRoleAsync(user, Roles.ApprovedUser.ToString());
             await manager.UpdateAsync(user);
         }
         

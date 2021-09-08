@@ -11,7 +11,7 @@ namespace AniBand.Domain.Models
 
         public long VideoId { get; set; }
 
-        public virtual Video Video { get; set; }
+        public virtual Episode Episode { get; set; }
 
         public double Value { get; set; }
     }

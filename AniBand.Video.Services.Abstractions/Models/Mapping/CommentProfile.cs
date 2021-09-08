@@ -14,7 +14,7 @@ namespace AniBand.Video.Services.Abstractions.Models.Mapping
                 .ForMember(dto => dto.Comment, opt =>
                     opt.MapFrom(comment => comment))
                 .ForMember(dto => dto.Video, opt =>
-                    opt.MapFrom(comment => comment.Video))
+                    opt.MapFrom(comment => comment.Episode))
                 .ForMember(dto => dto.UserEmail, opt =>
                     opt.MapFrom(comment => comment.User.Email));
         }

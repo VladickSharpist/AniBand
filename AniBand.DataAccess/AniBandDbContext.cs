@@ -38,8 +38,8 @@ namespace AniBand.DataAccess
 
         public DbSet<RefreshToken> RefreshTokensHistory { get; set; }
         public DbSet<Studio> Studios { get; set; }
-        public DbSet<Season> Seasons { get; set; }
-        public DbSet<Video> Videos { get; set; }
+        public DbSet<Anime> Animes { get; set; }
+        public DbSet<Episode> Episodes { get; set; }
         public DbSet<Rate> Rates { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<View> Views { get; set; }

@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AniBand.Core.Abstractions.Infrastructure.Helpers;
 using AniBand.Core.Abstractions.Infrastructure.Helpers.Generic;
@@ -36,34 +35,7 @@ namespace AniBand.Video.Web.Controllers
                 .AddVideosAsync(
                     _mapper.Map<ListVideoDto>(model)
                         .VideosDto));
-        
-        [Permission(Permissions.Permission.AdminPermission.AddVideo)]
-        [HttpPost]
-        public async Task<ActionResult<IHttpResult>> AddSeason([FromForm] SeasonVm model)
-            => Ok(await _videoService
-                .AddSeasonAsync(
-                    _mapper.Map<SeasonDto>(model)));
-        
-        [AllowAnonymous]
-        [HttpPost]
-        public async Task<ActionResult<IHttpResult<IEnumerable<SeasonGetVm>>>> GetAllSeasons()
-        {
-            var result = await _videoService
-                .GetAllSeasonsAsync();
-            return Ok(CheckResult<IEnumerable<SeasonDto>, 
-                IEnumerable<SeasonGetVm>>(result));
-        }
 
-        [AllowAnonymous]
-        [HttpPost]
-        public async Task<ActionResult<IHttpResult<SeasonGetVm>>> GetSeasonById(long id)
-        {
-            var result = await _videoService
-                .GetSeasonByIdAsync(id);
-            return Ok(CheckResult<SeasonDto, 
-                SeasonGetVm>(result));
-        }
-        
         [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult<IHttpResult<IEnumerable<VideoGetVm>>>> GetVideosBySeasonId(long id)
@@ -83,43 +55,11 @@ namespace AniBand.Video.Web.Controllers
             return Ok(CheckResult<VideoDto, 
                 VideoGetVm>(result));
         }
-        
-        [Permission(Permissions.Permission.AdminPermission.RemoveVideo)]
-        [HttpPost]
-        public async Task<ActionResult<IHttpResult>> DeleteSeasonById(long id)
-            => Ok(await _videoService
-                .DeleteSeasonByIdAsync(id)); 
-        
+
         [Permission(Permissions.Permission.AdminPermission.RemoveVideo)]
         [HttpPost]
         public async Task<ActionResult<IHttpResult>> DeleteVideoById(long id)
             => Ok(await _videoService
                 .DeleteVideoByIdAsync(id));
-
-        [Permission(Permissions.Permission.UserPermission.Approved)]
-        [HttpPost]
-        public async Task<ActionResult<IHttpResult>> AddComment(CommentVm model)
-            => Ok(await _videoService
-                .AddCommentAsync(_mapper.Map<CommentDto>(model)));
-        
-        [Permission(Permissions.Permission.AdminPermission.ApproveComment)]
-        [HttpPost]
-        public async Task<ActionResult<IHttpResult>> ApproveComment(long id)
-            => Ok(await _videoService.ApproveCommentAsync(id));
-        
-        [Permission(Permissions.Permission.AdminPermission.ApproveComment)]
-        [HttpPost]
-        public async Task<ActionResult<IHttpResult>> DeclineComment(long id, string declineMessage)
-            => Ok(await _videoService.DeclineCommentAsync(id, declineMessage));
-
-        [Permission(Permissions.Permission.AdminPermission.ApproveComment)]
-        [HttpPost]
-        public async Task<ActionResult<IHttpResult<IEnumerable<WaitingCommentVm>>>> GetAllWaitingComments()
-        {
-            var result = await _videoService
-                .GetAllWaitingCommentsAsync();
-            return Ok(CheckResult<IEnumerable<WaitingCommentDto>, 
-                IEnumerable<WaitingCommentVm>>(result));
-        }
     }
 }

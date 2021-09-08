@@ -15,6 +15,14 @@ namespace AniBand.DataAccess.Migrations
                     Values ((select top 1 u.Id from AspNetUsers u where u.NormalizedEmail='ADMIN@GMAIL.COM'), 'AniBand.Permission', 'api.AniBand.Admin.AddVideo')
                     Insert into AspNetUserClaims (UserId, ClaimType, ClaimValue)
                     Values ((select top 1 u.Id from AspNetUsers u where u.NormalizedEmail='ADMIN@GMAIL.COM'), 'AniBand.Permission', 'api.AniBand.Admin.RemoveVideo')
+                    Insert into AspNetUserClaims (UserId, ClaimType, ClaimValue)
+                    Values ((select top 1 u.Id from AspNetUsers u where u.NormalizedEmail='ADMIN@GMAIL.COM'), 'AniBand.Permission', 'api.AniBand.Admin.ApproveComment')
+                    Insert into AspNetUserClaims (UserId, ClaimType, ClaimValue)
+                    Values ((select top 1 u.Id from AspNetUsers u where u.NormalizedEmail='ADMIN@GMAIL.COM'), 'AniBand.Permission', 'api.AniBand.Admin.ApproveUser')
+                    Insert into AspNetUserClaims (UserId, ClaimType, ClaimValue)
+                    Values ((select top 1 u.Id from AspNetUsers u where u.NormalizedEmail='ADMIN@GMAIL.COM'), 'AniBand.Permission', 'api.AniBand.Admin.DeclineUser')
+                    Insert into AspNetUserClaims (UserId, ClaimType, ClaimValue)
+                    Values ((select top 1 u.Id from AspNetUsers u where u.NormalizedEmail='ADMIN@GMAIL.COM'), 'AniBand.Permission', 'api.AniBand.Admin.GetUsers')
             ");
         }
 

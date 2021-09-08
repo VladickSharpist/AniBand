@@ -9,6 +9,8 @@ namespace AniBand.Video.Services.Extensions
         public static IServiceCollection AddVideo(this IServiceCollection services)
             => services
                 .AddScoped<IVideoService, VideoService>()
-                .AddScoped<IFileService, FileService>();
+                .AddScoped<IFileService, FileService>()
+                .AddScoped<ICommentService, CommentService>()
+                .AddScoped<ISeasonService, SeasonService>();
     }
 }
