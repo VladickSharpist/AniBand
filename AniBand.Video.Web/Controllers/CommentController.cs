@@ -2,27 +2,36 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AniBand.Core.Abstractions.Infrastructure.Helpers;
 using AniBand.Core.Abstractions.Infrastructure.Helpers.Generic;
+using AniBand.Core.Infrastructure.Helpers.Generic;
+using AniBand.Domain.Enums;
+using AniBand.Query.Services.Abstractions.Services;
 using AniBand.Video.Services.Abstractions.Models;
 using AniBand.Video.Services.Abstractions.Services;
 using AniBand.Video.Web.Models;
 using AniBand.Web.Core.Controllers;
 using AniBand.Web.Core.Filters.Permission;
+using AniBand.Web.Core.Models.Generic;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AniBand.Video.Web.Controllers
 {
+    [Route("api/[controller]/[action]")]
+    [ApiController]
     public class CommentController
         : BaseController
     {
         private readonly ICommentService _commentService;
+        private readonly IQueryService<CommentDto> _queryService;
         
         public CommentController(
             IMapper mapper, 
-            ICommentService commentService)
+            ICommentService commentService, 
+            IQueryService<CommentDto> queryService)
             : base(mapper)
         {
             _commentService = commentService;
+            _queryService = queryService;
         }
 
         [Permission(Permissions.Permission.UserPermission.Approved)]
@@ -43,12 +52,14 @@ namespace AniBand.Video.Web.Controllers
 
         [Permission(Permissions.Permission.AdminPermission.ApproveComment)]
         [HttpPost]
-        public async Task<ActionResult<IHttpResult<IEnumerable<WaitingCommentVm>>>> GetAllWaitingComments()
+        public async Task<ActionResult<IHttpResult<IEnumerable<CommentVm>>>> GetAllWaitingComments()
         {
-            var result = await _commentService
-                .GetAllWaitingCommentsAsync();
-            return Ok(CheckResult<IEnumerable<WaitingCommentDto>,
-                IEnumerable<WaitingCommentVm>>(result));
+            var result = await _queryService
+                .GetListAsync(
+                    "Status", 
+                    Status.Waiting.ToString());
+            return Ok(CheckResult<PagedList<CommentDto>,
+                PagedVm<CommentVm>>(result));
         }
     }
 }

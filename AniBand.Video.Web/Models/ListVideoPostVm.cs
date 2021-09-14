@@ -4,10 +4,10 @@ using Microsoft.AspNetCore.Http;
 
 namespace AniBand.Video.Web.Models
 {
-    public class ListVideoVM
+    public class ListVideoPostVm
     {
         [Required]
-        public List<VideoVm> Videos { get; set; }
+        public List<VideoPostVm> Videos { get; set; }
         
         [Required]
         public List<IFormFile> Files { get; set; }

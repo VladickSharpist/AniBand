@@ -10,12 +10,12 @@ namespace AniBand.Video.Web.Models.Mapping
     {
         public SeasonProfile()
         {
-            CreateMap<SeasonVm, SeasonDto>()
+            CreateMap<SeasonPostVm, SeasonDto>()
                 .ForMember(sdt =>
-                    sdt.VideosDto, opt =>
+                    sdt.Videos, opt =>
                         opt.AllowNull())
                 .ForMember(sdt =>
-                    sdt.VideosDto, opt =>
+                    sdt.Videos, opt =>
                         opt.MapFrom(svm => 
                             MapVideosDto(svm)))
                 .ForMember(sdt => 
@@ -24,7 +24,7 @@ namespace AniBand.Video.Web.Models.Mapping
                             svm.Image.OpenReadStream()));
         }
 
-        private IEnumerable<VideoDto> MapVideosDto(SeasonVm svm)
+        private IEnumerable<VideoDto> MapVideosDto(SeasonPostVm svm)
         {
             if (svm.Videos == null 
                 && svm.Files == null)

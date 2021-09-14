@@ -38,7 +38,7 @@ namespace AniBand.Video.Services.Services
 
         public async Task<IHttpResult> AddSeasonAsync(SeasonDto seasonDto)
         {
-            if (seasonDto.VideosDto == null)
+            if (seasonDto.Videos == null)
             {
                 return new HttpResult(
                     "Count of Videos lower than count of files",
@@ -60,12 +60,12 @@ namespace AniBand.Video.Services.Services
                         .GetReadWriteRepository<Anime>()
                         .SaveAsync(season);
 
-                    if (seasonDto.VideosDto.ToList().Count > 0)
+                    if (seasonDto.Videos.ToList().Count > 0)
                     {
-                        seasonDto.VideosDto.ToList()
+                        seasonDto.Videos.ToList()
                             .ForEach(v =>
                                 v.SeasonId = season.Id);
-                        foreach (var videoDto in seasonDto.VideosDto)
+                        foreach (var videoDto in seasonDto.Videos)
                         {
                             var result = await _videoService.SaveVideoAsync(videoDto);
                             if (!result.IsSuccessful)
@@ -122,7 +122,7 @@ namespace AniBand.Video.Services.Services
                         v => v.Rates,
                         v => v.Views);
 
-                seasonDto.VideosDto = _mapper.Map<IEnumerable<VideoDto>>(videos);
+                seasonDto.Videos = _mapper.Map<IEnumerable<VideoDto>>(videos);
 
                 return seasonDto;
             });
@@ -159,7 +159,7 @@ namespace AniBand.Video.Services.Services
                     v => v.Rates,
                     v => v.Views);
 
-            seasonDto.VideosDto = _mapper.Map<IEnumerable<VideoDto>>(videos);
+            seasonDto.Videos = _mapper.Map<IEnumerable<VideoDto>>(videos);
 
             return new HttpResult<SeasonDto>(seasonDto);
         }

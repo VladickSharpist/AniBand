@@ -9,7 +9,7 @@ namespace AniBand.Video.Web.Models.Mapping
     {
         public ListVideoProfile()
         {
-            CreateMap<ListVideoVM, ListVideoDto>()
+            CreateMap<ListVideoPostVm, ListVideoDto>()
                 .ForMember(lvd => 
                     lvd.VideosDto, opt =>
                         opt.AllowNull())
@@ -19,11 +19,11 @@ namespace AniBand.Video.Web.Models.Mapping
                             MapVideoDto(listVideoVm)));
         }
 
-        private IEnumerable<VideoDto> MapVideoDto(ListVideoVM listVideoVm)
+        private IEnumerable<VideoDto> MapVideoDto(ListVideoPostVm listVideoPostVm)
         {
-            if (listVideoVm.Files.Count == listVideoVm.Videos.Count)
+            if (listVideoPostVm.Files.Count == listVideoPostVm.Videos.Count)
             {
-                var videosDtoList = listVideoVm
+                var videosDtoList = listVideoPostVm
                     .Videos
                     .Select((element, index) => 
                     new VideoDto()
@@ -31,7 +31,7 @@ namespace AniBand.Video.Web.Models.Mapping
                     Title = element.Title,
                     Description = element.Description, 
                     SeasonId = element.SeasonId,
-                    VideoFile = listVideoVm.Files[index].OpenReadStream()
+                    VideoFile = listVideoPostVm.Files[index].OpenReadStream()
                     });
                 
                 return videosDtoList;

@@ -7,7 +7,7 @@ namespace AniBand.Video.Web.Models.Mapping
     {
         public VideoProfile()
         {
-            CreateMap<VideoVm, VideoDto>();
+            CreateMap<VideoPostVm, VideoDto>();
         }
     }
 }

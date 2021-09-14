@@ -5,6 +5,8 @@ namespace AniBand.Video.Services.Abstractions.Models
 {
     public class SeasonDto
     {
+        public long Id { get; set; }
+        
         public string Title { get; set; }
 
         public string Description { get; set; }
@@ -15,6 +17,6 @@ namespace AniBand.Video.Services.Abstractions.Models
 
         public long StudioId { get; set; }
 
-        public IEnumerable<VideoDto> VideosDto { get; set; }
+        public IEnumerable<VideoDto> Videos { get; set; }
     }
 }

@@ -10,7 +10,7 @@ namespace AniBand.Video.Services.Abstractions.Models.Mapping
             CreateMap<SeasonDto, Anime>();
             CreateMap<Anime, SeasonDto>()
                 .ForMember(dto => 
-                    dto.VideosDto, opt =>
+                    dto.Videos, opt =>
                         opt.MapFrom(s => s.Videos));
         }
     }

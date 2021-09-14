@@ -7,11 +7,8 @@ namespace AniBand.Video.Web.Models.Mapping
     {
         public SeasonGetProfile()
         {
-            CreateMap<SeasonDto, SeasonGetVm>()
-                .ForMember(vm => 
-                    vm.Videos, opt => 
-                        opt.MapFrom(dto => 
-                            dto.VideosDto));
+            CreateMap<SeasonDto, SeasonGetVm>();
+            CreateMap<SeasonDto, SeasonGetNoVideoVm>();
         }
     }
 }

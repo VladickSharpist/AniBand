@@ -4,6 +4,8 @@ namespace AniBand.Video.Web.Models
 {
     public class VideoGetVm
     {
+        public long Id { get; set; }
+        
         public string Title { get; set; }
 
         public string VideoFileUrl { get; set; }

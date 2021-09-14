@@ -2,7 +2,7 @@
 
 namespace AniBand.Video.Web.Models
 {
-    public class VideoVm
+    public class VideoPostVm
     {
         public string Title { get; set; }
 

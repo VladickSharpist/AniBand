@@ -1,6 +1,7 @@
+using AniBand.Core.Infrastructure.Helpers.Generic;
 using AniBand.Video.Services.Abstractions.Models;
+using AniBand.Web.Core.Models.Generic;
 using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
 
 namespace AniBand.Video.Web.Models.Mapping
 {
@@ -9,6 +10,9 @@ namespace AniBand.Video.Web.Models.Mapping
         public VideoGetProfile()
         {
             CreateMap<VideoDto, VideoGetVm>();
+            CreateMap<PagedList<VideoDto>, PagedVm<VideoGetVm>>()
+                .ForMember(vm => vm.Data, expression => 
+                    expression.MapFrom(dtos => dtos));
         }
     }
 }

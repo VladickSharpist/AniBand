@@ -41,6 +41,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AniBand.SignalR.Services", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AniBand.SignalR.Services.Abstractions", "AniBand.SignalR.Services.Abstractions\AniBand.SignalR.Services.Abstractions.csproj", "{7885A577-604E-4365-B13F-D95544E5C46C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AniBand.Query.Services.Abstractions", "AniBand.Query.Services.Abstractions\AniBand.Query.Services.Abstractions.csproj", "{8D88D4BB-AE4F-43AC-B34C-D0F3FFF4CEE6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AniBand.Query.Services", "AniBand.Query.Services\AniBand.Query.Services.csproj", "{C252766C-40F7-447D-A9E8-FD979FB2FA1F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -107,6 +111,14 @@ Global
 		{7885A577-604E-4365-B13F-D95544E5C46C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7885A577-604E-4365-B13F-D95544E5C46C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7885A577-604E-4365-B13F-D95544E5C46C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D88D4BB-AE4F-43AC-B34C-D0F3FFF4CEE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D88D4BB-AE4F-43AC-B34C-D0F3FFF4CEE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D88D4BB-AE4F-43AC-B34C-D0F3FFF4CEE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D88D4BB-AE4F-43AC-B34C-D0F3FFF4CEE6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C252766C-40F7-447D-A9E8-FD979FB2FA1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C252766C-40F7-447D-A9E8-FD979FB2FA1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C252766C-40F7-447D-A9E8-FD979FB2FA1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C252766C-40F7-447D-A9E8-FD979FB2FA1F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -127,6 +139,8 @@ Global
 		{FAA0030A-0093-4397-8AF1-B62865E0C898} = {1B6FE3FE-0B6B-4DCB-93DF-427BA4DB7EAA}
 		{F53E3EE8-99DF-427A-831B-B4A98BD46449} = {5B0D9510-5118-4C90-9685-CEA88AC49BBE}
 		{7885A577-604E-4365-B13F-D95544E5C46C} = {5B0D9510-5118-4C90-9685-CEA88AC49BBE}
+		{8D88D4BB-AE4F-43AC-B34C-D0F3FFF4CEE6} = {5B0D9510-5118-4C90-9685-CEA88AC49BBE}
+		{C252766C-40F7-447D-A9E8-FD979FB2FA1F} = {5B0D9510-5118-4C90-9685-CEA88AC49BBE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {07587552-78FC-418E-B69F-190F7209102A}

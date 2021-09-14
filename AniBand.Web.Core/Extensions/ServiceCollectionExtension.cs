@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using AniBand.Auth.Services.Abstractions.Extensions;
@@ -8,6 +9,7 @@ using AniBand.Core.Extensions;
 using AniBand.DataAccess;
 using AniBand.DataAccess.Extensions;
 using AniBand.Domain.Models;
+using AniBand.Query.Services.Extensions;
 using AniBand.SignalR.Services.Abstractions.Extensions;
 using AniBand.SignalR.Services.Extensions;
 using AniBand.Video.Services.Abstractions.Extensions;
@@ -69,13 +71,15 @@ namespace AniBand.Web.Core.Extensions
                 .AddUser()
                 .AddAuth()
                 .AddVideo()
-                .AddSignalRServices();
+                .AddSignalRServices()
+                .AddQueryService();
         
         private static IServiceCollection AddMapper(this IServiceCollection services)
             => services
                 .AddAuthServiceMapper()
                 .AddVideoServiceMapper()
-                .AddSignalRServiceMapper();
+                .AddSignalRServiceMapper()
+                .AddWebCoreMapper();
 
         private static IServiceCollection AddIdentity(this IServiceCollection services)
             => services
@@ -154,5 +158,9 @@ namespace AniBand.Web.Core.Extensions
         private static IServiceCollection AddHandlers(this IServiceCollection services)
             => services
                 .AddSingleton<IAuthorizationHandler, PermissionHandler>();
+
+        private static IServiceCollection AddWebCoreMapper(this IServiceCollection services)
+            => services
+                .AddAutoMapper(Assembly.GetExecutingAssembly());
     }
 }

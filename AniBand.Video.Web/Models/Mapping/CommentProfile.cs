@@ -1,4 +1,6 @@
+using AniBand.Core.Infrastructure.Helpers.Generic;
 using AniBand.Video.Services.Abstractions.Models;
+using AniBand.Web.Core.Models.Generic;
 using AutoMapper;
 
 namespace AniBand.Video.Web.Models.Mapping
@@ -10,7 +12,9 @@ namespace AniBand.Video.Web.Models.Mapping
         {
             CreateMap<CommentVm, CommentDto>();
             CreateMap<CommentDto, CommentVm>();
-            CreateMap<WaitingCommentDto, WaitingCommentVm>();
+            CreateMap<PagedList<CommentDto>, PagedVm<CommentVm>>()
+                .ForMember(vm => vm.Data, expression => 
+                    expression.MapFrom(dtos => dtos));
         }
     }
 }

@@ -5,6 +5,8 @@ namespace AniBand.Video.Services.Abstractions.Models
 {
     public class VideoDto
     {
+        public long Id { get; set; }
+        
         public string Title { get; set; }
 
         public Stream VideoFile { get; set; }
