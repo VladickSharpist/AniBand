@@ -13,6 +13,7 @@ using AniBand.Web.Core.Controllers;
 using AniBand.Web.Core.Filters.Permission;
 using AniBand.Web.Core.Models.Generic;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AniBand.Video.Web.Controllers
@@ -50,15 +51,17 @@ namespace AniBand.Video.Web.Controllers
         [HttpPost]
         public async Task<ActionResult<IHttpResult>> DeclineComment(long id, string declineMessage)
             => Ok(await _commentService.DeclineCommentAsync(id, declineMessage));
-
+        
         [Permission(Permissions.Permission.AdminPermission.ApproveComment)]
+        [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult<IHttpResult<PagedVm<CommentVm>>>> GetAllWaitingComments()
         {
             var result = await _queryService
-                .GetListAsync(
-                    "Status", 
-                    Status.Waiting.ToString());
+                .GetListAsync(new Dictionary<string, string>
+                {
+                    { "Status", Status.Waiting.ToString() }
+                });
             return Ok(CheckResult<PagedList<CommentDto>,
                 PagedVm<CommentVm>>(result));
         }

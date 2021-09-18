@@ -12,14 +12,12 @@ namespace AniBand.Query.Services.Abstractions.Services
         Task<IHttpResult<TDto>> GetAsync(QueryDto queryDto);
 
         Task<IHttpResult<TDto>> GetAsync(
-            string propName,
-            string propValue);
+            IDictionary<string, string> filter);
 
         Task<IHttpResult<PagedList<TDto>>> GetListAsync(QueryDto queryDto);
 
         Task<IHttpResult<PagedList<TDto>>> GetListAsync(
-            string propName,
-            string propValue,
+            IDictionary<string, string> filter,
             string orderBy = null,
             int pageNumber = default,
             int pageSize = default);

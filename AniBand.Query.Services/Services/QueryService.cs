@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Threading.Tasks;
 using AniBand.Core.Abstractions.Infrastructure.Helpers.Generic;
 using AniBand.Core.Infrastructure.Helpers.Generic;
@@ -31,9 +32,7 @@ namespace AniBand.Query.Services.Services
 
         public async Task<IHttpResult<TDto>> GetAsync(QueryDto queryDto)
         {
-            var condition = GetWhereCondition(
-                queryDto.Props, 
-                queryDto.Consts);
+            var condition = GetWhereCondition(queryDto.Filter);
 
             var model = (await _unitOfWork
                 .GetReadonlyRepository<TEntity>()
@@ -45,12 +44,9 @@ namespace AniBand.Query.Services.Services
         }
         
         public async Task<IHttpResult<TDto>> GetAsync(
-            string propName, 
-            string propValue)
+            IDictionary<string, string> filter)
         {
-            var condition = GetWhereCondition(
-                new [] { propName },
-                new [] { propValue });
+            var condition = GetWhereCondition(filter);
 
             var model = (await _unitOfWork
                     .GetReadonlyRepository<TEntity>()
@@ -63,9 +59,7 @@ namespace AniBand.Query.Services.Services
         
         public async Task<IHttpResult<PagedList<TDto>>> GetListAsync(QueryDto queryDto)
         {
-            var condition = GetWhereCondition(
-                queryDto.Props, 
-                queryDto.Consts);
+            var condition = GetWhereCondition(queryDto.Filter);
             var order = GetOrderByExpr(queryDto.OrderProp);
 
             var model = order != null 
@@ -85,15 +79,12 @@ namespace AniBand.Query.Services.Services
         }
         
         public async Task<IHttpResult<PagedList<TDto>>> GetListAsync(
-            string propName, 
-            string propValue,
+            IDictionary<string, string> filter,
             string orderBy = null,
             int pageNumber = default,
             int pageSize = default)
         {
-            var condition = GetWhereCondition(
-                new [] { propName },
-                new [] { propValue });
+            var condition = GetWhereCondition(filter);
             var order = GetOrderByExpr(orderBy);
 
             var model = order != null 
@@ -125,21 +116,20 @@ namespace AniBand.Query.Services.Services
         }
 
         private Expression<Func<TEntity, bool>> GetWhereCondition(
-            IEnumerable<string> stringProps,
-            IEnumerable<string> stringConsts)
+            IDictionary<string, string> filter)
         {
             var param = Expression.Parameter(typeof(TEntity));
 
-            var props = stringProps
-                .Select(stringProp => 
-                    Expression.Property(param, stringProp))
+            var props = filter
+                .Select(keyValuePair => 
+                    Expression.Property(param, keyValuePair.Key))
                 .ToList();
             
-            var constants = props.Select((prop, index) =>
+            var constants = props.Select(prop =>
                 Expression
                     .Constant(
-                        Convert.ChangeType(
-                            stringConsts.ToList()[index], 
+                        ChangeType(
+                            filter[prop.Member.Name],
                             prop.Type)))
                 .ToList();
 
@@ -157,7 +147,8 @@ namespace AniBand.Query.Services.Services
                 .Lambda<Func<TEntity, bool>>(filterExpr, param);
         }
 
-        private Expression<Func<TEntity, object>> GetOrderByExpr(string stringOrderProp)
+        private Expression<Func<TEntity, object>> GetOrderByExpr(
+            string stringOrderProp)
         {
             if (string.IsNullOrEmpty(stringOrderProp))
             {
@@ -174,6 +165,14 @@ namespace AniBand.Query.Services.Services
                 );
 
             return order;
+        }
+
+        private object ChangeType(string value, Type type)
+        {
+            if (type.GetTypeInfo().IsEnum)
+                return Enum.Parse(type, value);
+
+            return Convert.ChangeType(value, type);
         }
     }
 }
