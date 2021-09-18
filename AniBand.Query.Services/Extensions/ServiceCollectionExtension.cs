@@ -1,6 +1,7 @@
 using AniBand.Domain.Models;
 using AniBand.Query.Services.Abstractions.Services;
 using AniBand.Query.Services.Services;
+using AniBand.SignalR.Services.Abstractions.Models;
 using AniBand.Video.Services.Abstractions.Models;
 using Microsoft.Extensions.DependencyInjection;
 

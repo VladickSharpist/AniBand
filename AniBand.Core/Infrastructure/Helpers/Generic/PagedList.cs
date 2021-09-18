@@ -18,7 +18,11 @@ namespace AniBand.Core.Infrastructure.Helpers.Generic
         
         public bool HasNext => CurrentPage < TotalPages;
         
-        public PagedList(IEnumerable<T> items, int count, int pageNumber, int pageSize)
+        public PagedList(
+            IEnumerable<T> items, 
+            int count, 
+            int pageNumber, 
+            int pageSize)
         {
             TotalCount = count;
             PageSize = pageSize;
@@ -29,7 +33,10 @@ namespace AniBand.Core.Infrastructure.Helpers.Generic
             AddRange(items);
         }
         
-        public static PagedList<T> ToPagedList(IEnumerable<T> source, int pageNumber, int pageSize)
+        public static PagedList<T> ToPagedList(
+            IEnumerable<T> source,
+            int pageNumber = default, 
+            int pageSize = default)
         {
             var count = source.Count();
             if (pageNumber != default
@@ -38,6 +45,7 @@ namespace AniBand.Core.Infrastructure.Helpers.Generic
                 var items = source.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
                 return new PagedList<T>(items, count, pageNumber, pageSize);
             }
+            
             return new PagedList<T>(source, count, pageNumber, pageSize);
         }
     }

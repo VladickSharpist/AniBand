@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AniBand.Core.Abstractions.Infrastructure.Helpers;
 using AniBand.Core.Abstractions.Infrastructure.Helpers.Generic;
+using AniBand.Core.Infrastructure.Helpers.Generic;
 using AniBand.Query.Services.Abstractions.Models;
 using AniBand.Query.Services.Abstractions.Services;
 using AniBand.Video.Services.Abstractions.Models;
@@ -9,6 +10,7 @@ using AniBand.Video.Services.Abstractions.Services;
 using AniBand.Video.Web.Models;
 using AniBand.Web.Core.Controllers;
 using AniBand.Web.Core.Filters.Permission;
+using AniBand.Web.Core.Models.Generic;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -42,12 +44,12 @@ namespace AniBand.Video.Web.Controllers
         
         [AllowAnonymous]
         [HttpPost]
-        public async Task<ActionResult<IHttpResult<IEnumerable<SeasonGetNoVideoVm>>>> GetAllSeasons()
+        public async Task<ActionResult<IHttpResult<PagedVm<SeasonGetNoVideoVm>>>> GetAllSeasons()
         {
             var result = await _queryService
                 .GetAllAsync();
-            return Ok(CheckResult<IEnumerable<SeasonDto>, 
-                IEnumerable<SeasonGetNoVideoVm>>(result));
+            return Ok(CheckResult<PagedList<SeasonDto>, 
+                PagedVm<SeasonGetNoVideoVm>>(result));
         }
         
         [AllowAnonymous]

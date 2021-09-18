@@ -10,8 +10,6 @@ namespace AniBand.Query.Services.Abstractions.Models
 
         public string OrderProp { get; set; }
 
-        public IEnumerable<string> Includes { get; set; }
-
         public int PageNumber { get; set; } = default;
 
         public int PageSize { get; set; } = default;

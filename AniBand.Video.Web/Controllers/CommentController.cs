@@ -52,7 +52,7 @@ namespace AniBand.Video.Web.Controllers
 
         [Permission(Permissions.Permission.AdminPermission.ApproveComment)]
         [HttpPost]
-        public async Task<ActionResult<IHttpResult<IEnumerable<CommentVm>>>> GetAllWaitingComments()
+        public async Task<ActionResult<IHttpResult<PagedVm<CommentVm>>>> GetAllWaitingComments()
         {
             var result = await _queryService
                 .GetListAsync(

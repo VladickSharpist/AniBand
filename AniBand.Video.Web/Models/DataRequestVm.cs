@@ -10,8 +10,6 @@ namespace AniBand.Video.Web.Models
 
         public string OrderProp { get; set; }
 
-        public IEnumerable<string> Includes { get; set; }
-
         public int PageNumber { get; set; }
 
         public int PageSize { get; set; }

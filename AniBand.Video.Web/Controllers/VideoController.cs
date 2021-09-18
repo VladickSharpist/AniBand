@@ -45,7 +45,7 @@ namespace AniBand.Video.Web.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<ActionResult<IHttpResult<IEnumerable<VideoGetVm>>>> GetVideos(DataRequestVm model)
+        public async Task<ActionResult<IHttpResult<PagedVm<VideoGetVm>>>> GetVideos(DataRequestVm model)
         {
             var result = await _queryService
                 .GetListAsync(_mapper.Map<QueryDto>(model));

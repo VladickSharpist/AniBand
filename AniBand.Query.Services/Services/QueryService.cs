@@ -34,14 +34,10 @@ namespace AniBand.Query.Services.Services
             var condition = GetWhereCondition(
                 queryDto.Props, 
                 queryDto.Consts);
-            var includes = GetIncludesList(queryDto.Includes).ToArray();
 
             var model = (await _unitOfWork
                 .GetReadonlyRepository<TEntity>()
-                .GetNoTrackingAsync(
-                    condition, 
-                    null, 
-                    includes))
+                .GetNoTrackingAsync(condition))
                 .SingleOrDefault();
             
             var dto = _mapper.Map<TDto>(model);
@@ -50,20 +46,15 @@ namespace AniBand.Query.Services.Services
         
         public async Task<IHttpResult<TDto>> GetAsync(
             string propName, 
-            string propValue,
-            params string[] stringIncludes)
+            string propValue)
         {
             var condition = GetWhereCondition(
                 new [] { propName },
                 new [] { propValue });
-            var includes = GetIncludesList(stringIncludes).ToArray();
 
             var model = (await _unitOfWork
                     .GetReadonlyRepository<TEntity>()
-                    .GetNoTrackingAsync(
-                        condition, 
-                        null,
-                        includes))
+                    .GetNoTrackingAsync(condition))
                 .SingleOrDefault();
             
             var dto = _mapper.Map<TDto>(model);
@@ -76,15 +67,14 @@ namespace AniBand.Query.Services.Services
                 queryDto.Props, 
                 queryDto.Consts);
             var order = GetOrderByExpr(queryDto.OrderProp);
-            var includes = GetIncludesList(queryDto.Includes).ToArray();
 
             var model = order != null 
                 ? await _unitOfWork
                     .GetReadonlyRepository<TEntity>()
-                    .GetNoTrackingAsync(condition, o => o.OrderBy(order), includes)
+                    .GetNoTrackingAsync(condition, o => o.OrderBy(order))
                 : await _unitOfWork
                     .GetReadonlyRepository<TEntity>()
-                    .GetNoTrackingAsync(condition, includes: includes);
+                    .GetNoTrackingAsync(condition);
 
             var dto = PagedList<TDto>.ToPagedList(
                 _mapper.Map<IEnumerable<TDto>>(model),
@@ -99,38 +89,39 @@ namespace AniBand.Query.Services.Services
             string propValue,
             string orderBy = null,
             int pageNumber = default,
-            int pageSize = default,
-            params string[] stringIncludes)
+            int pageSize = default)
         {
             var condition = GetWhereCondition(
                 new [] { propName },
                 new [] { propValue });
             var order = GetOrderByExpr(orderBy);
-            var includes = GetIncludesList(stringIncludes).ToArray();
-            
+
             var model = order != null 
                 ? await _unitOfWork
                     .GetReadonlyRepository<TEntity>()
-                    .GetNoTrackingAsync(condition, o => o.OrderBy(order), includes)
+                    .GetNoTrackingAsync(condition, o => o.OrderBy(order))
                 : await _unitOfWork
                     .GetReadonlyRepository<TEntity>()
-                    .GetNoTrackingAsync(condition, includes: includes);
+                    .GetNoTrackingAsync(condition);
 
             var dto = PagedList<TDto>.ToPagedList(
                 _mapper.Map<IEnumerable<TDto>>(model),
                 pageNumber,
-                pageSize
-                );
+                pageSize);
             return new HttpResult<PagedList<TDto>>(dto);
         }
 
-        public async Task<IHttpResult<IEnumerable<TDto>>> GetAllAsync()
+        public async Task<IHttpResult<PagedList<TDto>>> GetAllAsync()
         {
             var model = await _unitOfWork
                 .GetReadonlyRepository<TEntity>()
                 .GetNoTrackingAsync();
-
-            return new HttpResult<IEnumerable<TDto>>(_mapper.Map<IEnumerable<TDto>>(model));
+            
+            var dto = PagedList<TDto>.ToPagedList(
+                _mapper.Map<IEnumerable<TDto>>(model)
+            );
+            
+            return new HttpResult<PagedList<TDto>>(dto);
         }
 
         private Expression<Func<TEntity, bool>> GetWhereCondition(
@@ -139,27 +130,22 @@ namespace AniBand.Query.Services.Services
         {
             var param = Expression.Parameter(typeof(TEntity));
 
-            var props = stringProps.Select(stringProp =>
-            {
-                var prop = Expression.Property(param, stringProp);
-                return prop;
-            }).ToList();
+            var props = stringProps
+                .Select(stringProp => 
+                    Expression.Property(param, stringProp))
+                .ToList();
             
             var constants = props.Select((prop, index) =>
-            {
-                var constant = Expression
+                Expression
                     .Constant(
                         Convert.ChangeType(
                             stringConsts.ToList()[index], 
-                            prop.Type));
-                return constant;
-            }).ToList();
+                            prop.Type)))
+                .ToList();
 
             var equalsExprList = props.Select((prop, index) =>
-            {
-                var equalExpr = Expression.Equal(prop, constants[index]);
-                return equalExpr;
-            }).ToList();
+                Expression.Equal(prop, constants[index]))
+                .ToList();
 
             var filterExpr = equalsExprList[0];
             for (var i = 1; i < equalsExprList.Count; i++)
@@ -188,30 +174,6 @@ namespace AniBand.Query.Services.Services
                 );
 
             return order;
-        }
-
-        private IEnumerable<Expression<Func<TEntity, object>>> GetIncludesList(
-            IEnumerable<string> includes)
-        {
-            if (includes == null
-                || !includes.Any())
-            {
-                return null;
-            }
-            
-            var param = Expression.Parameter(typeof(TEntity));
-
-            var props = includes
-                .Select(include => 
-                    Expression.Property(param, include));
-
-            var includesExpr = props
-                .Select(prop =>
-                    Expression.Lambda<Func<TEntity, object>>(
-                        prop, 
-                        param));
-
-            return includesExpr;
         }
     }
 }

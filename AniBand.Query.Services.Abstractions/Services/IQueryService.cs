@@ -13,8 +13,7 @@ namespace AniBand.Query.Services.Abstractions.Services
 
         Task<IHttpResult<TDto>> GetAsync(
             string propName,
-            string propValue,
-            params string[] stringIncludes);
+            string propValue);
 
         Task<IHttpResult<PagedList<TDto>>> GetListAsync(QueryDto queryDto);
 
@@ -23,9 +22,8 @@ namespace AniBand.Query.Services.Abstractions.Services
             string propValue,
             string orderBy = null,
             int pageNumber = default,
-            int pageSize = default,
-            params string[] stringIncludes);
+            int pageSize = default);
 
-        Task<IHttpResult<IEnumerable<TDto>>> GetAllAsync();
+        Task<IHttpResult<PagedList<TDto>>> GetAllAsync();
     }
 }
