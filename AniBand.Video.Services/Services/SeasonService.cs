@@ -101,69 +101,6 @@ namespace AniBand.Video.Services.Services
             return new HttpResult();
         }
 
-        public async Task<IHttpResult<IEnumerable<SeasonDto>>> GetAllSeasonsAsync()
-        {
-            var seasons = (await _unitOfWork
-                    .GetReadonlyRepository<Anime>()
-                    .GetAsync())
-                .ToList();
-
-            var seasonsDto = seasons.Select(element =>
-            {
-                var seasonDto = _mapper.Map<SeasonDto>(element);
-                var videos = _unitOfWork
-                    .GetReadonlyRepository<Episode>()
-                    .Get(v =>
-                            v.SeasonId == element.Id,
-                        null,
-                        v => v.Comments
-                            .Where(c =>
-                                c.Status == Status.Approved),
-                        v => v.Rates,
-                        v => v.Views);
-
-                seasonDto.Videos = _mapper.Map<IEnumerable<VideoDto>>(videos);
-
-                return seasonDto;
-            });
-
-            return new HttpResult<IEnumerable<SeasonDto>>(seasonsDto);
-        }
-
-        public async Task<IHttpResult<SeasonDto>> GetSeasonByIdAsync(long id)
-        {
-            var season = (await _unitOfWork
-                    .GetReadonlyRepository<Anime>()
-                    .GetAsync(s =>
-                        s.Id == Convert.ToInt64(id)))
-                .SingleOrDefault();
-
-            if (season == null)
-            {
-                return new HttpResult<SeasonDto>(
-                    null,
-                    "No such Anime",
-                    HttpStatusCode.BadRequest);
-            }
-
-            var seasonDto = _mapper.Map<SeasonDto>(season);
-
-            var videos = await _unitOfWork
-                .GetReadonlyRepository<Episode>()
-                .GetAsync(v =>
-                        v.SeasonId == season.Id,
-                    null,
-                    v => v.Comments
-                        .Where(c =>
-                            c.Status == Status.Approved),
-                    v => v.Rates,
-                    v => v.Views);
-
-            seasonDto.Videos = _mapper.Map<IEnumerable<VideoDto>>(videos);
-
-            return new HttpResult<SeasonDto>(seasonDto);
-        }
-        
         public async Task<IHttpResult> DeleteSeasonByIdAsync(long id)
         {
             var seasonRepo = _unitOfWork

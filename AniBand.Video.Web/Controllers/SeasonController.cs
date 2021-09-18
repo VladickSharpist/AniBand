@@ -44,12 +44,12 @@ namespace AniBand.Video.Web.Controllers
         
         [AllowAnonymous]
         [HttpPost]
-        public async Task<ActionResult<IHttpResult<PagedVm<SeasonGetNoVideoVm>>>> GetAllSeasons()
+        public async Task<ActionResult<IHttpResult<PagedVm<SeasonGetVm>>>> GetAllSeasons()
         {
             var result = await _queryService
                 .GetAllAsync();
             return Ok(CheckResult<PagedList<SeasonDto>, 
-                PagedVm<SeasonGetNoVideoVm>>(result));
+                PagedVm<SeasonGetVm>>(result));
         }
         
         [AllowAnonymous]
@@ -60,6 +60,16 @@ namespace AniBand.Video.Web.Controllers
                 .GetAsync(_mapper.Map<QueryDto>(model));
             return Ok(CheckResult<SeasonDto, 
                 SeasonGetVm>(resultSeason));
+        }
+        
+        [AllowAnonymous]
+        [HttpPost]
+        public async Task<ActionResult<IHttpResult<SeasonGetVm>>> GetListSeason(DataRequestVm model)
+        {
+            var resultSeason = await _queryService
+                .GetListAsync(_mapper.Map<QueryDto>(model));
+            return Ok(CheckResult<PagedList<SeasonDto>, 
+                PagedVm<SeasonGetVm>>(resultSeason));
         }
         
         [Permission(Permissions.Permission.AdminPermission.RemoveVideo)]

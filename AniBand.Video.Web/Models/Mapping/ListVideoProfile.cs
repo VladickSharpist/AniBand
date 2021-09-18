@@ -26,7 +26,7 @@ namespace AniBand.Video.Web.Models.Mapping
                 var videosDtoList = listVideoPostVm
                     .Videos
                     .Select((element, index) => 
-                    new VideoDto()
+                    new VideoDto
                     {
                     Title = element.Title,
                     Description = element.Description, 

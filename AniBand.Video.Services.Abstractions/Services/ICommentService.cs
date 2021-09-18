@@ -13,7 +13,5 @@ namespace AniBand.Video.Services.Abstractions.Services
         Task<IHttpResult> ApproveCommentAsync(long id);
 
         Task<IHttpResult> DeclineCommentAsync(long id, string declineMessage);
-
-        Task<IHttpResult<IEnumerable<WaitingCommentDto>>> GetAllWaitingCommentsAsync();
     }
 }

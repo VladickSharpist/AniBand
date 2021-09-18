@@ -12,10 +12,6 @@ namespace AniBand.Video.Services.Abstractions.Services
 
         Task<IHttpResult> SaveVideoAsync(VideoDto videoDto);
 
-        Task<IHttpResult<IEnumerable<VideoDto>>> GetVideosBySeasonIdAsync(long id);
-        
-        Task<IHttpResult<VideoDto>> GetVideoByIdAsync(long id);
-
         Task<IHttpResult> DeleteVideoByIdAsync(long id);
     }
 }

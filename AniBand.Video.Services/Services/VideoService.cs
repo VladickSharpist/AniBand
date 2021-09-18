@@ -117,66 +117,7 @@ namespace AniBand.Video.Services.Services
 
             return new HttpResult();
         }
-
-        public async Task<IHttpResult<IEnumerable<VideoDto>>> GetVideosBySeasonIdAsync(long id)
-        {
-            var season = (await _unitOfWork
-                .GetReadonlyRepository<Anime>()
-                .GetAsync(s =>
-                        s.Id == Convert.ToInt64(id)))
-                .SingleOrDefault();
-            
-            var videos = await _unitOfWork
-                .GetReadonlyRepository<Episode>()
-                .GetAsync(v =>
-                        v.SeasonId == Convert.ToInt64(id),
-                    null,
-                    v => v.Comments
-                        .Where(c => 
-                            c.Status == Status.Approved),
-                    v => v.Rates,
-                    v => v.Views);
-
-            if (season == null)
-            {
-                return new HttpResult<IEnumerable<VideoDto>>(
-                    null,
-                    "No such Anime",
-                    HttpStatusCode.BadRequest);
-            }
-
-            var videosDto = _mapper.Map<IEnumerable<VideoDto>>(videos);
-
-            return new HttpResult<IEnumerable<VideoDto>>(videosDto);
-        }
-
-        public async Task<IHttpResult<VideoDto>> GetVideoByIdAsync(long id)
-        {
-            var video = (await _unitOfWork
-                    .GetReadonlyRepository<Episode>()
-                    .GetAsync(s => 
-                        s.Id == Convert.ToInt64(id),
-                        null,
-                        v => 
-                            v.Comments.Where(c => 
-                                c.Status == Status.Approved),
-                        v => v.Rates,
-                        v => v.Views
-                            ))
-                .SingleOrDefault();
-
-            if (video == null)
-            {
-                return new HttpResult<VideoDto>(
-                    null,
-                    "No such Episode",
-                    HttpStatusCode.BadRequest);
-            }
-            
-            return new HttpResult<VideoDto>(
-                _mapper.Map<VideoDto>(video));
-        }
-
+        
         public async Task<IHttpResult> DeleteVideoByIdAsync(long id)
         {
             var episodeRepo = _unitOfWork

@@ -174,21 +174,5 @@ namespace AniBand.Video.Services.Services
 
             return new HttpResult();
         }
-
-        public async Task<IHttpResult<IEnumerable<WaitingCommentDto>>> GetAllWaitingCommentsAsync()
-        {
-            var waitingComments = await _unitOfWork
-                .GetReadonlyRepository<Comment>()
-                .GetNoTrackingAsync(c =>
-                    c.Status == Status.Waiting,
-                    null,
-                    c => c.User ,
-                    c => c.Episode);
-
-            var commentsDto = _mapper
-                .Map<IEnumerable<WaitingCommentDto>>(waitingComments);
-
-            return new HttpResult<IEnumerable<WaitingCommentDto>>(commentsDto);
-        }
     }
 }

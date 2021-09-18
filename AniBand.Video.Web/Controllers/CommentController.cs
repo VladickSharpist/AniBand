@@ -4,6 +4,7 @@ using AniBand.Core.Abstractions.Infrastructure.Helpers;
 using AniBand.Core.Abstractions.Infrastructure.Helpers.Generic;
 using AniBand.Core.Infrastructure.Helpers.Generic;
 using AniBand.Domain.Enums;
+using AniBand.Query.Services.Abstractions.Models;
 using AniBand.Query.Services.Abstractions.Services;
 using AniBand.Video.Services.Abstractions.Models;
 using AniBand.Video.Services.Abstractions.Services;
@@ -58,6 +59,24 @@ namespace AniBand.Video.Web.Controllers
                 .GetListAsync(
                     "Status", 
                     Status.Waiting.ToString());
+            return Ok(CheckResult<PagedList<CommentDto>,
+                PagedVm<CommentVm>>(result));
+        }
+        
+        [HttpPost]
+        public async Task<ActionResult<IHttpResult<CommentVm>>> GetComment(DataRequestVm model)
+        {
+            var result = await _queryService
+                .GetAsync(_mapper.Map<QueryDto>(model));
+            return Ok(CheckResult<CommentDto,
+                CommentVm>(result));
+        }
+        
+        [HttpPost]
+        public async Task<ActionResult<IHttpResult<PagedVm<CommentVm>>>> GetListComment(DataRequestVm model)
+        {
+            var result = await _queryService
+                .GetListAsync(_mapper.Map<QueryDto>(model));
             return Ok(CheckResult<PagedList<CommentDto>,
                 PagedVm<CommentVm>>(result));
         }
