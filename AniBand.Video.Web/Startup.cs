@@ -1,3 +1,5 @@
+using System.Linq;
+using AniBand.Core.Abstractions.Infrastructure.Helpers;
 using AniBand.Video.Web.Extensions;
 using AniBand.Web.Core.Extensions;
 using Microsoft.AspNetCore.Builder;
@@ -31,9 +33,10 @@ namespace AniBand.Video.Web
                     builder
                         .AllowAnyHeader()
                         .WithOrigins(
-                            Configuration.GetSection("Origins:3000").Value,
-                            Configuration.GetSection("Origins:3001").Value,
-                            Configuration.GetSection("Origins:3002").Value)
+                            services
+                                .BuildServiceProvider()
+                                .GetRequiredService<IConfigurationHelper>()
+                                .AllowedOrigins.ToArray())
                         .AllowAnyMethod()
                         .AllowCredentials()));
 

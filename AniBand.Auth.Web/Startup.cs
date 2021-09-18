@@ -1,8 +1,10 @@
+using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using AniBand.Auth.Web.Extensions;
+using AniBand.Core.Abstractions.Infrastructure.Helpers;
 using AniBand.Web.Core.Extensions;
 using Microsoft.Extensions.Configuration;
 
@@ -30,7 +32,10 @@ namespace AniBand.Auth.Web
                 options.AddPolicy("Client", builder =>
                     builder
                         .AllowAnyHeader()
-                        .WithOrigins("http://localhost:3000", "http://localhost:3001", "http://localhost:3002")
+                        .WithOrigins(services
+                            .BuildServiceProvider()
+                            .GetRequiredService<IConfigurationHelper>()
+                            .AllowedOrigins.ToArray())
                         .AllowAnyMethod()
                         .AllowCredentials()));
             
