@@ -51,7 +51,7 @@ namespace AniBand.Auth.Web.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<ActionResult<IHttpResult>> Register(UserRegistrationVm userVm)
+        public async Task<ActionResult<IHttpResult>> Register([FromBody] UserRegistrationVm userVm)
             => Ok(await _authService.RegisterAsync(
                 _mapper.Map<RegisterUserDto>(userVm)));
 

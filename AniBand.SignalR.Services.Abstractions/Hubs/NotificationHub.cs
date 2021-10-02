@@ -24,7 +24,7 @@ namespace AniBand.SignalR.Services.Abstractions.Hubs
         {
             var newNotifications = (await _notificationService
                 .GetUnViewedNotificationsAsync(
-                    Convert.ToInt64(Context.User?.FindFirst(CustomClaimTypes.Actor)?.Value)))
+                    Convert.ToInt64(Context.User?.FindFirst(CustomClaimTypes.Id)?.Value)))
                 .Data
                 .ToList()
                 .Select(n => n.Message);

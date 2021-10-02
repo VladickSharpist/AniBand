@@ -133,7 +133,7 @@ namespace AniBand.Auth.Services.Services
 
                 var claims = await _userManager.GetClaimsAsync(user);
                 claims.Add(new Claim (
-                    CustomClaimTypes.Actor, 
+                    CustomClaimTypes.Id, 
                     user.Id.ToString()));
                 
                 var identity = new ClaimsIdentity(

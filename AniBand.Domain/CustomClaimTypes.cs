@@ -2,8 +2,8 @@
 {
     public static class CustomClaimTypes
     {
-        public const string Permission = "AniBand.Permission";
-        public const string Actor = "AniBand.Actor";
-        public const string Role = "AniBand.Role";
+        public const string Permission = "Permission";
+        public const string Id = "Id";
+        public const string Role = "Role";
     }
 }

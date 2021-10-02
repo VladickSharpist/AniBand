@@ -55,15 +55,13 @@ namespace AniBand.Auth.Services.Services
         {
             var claims = new List<Claim>
             {
-                new Claim(CustomClaimTypes.Actor, user.Id.ToString())
+                new Claim(CustomClaimTypes.Id, user.Id.ToString())
             };
 
-            var roles = await _userManager.GetRolesAsync(user);
-            foreach (var role in roles)
-            {
-                claims.Add(
+            var roles = (await _userManager.GetRolesAsync(user))
+                .Select(role => 
                     new Claim(CustomClaimTypes.Role, role));
-            }
+            claims.AddRange(roles);
 
             var permissions = (await _userManager.GetClaimsAsync(user))
                 .Where(c => 
