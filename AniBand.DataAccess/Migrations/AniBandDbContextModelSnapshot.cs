@@ -19,6 +19,44 @@ namespace AniBand.DataAccess.Migrations
                 .HasAnnotation("ProductVersion", "5.0.9")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("AniBand.Domain.Models.Anime", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("CreatedById")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long?>("StudioId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("UpdatedById")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StudioId");
+
+                    b.ToTable("Animes");
+                });
+
             modelBuilder.Entity("AniBand.Domain.Models.Comment", b =>
                 {
                     b.Property<long>("Id")
@@ -63,6 +101,50 @@ namespace AniBand.DataAccess.Migrations
                     b.HasIndex("VideoId");
 
                     b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("AniBand.Domain.Models.Episode", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("CreatedById")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("DurationInSeconds")
+                        .HasColumnType("float");
+
+                    b.Property<long>("SeasonId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("UpdatedById")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("VideoFileHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SeasonId");
+
+                    b.ToTable("Episodes");
                 });
 
             modelBuilder.Entity("AniBand.Domain.Models.Notification", b =>
@@ -167,44 +249,6 @@ namespace AniBand.DataAccess.Migrations
                     b.HasIndex("OwnerId");
 
                     b.ToTable("RefreshTokensHistory");
-                });
-
-            modelBuilder.Entity("AniBand.Domain.Models.Season", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long>("CreatedById")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ImageUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long?>("StudioId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("UpdatedById")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("StudioId");
-
-                    b.ToTable("Seasons");
                 });
 
             modelBuilder.Entity("AniBand.Domain.Models.Studio", b =>
@@ -345,50 +389,6 @@ namespace AniBand.DataAccess.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
-                });
-
-            modelBuilder.Entity("AniBand.Domain.Models.Video", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long>("CreatedById")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("DurationInSeconds")
-                        .HasColumnType("float");
-
-                    b.Property<long>("SeasonId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("UpdatedById")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Url")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("VideoFileHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SeasonId");
-
-                    b.ToTable("Videos");
                 });
 
             modelBuilder.Entity("AniBand.Domain.Models.View", b =>
@@ -536,6 +536,15 @@ namespace AniBand.DataAccess.Migrations
                     b.ToTable("AspNetUserRoles");
                 });
 
+            modelBuilder.Entity("AniBand.Domain.Models.Anime", b =>
+                {
+                    b.HasOne("AniBand.Domain.Models.Studio", "Studio")
+                        .WithMany("Seasons")
+                        .HasForeignKey("StudioId");
+
+                    b.Navigation("Studio");
+                });
+
             modelBuilder.Entity("AniBand.Domain.Models.Comment", b =>
                 {
                     b.HasOne("AniBand.Domain.Models.User", "User")
@@ -544,15 +553,26 @@ namespace AniBand.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AniBand.Domain.Models.Video", "Video")
+                    b.HasOne("AniBand.Domain.Models.Episode", "Episode")
                         .WithMany("Comments")
                         .HasForeignKey("VideoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Episode");
 
-                    b.Navigation("Video");
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("AniBand.Domain.Models.Episode", b =>
+                {
+                    b.HasOne("AniBand.Domain.Models.Anime", "Anime")
+                        .WithMany("Videos")
+                        .HasForeignKey("SeasonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Anime");
                 });
 
             modelBuilder.Entity("AniBand.Domain.Models.Notification", b =>
@@ -574,15 +594,15 @@ namespace AniBand.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AniBand.Domain.Models.Video", "Video")
+                    b.HasOne("AniBand.Domain.Models.Episode", "Episode")
                         .WithMany("Rates")
                         .HasForeignKey("VideoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Episode");
 
-                    b.Navigation("Video");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("AniBand.Domain.Models.RefreshToken", b =>
@@ -596,15 +616,6 @@ namespace AniBand.DataAccess.Migrations
                     b.Navigation("Owner");
                 });
 
-            modelBuilder.Entity("AniBand.Domain.Models.Season", b =>
-                {
-                    b.HasOne("AniBand.Domain.Models.Studio", "Studio")
-                        .WithMany("Seasons")
-                        .HasForeignKey("StudioId");
-
-                    b.Navigation("Studio");
-                });
-
             modelBuilder.Entity("AniBand.Domain.Models.UserToken", b =>
                 {
                     b.HasOne("AniBand.Domain.Models.User", null)
@@ -612,17 +623,6 @@ namespace AniBand.DataAccess.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("AniBand.Domain.Models.Video", b =>
-                {
-                    b.HasOne("AniBand.Domain.Models.Season", "Season")
-                        .WithMany("Videos")
-                        .HasForeignKey("SeasonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Season");
                 });
 
             modelBuilder.Entity("AniBand.Domain.Models.View", b =>
@@ -633,15 +633,15 @@ namespace AniBand.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AniBand.Domain.Models.Video", "Video")
+                    b.HasOne("AniBand.Domain.Models.Episode", "Episode")
                         .WithMany("Views")
                         .HasForeignKey("VideoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Episode");
 
-                    b.Navigation("Video");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<long>", b =>
@@ -686,9 +686,18 @@ namespace AniBand.DataAccess.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("AniBand.Domain.Models.Season", b =>
+            modelBuilder.Entity("AniBand.Domain.Models.Anime", b =>
                 {
                     b.Navigation("Videos");
+                });
+
+            modelBuilder.Entity("AniBand.Domain.Models.Episode", b =>
+                {
+                    b.Navigation("Comments");
+
+                    b.Navigation("Rates");
+
+                    b.Navigation("Views");
                 });
 
             modelBuilder.Entity("AniBand.Domain.Models.Studio", b =>
@@ -705,15 +714,6 @@ namespace AniBand.DataAccess.Migrations
                     b.Navigation("Rates");
 
                     b.Navigation("RefreshTokensHistory");
-
-                    b.Navigation("Views");
-                });
-
-            modelBuilder.Entity("AniBand.Domain.Models.Video", b =>
-                {
-                    b.Navigation("Comments");
-
-                    b.Navigation("Rates");
 
                     b.Navigation("Views");
                 });

@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using AniBand.Core.Abstractions.Infrastructure.Helpers;
 using Microsoft.Extensions.Configuration;
 
 namespace AniBand.Core.Infrastructure.Helpers
 {
-    public class ConfigurationHelper : IConfigurationHelper
+    public class ConfigurationHelper 
+        : IConfigurationHelper
     {
         private IConfiguration _configuration;
 
@@ -35,7 +38,12 @@ namespace AniBand.Core.Infrastructure.Helpers
         public string LocalPathFileStorage => _configuration
             .GetSection("PathToStoreFiles:LocalPath")
             .Value;
-        
+
+        public IEnumerable<string> AllowedOrigins => _configuration
+            .GetSection("Origins")
+            .GetChildren()
+            .Select(ch => ch.Value);
+
         public ConfigurationHelper(IConfiguration configuration)
         {
             _configuration = configuration;

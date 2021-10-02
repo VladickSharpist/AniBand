@@ -4,6 +4,8 @@
     {
         System = 0,
         Admin = 1,
-        User = 2
+        User = 2,
+        SuperAdmin = 3,
+        ApprovedUser = 4
     }
 }

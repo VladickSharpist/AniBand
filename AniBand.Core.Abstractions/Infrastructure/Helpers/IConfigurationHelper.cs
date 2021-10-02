@@ -1,4 +1,6 @@
-﻿namespace AniBand.Core.Abstractions.Infrastructure.Helpers
+﻿using System.Collections.Generic;
+
+namespace AniBand.Core.Abstractions.Infrastructure.Helpers
 {
     public interface IConfigurationHelper
     {
@@ -15,5 +17,7 @@
         double TokenExpireSeconds { get; }
         
         string LocalPathFileStorage { get; }
+        
+        IEnumerable<string> AllowedOrigins { get; }
     }
 }

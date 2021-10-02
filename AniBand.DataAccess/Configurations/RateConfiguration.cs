@@ -10,7 +10,7 @@ namespace AniBand.DataAccess.Configurations
         public void Configure(EntityTypeBuilder<Rate> builder)
         {
             builder
-                .HasOne(r => r.Video)
+                .HasOne(r => r.Episode)
                 .WithMany(v => v.Rates)
                 .HasForeignKey(r => r.VideoId);
             

@@ -10,6 +10,6 @@ namespace AniBand.Domain.Models
 
         public string Description { get; set; }
 
-        public virtual ICollection<Season> Seasons { get; set; }
+        public virtual ICollection<Anime> Seasons { get; set; }
     }
 }

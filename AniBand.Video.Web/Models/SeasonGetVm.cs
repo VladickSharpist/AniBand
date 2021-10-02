@@ -1,9 +1,9 @@
-using System.Collections.Generic;
-
 namespace AniBand.Video.Web.Models
 {
     public class SeasonGetVm
     {
+        public long Id { get; set; }
+
         public string Title { get; set; }
 
         public string Description { get; set; }
@@ -11,7 +11,5 @@ namespace AniBand.Video.Web.Models
         public string ImageUrl { get; set; }
 
         public long StudioId { get; set; }
-
-        public List<VideoGetVm> Videos { get; set; }
     }
 }

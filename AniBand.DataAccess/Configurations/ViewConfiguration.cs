@@ -15,7 +15,7 @@ namespace AniBand.DataAccess.Configurations
                 .HasForeignKey(v => v.UserId);
 
             builder
-                .HasOne(v => v.Video)
+                .HasOne(v => v.Episode)
                 .WithMany(vid => vid.Views)
                 .HasForeignKey(v => v.VideoId);
         }

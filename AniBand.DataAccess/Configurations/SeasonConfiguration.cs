@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace AniBand.DataAccess.Configurations
 {
     internal class SeasonConfiguration 
-        : IEntityTypeConfiguration<Season>
+        : IEntityTypeConfiguration<Anime>
     {
-        public void Configure(EntityTypeBuilder<Season> builder)
+        public void Configure(EntityTypeBuilder<Anime> builder)
             => builder
                 .HasOne(s => s.Studio)
                 .WithMany(st => st.Seasons)

@@ -1,4 +1,6 @@
+using AniBand.Core.Infrastructure.Helpers.Generic;
 using AniBand.Video.Services.Abstractions.Models;
+using AniBand.Web.Core.Models.Generic;
 using AutoMapper;
 
 namespace AniBand.Video.Web.Models.Mapping
@@ -7,11 +9,10 @@ namespace AniBand.Video.Web.Models.Mapping
     {
         public SeasonGetProfile()
         {
-            CreateMap<SeasonDto, SeasonGetVm>()
-                .ForMember(vm => 
-                    vm.Videos, opt => 
-                        opt.MapFrom(dto => 
-                            dto.VideosDto));
+            CreateMap<SeasonDto, SeasonGetVm>();
+            CreateMap<PagedList<SeasonDto>, PagedVm<SeasonGetVm>>()
+                .ForMember(vm => vm.Data,
+                    expression => expression.MapFrom(dtos => dtos));
         }
     }
 }

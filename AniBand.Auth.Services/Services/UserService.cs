@@ -19,6 +19,7 @@ namespace AniBand.Auth.Services.Services
         : IUserService
     {
         private readonly UserManager<User> _userManager;
+        private readonly RoleManager<IdentityRole<long>> _roleManager;
         private readonly IMapper _mapper;
         private readonly INotificationService _notificationService;
         private readonly ITokenService _tokenService;
@@ -27,7 +28,8 @@ namespace AniBand.Auth.Services.Services
             UserManager<User> userManager,
             IMapper mapper, 
             INotificationService notificationService, 
-            ITokenService tokenService)
+            ITokenService tokenService, 
+            RoleManager<IdentityRole<long>> roleManager)
         {
             _userManager = userManager
                 ?? throw new NullReferenceException(nameof(userManager));
@@ -37,6 +39,7 @@ namespace AniBand.Auth.Services.Services
                 ?? throw new NullReferenceException(nameof(notificationService));
             _tokenService = tokenService
                 ?? throw new NullReferenceException(nameof(tokenService));
+            _roleManager = roleManager;
         }
 
         public IEnumerable<UserDto> GetUnApprovedUsers()
@@ -50,9 +53,17 @@ namespace AniBand.Auth.Services.Services
 
         public async Task<IHttpResult> ApproveUserAsync(long id)
         {
+            var user = await _userManager.GetByIdAsync(id);
+            
             try
             {
                 await _userManager.ApproveUserAsync(id);
+                var approvedRole = await _roleManager
+                    .FindByNameAsync(Roles.ApprovedUser.ToString());
+                await _userManager
+                    .AddClaimsAsync(
+                        user,
+                        await _roleManager.GetClaimsAsync(approvedRole));
             }
             catch (Exception e)
             {
@@ -60,8 +71,7 @@ namespace AniBand.Auth.Services.Services
                     e.Message, 
                     HttpStatusCode.UnprocessableEntity);
             }
-
-            var user = await _userManager.GetByIdAsync(id);
+            
             await _notificationService.NotifyAsync(
                 user.Id.ToString(), 
                 "Your account approved");

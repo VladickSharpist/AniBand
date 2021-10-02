@@ -1,3 +1,5 @@
+using System.Linq;
+using AniBand.Core.Abstractions.Infrastructure.Helpers;
 using AniBand.Video.Web.Extensions;
 using AniBand.Web.Core.Extensions;
 using Microsoft.AspNetCore.Builder;
@@ -30,7 +32,11 @@ namespace AniBand.Video.Web
                 options.AddPolicy("Client", builder =>
                     builder
                         .AllowAnyHeader()
-                        .WithOrigins("http://localhost:3000", "http://localhost:3001", "http://localhost:3002")
+                        .WithOrigins(
+                            services
+                                .BuildServiceProvider()
+                                .GetRequiredService<IConfigurationHelper>()
+                                .AllowedOrigins.ToArray())
                         .AllowAnyMethod()
                         .AllowCredentials()));
 

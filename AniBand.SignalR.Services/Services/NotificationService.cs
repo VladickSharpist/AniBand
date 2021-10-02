@@ -5,6 +5,7 @@ using AniBand.Core.Abstractions.Infrastructure.Helpers.Generic;
 using AniBand.Core.Infrastructure.Helpers.Generic;
 using AniBand.DataAccess.Abstractions.Repositories;
 using AniBand.Domain.Models;
+using AniBand.Query.Services.Abstractions.Services;
 using AniBand.SignalR.Services.Abstractions.Hubs;
 using AniBand.SignalR.Services.Abstractions.Interfaces;
 using AniBand.SignalR.Services.Abstractions.Models;

@@ -171,7 +171,7 @@ namespace AniBand.DataAccess.Migrations
                     b.ToTable("RefreshTokensHistory");
                 });
 
-            modelBuilder.Entity("AniBand.Domain.Models.Season", b =>
+            modelBuilder.Entity("AniBand.Domain.Models.Anime", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -349,7 +349,7 @@ namespace AniBand.DataAccess.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("AniBand.Domain.Models.Video", b =>
+            modelBuilder.Entity("AniBand.Domain.Models.Episode", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -546,7 +546,7 @@ namespace AniBand.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AniBand.Domain.Models.Video", "Video")
+                    b.HasOne("AniBand.Domain.Models.Episode", "Episode")
                         .WithMany("Comments")
                         .HasForeignKey("VideoId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -554,7 +554,7 @@ namespace AniBand.DataAccess.Migrations
 
                     b.Navigation("User");
 
-                    b.Navigation("Video");
+                    b.Navigation("Episode");
                 });
 
             modelBuilder.Entity("AniBand.Domain.Models.Notification", b =>
@@ -576,7 +576,7 @@ namespace AniBand.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AniBand.Domain.Models.Video", "Video")
+                    b.HasOne("AniBand.Domain.Models.Episode", "Episode")
                         .WithMany("Rates")
                         .HasForeignKey("VideoId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -584,7 +584,7 @@ namespace AniBand.DataAccess.Migrations
 
                     b.Navigation("User");
 
-                    b.Navigation("Video");
+                    b.Navigation("Episode");
                 });
 
             modelBuilder.Entity("AniBand.Domain.Models.RefreshToken", b =>
@@ -598,7 +598,7 @@ namespace AniBand.DataAccess.Migrations
                     b.Navigation("Owner");
                 });
 
-            modelBuilder.Entity("AniBand.Domain.Models.Season", b =>
+            modelBuilder.Entity("AniBand.Domain.Models.Anime", b =>
                 {
                     b.HasOne("AniBand.Domain.Models.Studio", "Studio")
                         .WithMany("Seasons")
@@ -616,15 +616,15 @@ namespace AniBand.DataAccess.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("AniBand.Domain.Models.Video", b =>
+            modelBuilder.Entity("AniBand.Domain.Models.Episode", b =>
                 {
-                    b.HasOne("AniBand.Domain.Models.Season", "Season")
+                    b.HasOne("AniBand.Domain.Models.Anime", "Anime")
                         .WithMany("Videos")
                         .HasForeignKey("SeasonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Season");
+                    b.Navigation("Anime");
                 });
 
             modelBuilder.Entity("AniBand.Domain.Models.View", b =>
@@ -635,7 +635,7 @@ namespace AniBand.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AniBand.Domain.Models.Video", "Video")
+                    b.HasOne("AniBand.Domain.Models.Episode", "Episode")
                         .WithMany("Views")
                         .HasForeignKey("VideoId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -643,7 +643,7 @@ namespace AniBand.DataAccess.Migrations
 
                     b.Navigation("User");
 
-                    b.Navigation("Video");
+                    b.Navigation("Episode");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<long>", b =>
@@ -688,7 +688,7 @@ namespace AniBand.DataAccess.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("AniBand.Domain.Models.Season", b =>
+            modelBuilder.Entity("AniBand.Domain.Models.Anime", b =>
                 {
                     b.Navigation("Videos");
                 });
@@ -711,7 +711,7 @@ namespace AniBand.DataAccess.Migrations
                     b.Navigation("Views");
                 });
 
-            modelBuilder.Entity("AniBand.Domain.Models.Video", b =>
+            modelBuilder.Entity("AniBand.Domain.Models.Episode", b =>
                 {
                     b.Navigation("Comments");
 

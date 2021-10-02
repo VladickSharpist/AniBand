@@ -4,6 +4,8 @@ namespace AniBand.Video.Web.Models
 {
     public class VideoGetVm
     {
+        public long Id { get; set; }
+        
         public string Title { get; set; }
 
         public string VideoFileUrl { get; set; }
@@ -11,7 +13,5 @@ namespace AniBand.Video.Web.Models
         public string Description { get; set; }
 
         public long SeasonId { get; set; }
-        
-        public virtual ICollection<CommentVm> Comments { get; set; }
     }
 }

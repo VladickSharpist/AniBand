@@ -12,6 +12,7 @@
     <ItemGroup>
       <ProjectReference Include="..\AniBand.Core\AniBand.Core.csproj" />
       <ProjectReference Include="..\AniBand.DataAccess.Abstractions\AniBand.DataAccess.Abstractions.csproj" />
+      <ProjectReference Include="..\AniBand.Query.Services.Abstractions\AniBand.Query.Services.Abstractions.csproj" />
       <ProjectReference Include="..\AniBand.SignalR.Services.Abstractions\AniBand.SignalR.Services.Abstractions.csproj" />
     </ItemGroup>
 
