@@ -42,9 +42,9 @@ namespace AniBand.Auth.Services.Services
             _roleManager = roleManager;
         }
 
-        public IEnumerable<UserDto> GetUnApprovedUsers()
+        public async Task<IEnumerable<UserDto>> GetUnApprovedUsers()
         {
-            var unApprovedUsers = _userManager
+            var unApprovedUsers = await _userManager
                 .GetUsersByField(u => 
                     u.Status == Status.Waiting);
 

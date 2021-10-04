@@ -87,13 +87,13 @@ namespace AniBand.Auth.Web.Controllers
         public async Task<ActionResult<IHttpResult>> RevokeToken(string token)
             => Ok(await _authService.RevokeAsync(token));
 
-        [Permission(Permission.AdminPermission.GetUsers)]
-        [HttpPost]
-        public ActionResult<IHttpResult<List<ApproveUserVm>>> GetUnApprovedUsers()
+        //[Permission(Permission.AdminPermission.GetUsers)]
+        [HttpGet]
+        public async Task<ActionResult<IHttpResult<List<ApproveUserVm>>>> GetUnApprovedUsers()
             => Ok(new HttpResult<List<ApproveUserVm>>
             {
                 Data = _mapper.Map<List<ApproveUserVm>>(
-                    _userService.GetUnApprovedUsers())
+                    await _userService.GetUnApprovedUsers())
             });
 
         [Permission(Permission.AdminPermission.ApproveUser)]

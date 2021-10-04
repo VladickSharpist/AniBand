@@ -7,7 +7,7 @@ namespace AniBand.Auth.Services.Abstractions.Services
 {
     public interface IUserService
     {
-        IEnumerable<UserDto> GetUnApprovedUsers();
+        Task<IEnumerable<UserDto>> GetUnApprovedUsers();
 
         Task<IHttpResult> ApproveUserAsync(long id);
 
