@@ -87,7 +87,7 @@ namespace AniBand.Auth.Web.Controllers
         public async Task<ActionResult<IHttpResult>> RevokeToken(string token)
             => Ok(await _authService.RevokeAsync(token));
 
-        //[Permission(Permission.AdminPermission.GetUsers)]
+        [Permission(Permission.AdminPermission.GetUsers)]
         [HttpGet]
         public async Task<ActionResult<IHttpResult<List<ApproveUserVm>>>> GetUnApprovedUsers()
             => Ok(new HttpResult<List<ApproveUserVm>>
