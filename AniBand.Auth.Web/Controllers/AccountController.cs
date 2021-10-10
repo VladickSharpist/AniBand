@@ -90,11 +90,11 @@ namespace AniBand.Auth.Web.Controllers
 
         [Permission(Permission.AdminPermission.GetUsers)]
         [HttpGet]
-        public ActionResult<IHttpResult<List<ApproveUserVm>>> GetUnApprovedUsers()
+        public async Task<ActionResult<IHttpResult<List<ApproveUserVm>>>> GetUnApprovedUsers()
             => Ok(new HttpResult<List<ApproveUserVm>>
             {
                 Data = _mapper.Map<List<ApproveUserVm>>(
-                    _userService.GetUnApprovedUsers())
+                    await _userService.GetUnApprovedUsers())
             });
 
         [Permission(Permission.AdminPermission.ApproveUser)]

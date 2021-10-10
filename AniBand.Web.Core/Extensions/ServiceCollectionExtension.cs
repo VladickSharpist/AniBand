@@ -64,7 +64,7 @@ namespace AniBand.Web.Core.Extensions
             => services
                 .AddDbContext<AniBandDbContext>(x =>
                     x.UseSqlServer(
-                        confHelper.ConnectionString), ServiceLifetime.Transient);
+                        confHelper.ConnectionString));
 
         public static IServiceCollection AddServices(this IServiceCollection services)
             => services

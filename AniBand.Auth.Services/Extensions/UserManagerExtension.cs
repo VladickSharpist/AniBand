@@ -24,10 +24,10 @@ namespace AniBand.Auth.Services.Extensions
             long id) 
             => await manager.Users.FirstOrDefaultAsync(u => u.Id == id);
 
-        public static IEnumerable<User> GetUsersByField(
+        public static async Task<IEnumerable<User>> GetUsersByField(
             this UserManager<User> manager,
             Expression<Func<User, bool>> filter)
-            => manager.Users.Where(filter);
+            => await manager.Users.Where(filter).ToListAsync();
 
         public static async Task ApproveUserAsync(
             this UserManager<User> manager,

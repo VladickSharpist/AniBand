@@ -86,13 +86,15 @@ namespace AniBand.Auth.Services.Services
                 var admins = await _userManager
                     .GetUsersInRoleAsync(
                         Roles.Admin.ToString()) as List<User>;
-                
-                admins.ForEach(async admin => 
+
+                foreach (var admin in admins)
+                {
                     await _notificationService
                         .NotifyAsync(
                             admin.Id.ToString(),
-                            $"User {user.Email} try to register"));
-                
+                            $"User {user.Email} try to register");
+                }
+
                 return new HttpResult();
             }
 
