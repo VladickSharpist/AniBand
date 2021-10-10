@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using AniBand.Auth.Services.Abstractions.Models;
 using AniBand.Auth.Services.Abstractions.Services;
@@ -57,7 +58,7 @@ namespace AniBand.Auth.Web.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<ActionResult<RefreshTokenVm>> Login([FromBody] UserLoginVm userVm)
+        public async Task<ActionResult<IHttpResult<RefreshTokenVm>>> Login([FromBody] UserLoginVm userVm)
         {
             var result = await _authService.AuthenticateAsync(
                 _mapper.Map<LoginUserDto>(userVm));
@@ -65,13 +66,13 @@ namespace AniBand.Auth.Web.Controllers
             {
                 await HttpContext.SignInAsync(result.Data.ClaimsPrincipal);
                 _logger.Log(LogLevel.Information, "User login in");
-                return _mapper.Map<RefreshTokenVm>(result.Data);
+                return new HttpResult<RefreshTokenVm>(_mapper.Map<RefreshTokenVm>(result.Data));
             }
             _logger.Log(LogLevel.Information, "User failed login");
-            return Ok(result.Errors);
+            return Ok(new HttpResult(result.Errors, HttpStatusCode.BadRequest));
         }
         
-        [HttpPost]
+        [HttpGet]
         public async Task<ActionResult<IHttpResult>> Logout()
         {
             await HttpContext.SignOutAsync();
@@ -97,18 +98,18 @@ namespace AniBand.Auth.Web.Controllers
             });
 
         [Permission(Permission.AdminPermission.ApproveUser)]
-        [HttpPost]
+        [HttpGet]
         public async Task<ActionResult<IHttpResult>> ApproveUser(long id)
             => Ok(await _userService.ApproveUserAsync(id));
 
         [Permission(Permission.AdminPermission.DeclineUser)]
-        [HttpPost]
+        [HttpGet]
         public async Task<ActionResult<IHttpResult>> DeclineUser(
             long id, 
             string message)
             => Ok(await _userService.DeclineUserAsync(id, message));
         
-        [HttpPost]
+        [HttpGet]
         public async Task<ActionResult<IHttpResult<IEnumerable<NotificationVm>>>> GetUnViewedNotifications(long userId)
             => Ok(new HttpResult<IEnumerable<NotificationVm>>(
                 _mapper.Map<IEnumerable<NotificationVm>>(
